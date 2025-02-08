@@ -1,7 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
+  background: #161616;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .display1 {
+    @apply text-display1 font-rajdhani;
+  }
+  .display2 {
+    @apply text-display2 font-rajdhani;
+  }
+  .display3 {
+    @apply text-display3 font-rajdhani;
+    
+  }
+  .title1 {
+    @apply text-title1 font-rajdhani;
+  }
+  .title2 {
+    @apply text-title2 font-rajdhani;
+  }
+  .title3 {
+    @apply text-title3 font-rajdhani;
+  }
+  .subtitle1 {
+    @apply text-subtitle1 font-rajdhani;
+  }
+  .subtitle2 {
+    @apply text-subtitle2 font-rajdhani;
+  }
+  .bodyBold {
+    @apply text-bodyBold font-rajdhani;
+  }
+  .body {
+    @apply text-body font-rajdhani;
+  }
+  .signal1 {
+    @apply text-signal1 font-rajdhani;
+  }
+  .caption {
+    @apply text-caption font-rajdhani;
+  }
+  .signal2 {
+    @apply text-signal2 font-rajdhani;
+  }
 }

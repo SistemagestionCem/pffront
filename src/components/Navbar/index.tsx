@@ -1,14 +1,14 @@
 'use client'
 import { useRouter } from "next/navigation"
+import Link from 'next/link';
 
 export default function NavBar() {
   const router = useRouter();
 
   return (
     <div className="flex justify-between items-center p-6">
-      <div onClick={()=>router.push("/")} className="text-2xl font-bold text-red-500">
-        <p>MobileFix</p>
-      </div>
+      <Link href="/" className="text-2xl font-bold text-red-500">MobileCer</Link>
+      
       <div>
         <button
           onClick={() => router.push("/login")}

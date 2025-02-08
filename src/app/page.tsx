@@ -1,5 +1,5 @@
-import NavBar from "./components/navBar";
-import Footer from "./components/footer";
+/* eslint-disable @next/next/no-img-element */
+import Footer from "../components/footer";
 
 export default function Home() {
   const services = [
@@ -34,11 +34,9 @@ export default function Home() {
 
   return (
     <div className="bg-black flex flex-col items-center h-full">
-      <div className="w-full">
-        <NavBar/>
-      </div>
+    
       <div className="max-w-[1024px] text-center">
-        <img alt="" src="https://www.rollingstone.com/wp-content/uploads/2024/09/iphone-16-pro-featured-image.png?w=1581&h=1054&crop=1"/>
+        <img alt="" src="https://www.rollingstone.com/wp-content/uploads/2024/09/iphone-16-pro-featured-image.png?w=1581&h=1054&crop=1" />
       </div>
       <div className="md:text-6xl md:p-6 text-white text-2xl text-center font-bold">
         <h1>Recupera tu dispositivo con nuestro servicio rapido y garantizado!</h1>
