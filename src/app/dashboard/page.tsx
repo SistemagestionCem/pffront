@@ -2,9 +2,19 @@
 'use client'
 import { Search } from "lucide-react";
 import { useState } from "react";
+import ModalOrden from "./components/ModalOrden"; // Importamos el modal
+
 
 export default function DashboardTecnico() {
     type EstadoOrden = "Iniciado" | "En proceso" | "Finalizado";
+
+    const [selectedOrder, setSelectedOrder] = useState<{
+        date: string;
+        id: string;
+        imei: string;
+        status: EstadoOrden;
+    } | null>(null);
+
 
     const [orders] = useState<{ date: string; id: string; imei: string; status: EstadoOrden }[]>([
         { date: "06/02/25", id: "1001", imei: "987654321012345", status: "Iniciado" },
@@ -33,7 +43,8 @@ export default function DashboardTecnico() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white p-4">
+        <div className="min-h-screen bg-secondary-700 text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
+
             <div className="gap-16 px-4 py-8 ">
 
                 <h2 className="display3  text-white flex justify-center w-full py-4">
@@ -99,8 +110,12 @@ export default function DashboardTecnico() {
                             </tr>
                         </thead>
                         <tbody className="text-black text-center body">
-                            {orders.map((order, index) => (
-                                <tr key={index} className="border-b border-gray-300">
+                            {orders.map((order) => (
+                                <tr
+                                    key={order.id}
+                                    className="border-b border-gray-300 hover:bg-gray-100 cursor-pointer"
+                                    onClick={() => setSelectedOrder(order)}
+                                >
                                     <td className="p-2">{order.date}</td>
                                     <td className="p-2">{order.id}</td>
                                     <td className="p-2">{order.imei}</td>
@@ -112,6 +127,12 @@ export default function DashboardTecnico() {
                         </tbody>
                     </table>
                 </section>
+
+                <ModalOrden
+                    isOpen={!!selectedOrder}
+                    onClose={() => setSelectedOrder(null)}
+                    order={selectedOrder!}
+                />
             </div>
 
         </div>
