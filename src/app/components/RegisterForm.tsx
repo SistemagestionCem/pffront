@@ -12,8 +12,6 @@ const RegisterForm = () => {
     name: "",
     email: "",
     password: "",
-    address: "",
-    phone: "",
   });
 
   const [error, setError] = useState("");
@@ -25,7 +23,7 @@ const RegisterForm = () => {
     e.preventDefault();
 
     // Validación de los campos
-    if (!formData.name || !formData.email || !formData.password || !formData.address || !formData.phone) {
+    if (!formData.name || !formData.email || !formData.password) {
       return setError("All fields are required.");
     }
 
