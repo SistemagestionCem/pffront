@@ -11,6 +11,14 @@ interface ModalProps {
     };
 }
 
+type EstadoOrden = "Iniciado" | "En proceso" | "Finalizado";
+
+const estadoColores: Record<EstadoOrden, string> = {
+    Iniciado: "text-blue-500",
+    "En proceso": "text-orange-500",
+    Finalizado: "text-red-600",
+};
+
 export default function ModalOrden({ isOpen, onClose, order }: ModalProps) {
     if (!isOpen || !order) return null; // No renderiza nada si no está abierto
 
@@ -57,7 +65,9 @@ export default function ModalOrden({ isOpen, onClose, order }: ModalProps) {
                 <div className="flex flex-col px-4 pb-4 items-start gap-4 w-full mt-4 text-secondary-900">
                     <p className="flex justify-between w-[80%]">
                         <span className="title3">Estado:</span>
-                        <span className="subtitle2 text-right">{order.status}</span>
+                        <span className={`subtitle2 text-right ${estadoColores[order.status as EstadoOrden]}`}>
+                            {order.status}
+                        </span>
                     </p>
                     <p className="flex justify-between w-[80%]">
                         <span className="title3">IMEI:</span>
