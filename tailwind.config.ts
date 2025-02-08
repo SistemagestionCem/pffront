@@ -43,7 +43,7 @@ export default {
         display3: ["30px", { lineHeight: "36px", letterSpacing: "-0.6px" , fontWeight: "700"}],
         title1: ["24px", { lineHeight: "32px", fontWeight: "700" }], 
         title2: ["20px", { lineHeight: "28px" }],
-        title3: ["20px", { lineHeight: "28px" }],
+        title3: ["20px", { lineHeight: "28px", fontWeight: "700" }],
         subtitle1: ["20px", { lineHeight: "28px", fontWeight: "400" }],
         subtitle2: ["16px", { lineHeight: "24px", fontWeight: "400" }],
         bodyBold: ["14px", { lineHeight: "20px", fontWeight: "700" }],
