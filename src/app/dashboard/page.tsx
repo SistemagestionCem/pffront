@@ -62,9 +62,9 @@ export default function DashboardTecnico() {
     };
 
     return (
-        <div className="min-h-screen bg-secondary-700 text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
+        <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
 
-            <div className="gap-16 px-4 py-8 ">
+            <div className="gap-16 px-4">
 
                 <h2 className="display3  text-white flex justify-center w-full py-4">
                     Dashboard de Técnico

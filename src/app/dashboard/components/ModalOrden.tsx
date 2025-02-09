@@ -44,20 +44,6 @@ export default function ModalOrden({ isOpen, onClose, order }: ModalProps) {
                         <div className="border-b border-primary-900 w-[95%] ml-0 pt-2"></div>
                     </div>
 
-                    <div className="flex justify-between items-center px-4 w-full text-secondary-900">
-                        <label className="flex items-center gap-1 pr-4 subtitle2">
-                            <input type="radio" name="device" className=" p-2" />
-                            Celular
-                        </label>
-                        <label className="flex items-center gap-1 px-4 subtitle2">
-                            <input type="radio" name="device" className=" p-2" />
-                            Tablet
-                        </label>
-                        <label className="flex items-center gap-1 px-4 subtitle2">
-                            <input type="radio" name="device" className=" p-2" />
-                            Laptop
-                        </label>
-                    </div>
 
                 </div>
 

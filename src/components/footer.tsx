@@ -1,7 +1,7 @@
 export default function Footer() {
     return(
-        <div className="flex w-full flex-col m-4">
-            <div className="text-white space-y-4 w-full md:grid md:grid-cols-3 pb-4">
+        <div className="flex flex-col items-center justify-between m-4 max-w-[1440px] mx-auto md:px-12 px-4">
+            <div className="text-white space-y-4 max-w-full md:grid md:grid-cols-3 md:gap-4 md:pb-12 w-full">
             <div className="flex flex-col items-start w-full">
             <div className="">
                 <div className="text-2xl text-red-500 font-bold">
