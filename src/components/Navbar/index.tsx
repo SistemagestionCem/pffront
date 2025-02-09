@@ -7,12 +7,13 @@ export default function NavBar() {
 
   return (
     <div className="flex justify-between items-center p-6">
-      <Link href="/" className="text-2xl font-bold text-red-500">MobileCer</Link>
+      <Link href="/" className="display3 text-primary-500">MobileCer</Link>
       
       <div>
         <button
           onClick={() => router.push("/login")}
-          className="bg-red-500 px-4 py-2 rounded-xl text-white font-bold"
+          className=" flex items-center justify-center gap-1.5 px-6 py-1.5 rounded-[16px] bg-primary-500 title3 text-white"
+ 
         >
           Login
         </button>
