@@ -6,7 +6,7 @@ import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 
 
 export default function DashboardTecnico() {
-    type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
+    type EstadoOrden = "En Proceso" | "Iniciado" | "Finalizado";
 
     const [selectedOrder, setSelectedOrder] = useState<{
         date: string;
@@ -19,13 +19,13 @@ export default function DashboardTecnico() {
     const [orders] = useState<{ date: string; id: number; device: string; status: EstadoOrden }[]>([
         { date: "06/02/25", id: 1001, device: "Smartphone", status: "Iniciado" },
         { date: "06/02/25", id: 1002, device: "Tablet", status: "Finalizado" },
-        { date: "07/02/25", id: 1003, device: "Smartwatch", status: "Pendiente" },
+        { date: "07/02/25", id: 1003, device: "Smartwatch", status: "En Proceso" },
         { date: "07/02/25", id: 1004, device: "Laptop", status: "Iniciado" },
         { date: "08/02/25", id: 1005, device: "Smartphone", status: "Iniciado" },
         { date: "08/02/25", id: 1006, device: "Tablet", status: "Finalizado" },
-        { date: "09/02/25", id: 1007, device: "Smartwatch", status: "Pendiente" },
+        { date: "09/02/25", id: 1007, device: "Smartwatch", status: "En Proceso" },
         { date: "09/02/25", id: 1008, device: "Laptop", status: "Finalizado" },
-        { date: "10/02/25", id: 1009, device: "Smartphone", status: "Pendiente" },
+        { date: "10/02/25", id: 1009, device: "Smartphone", status: "En Proceso" },
         { date: "10/02/25", id: 1010, device: "Tablet", status: "Iniciado" }
       ]);
 
@@ -50,11 +50,16 @@ export default function DashboardTecnico() {
         email: "garyjair001@hotmail.com",
         rol: "Técnico",
     });
-    const [estado, setEstado] = useState("Iniciado"); //cuando le demos la funcionalidad de cambio de estado tomara el estado y actualizara
+
+    const handleEstadoChange  = (nuevoEstado: EstadoOrden) => {
+        if (!orders) return;
+        
+    };
+
 
     const estadoColores = {
         Iniciado: "text-blue-500",
-        "En proceso": "text-orange-500",
+        "En Proceso": "text-orange-500",
         Finalizado: "text-primary-500",
     };
 
@@ -148,6 +153,7 @@ export default function DashboardTecnico() {
                     isOpen={!!selectedOrder}
                     onClose={() => setSelectedOrder(null)}
                     order={selectedOrder!}
+                    handleEstadoChange={handleEstadoChange}
                 />
             </div>
 
