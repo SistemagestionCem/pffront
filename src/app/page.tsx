@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import Footer from "../components/footer";
 
 export default function Home() {
   const services = [
