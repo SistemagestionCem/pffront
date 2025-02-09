@@ -1,33 +1,49 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
-import { Search } from "lucide-react";
+import { Search, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 
 
 export default function DashboardTecnico() {
-    type EstadoOrden = "Iniciado" | "En proceso" | "Finalizado";
+    type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
 
     const [selectedOrder, setSelectedOrder] = useState<{
         date: string;
-        id: string;
-        imei: string;
+        id: number;
+        device: string;
         status: EstadoOrden;
     } | null>(null);
 
 
-    const [orders] = useState<{ date: string; id: string; imei: string; status: EstadoOrden }[]>([
-        { date: "06/02/25", id: "1001", imei: "987654321012345", status: "Iniciado" },
-        { date: "06/02/25", id: "1002", imei: "123456789012345", status: "Finalizado" },
-        { date: "07/02/25", id: "1003", imei: "321654987012345", status: "En proceso" },
-        { date: "07/02/25", id: "1004", imei: "789456123012345", status: "Iniciado" },
-        { date: "08/02/25", id: "1005", imei: "654321987012345", status: "Iniciado" },
-        { date: "08/02/25", id: "1006", imei: "159753486012345", status: "Finalizado" },
-        { date: "09/02/25", id: "1007", imei: "357159258012345", status: "En proceso" },
-        { date: "09/02/25", id: "1008", imei: "753951456012345", status: "Finalizado" },
-        { date: "10/02/25", id: "1009", imei: "852963741012345", status: "En proceso" },
-        { date: "10/02/25", id: "1010", imei: "951357852012345", status: "Iniciado" }
-    ]);
+    const [orders] = useState<{ date: string; id: number; device: string; status: EstadoOrden }[]>([
+        { date: "06/02/25", id: 1001, device: "Smartphone", status: "Iniciado" },
+        { date: "06/02/25", id: 1002, device: "Tablet", status: "Finalizado" },
+        { date: "07/02/25", id: 1003, device: "Smartwatch", status: "Pendiente" },
+        { date: "07/02/25", id: 1004, device: "Laptop", status: "Iniciado" },
+        { date: "08/02/25", id: 1005, device: "Smartphone", status: "Iniciado" },
+        { date: "08/02/25", id: 1006, device: "Tablet", status: "Finalizado" },
+        { date: "09/02/25", id: 1007, device: "Smartwatch", status: "Pendiente" },
+        { date: "09/02/25", id: 1008, device: "Laptop", status: "Finalizado" },
+        { date: "10/02/25", id: 1009, device: "Smartphone", status: "Pendiente" },
+        { date: "10/02/25", id: 1010, device: "Tablet", status: "Iniciado" }
+      ]);
+
+      const [searchTerm, setSearchTerm] = useState("");
+      const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>("asc");
+
+      const filteredOrders = orders
+      .filter(order =>
+          order.id.toString().includes(searchTerm) ||
+          order.device.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.date.includes(searchTerm)
+      )
+      .sort((a, b) => sortOrder === "asc" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
+
+    const toggleSortOrder = () => {
+        setSortOrder(prev => prev === "asc" ? "desc" : "asc");
+    };
 
     const [usuario, setUsuario] = useState({ //cuando conectemos la base setUsuario traera los datos ver persistencia
         nombre: "Gary Jair Casas Wong",
@@ -77,48 +93,48 @@ export default function DashboardTecnico() {
                     </div>
                     <h3 className="title1 text-primary-500 border-b border-primary-900 pb-2">Ordenes</h3>
                     <div className="mt-4 flex items-center rounded-lg px-3 py-2 border border-primary-500 w-full">
-                        <input
-                            type="text"
-                            className="flex-1 outline-none"
-                            placeholder="Ingresa tu orden aquí"
-
-                        />
-                        <button className="p-2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                            <Search size={16} />
-                        </button>
+                    <input
+                        type="text"
+                        className="flex-1 outline-none"
+                        placeholder="Buscar por ID, dispositivo, estado o fecha"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     </div>
 
-                    <div className="flex justify-between items-center p-4 w-full">
+                    {/* <div className="flex justify-between items-center p-4 w-full">
 
                         <label className="bodyBold"><input type="radio" name="filter" className="mr-2" /> ID orden</label>
                         <label className="body"><input type="radio" name="filter" className="mr-2" /> Estado</label>
                         <label className="body"><input type="radio" name="filter" className="mr-2" /> IMEI</label>
-                    </div>
+                    </div> */}
 
-                    <button className="flex justify-center items-center gap-2 px-6 py-1 rounded-lg bg-primary-500 text-white text-bodyBold">
+                    {/* <button className="flex justify-center items-center gap-2 px-6 py-1 rounded-lg bg-primary-500 text-white text-bodyBold">
                         Borrar
-                    </button>
+                    </button> */}
 
 
                     <table className="w-full mt-4 border-collapse">
                         <thead>
                             <tr className="title3">
-                                <th className="p-2">Fecha</th>
+                                <th className="p-2 flex items-center cursor-pointer " onClick={toggleSortOrder}>
+                                    Fecha {sortOrder === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                </th>
                                 <th className="p-2">ID orden</th>
-                                <th className="p-2">IMEI</th>
+                                <th className="p-2">Dispositivo</th>
                                 <th className="p-2">Estado</th>
                             </tr>
                         </thead>
                         <tbody className="text-black text-center body">
-                            {orders.map((order) => (
+                            {filteredOrders.map((order) => (
                                 <tr
                                     key={order.id}
                                     className="border-b border-gray-300 hover:bg-gray-100 cursor-pointer"
                                     onClick={() => setSelectedOrder(order)}
                                 >
-                                    <td className="p-2">{order.date}</td>
+                                    <td className="p-2 flex">{order.date}</td>
                                     <td className="p-2">{order.id}</td>
-                                    <td className="p-2">{order.imei}</td>
+                                    <td className="p-2">{order.device}</td>
                                     <td className={`p-2 font-bold ${estadoColores[order.status]}`}>
                                         {order.status}
                                     </td>
