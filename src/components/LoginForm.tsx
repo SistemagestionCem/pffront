@@ -6,11 +6,10 @@ import { useRouter } from "next/navigation";
 // import { login } from "@/services/authServices";
 import userDataStorage from "@/storage/userStore";
 
-
 const LoginForm = () => {
   const router = useRouter();
   const { setUserData } = userDataStorage();
-  const [ isLoggingIn, setIsLoggingIn ] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // State para los valores del formulario
   const [email, setEmail] = useState("");
@@ -21,7 +20,7 @@ const LoginForm = () => {
 
   // Expresión regular para validar un correo electrónico
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
   // Handler para el submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +39,7 @@ const LoginForm = () => {
 
     setIsLoggingIn(true);
 
-    if(email === "admin@admin.com" && password === "admin") {
+    if (email === "admin@admin.com" && password === "admin") {
       // setUserData({ email, password });
       router.push("/dashboard");
       return;
@@ -64,31 +63,36 @@ const LoginForm = () => {
 
   // Función para navegar al registro
   const navigateToRegister = () => {
-    router.push("/register"); 
+    router.push("/register");
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-md border border-gray-100">
-
+    <div className="flex flex-col gap-[24px] mb-[72px] justify-center">
+      <p className="text-title3">
+        ¿Aún no tiene una cuenta?{" "}
+        <a href="/register" className="text-title2 text-[#007BFF]">
+          Entra aquí
+        </a>
+      </p>
       {/* Error Message */}
       {error && <p className="text-red-500 text-center mb-6">{error}</p>}
 
-
-      <form onSubmit={handleSubmit}>
-
-        <div className="mb-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-3">
+          <h3 className="text-title1">Nombre de usuario</h3>
           <input
             type="email"
             id="email"
             name="email"
-            placeholder="Ingresa tu email"
+            placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
         </div>
 
-        <div className="mb-6">
+        <div className="space-y-3">
+          <h3 className="text-title1">Contraseña</h3>
           <input
             type="password"
             id="password"
@@ -96,27 +100,28 @@ const LoginForm = () => {
             placeholder="Ingresa tu contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full py-[6px] px-[16px] text-lg  rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoggingIn}
-          className={`w-full bg-black text-white text-lg py-3 px-8 rounded-xl hover:bg-gary-800 transition duration-300 ${(isLoggingIn ? "opacity-50 cursor-not-allowed": "")}`}
-        >
-          {isLoggingIn ? "Ingresando..." : "Ingresar"}
-        </button>
+        <div>
+          <button
+            type="submit"
+            disabled={isLoggingIn || !email || !password}
+            className={`px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold ${
+              !email || !password ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isLoggingIn ? "Ingresando..." : "Iniciar sesión"}
+          </button>
+        </div>
       </form>
 
-      <div className="mt-6 text-center">
-        <button
-          onClick={navigateToRegister}
-          className="text-black font-semibold hover:underline"
-        >
+      {/* <div className="mt-6 text-center">
+        <button onClick={navigateToRegister} className="text-black font-semibold hover:underline">
           No tienes una cuenta? Registrate
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

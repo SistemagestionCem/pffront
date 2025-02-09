@@ -1,77 +1,56 @@
 export default function Footer() {
-    return(
-        <div className="flex flex-col items-center justify-between m-4 max-w-[1440px] mx-auto md:px-12 px-4">
-            <div className="text-white space-y-4 max-w-full md:grid md:grid-cols-3 md:gap-4 md:pb-12 w-full">
-            <div className="flex flex-col items-start w-full">
+  return (
+    <footer className="text-white bg-secondary-700">
+      <div className="container mx-auto px-[5vw] py-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="flex flex-col items-start space-y-4">
             <div className="">
-                <div className="text-2xl text-red-500 font-bold">
-                    MobileCer
-                </div>
+              <div className="text-2xl text-red-500 font-bold">MobileCer</div>
             </div>
+            <p className="text-white text-subtitle2 text-shadow">
+              Reparación rápida, resultados duraderos.
+            </p>
+          </div>
 
-            <div className="flex items-center justify-center">
-                <div className="text-white">
-                Reparación rápida, resultados duraderos.
-                </div>
-            </div>
-            </div>
-
-            <div className="flex flex-col items-start space-y-2">
-            <div className="text-white font-bold text-xl">
-                Legal
-            </div>
-
-            <div className="flex items-center gap-4">
-                <img
-                className="relative w-[10.09px] h-[15.63px]"
-                alt="Vector"
-                src="https://c.animaapp.com/ktouw9tT/img/vector-1.svg"
-                />
-
-                <div className="">
+          <div className="flex flex-col items-start space-y-4">
+            <h3 className="text-white text-title2">Legal</h3>
+            <div className="flex flex-col space-y-3">
+              <a
+                target="_blank"
+                href=""
+                className="inline-flex items-center text-white transition-colors duration-300 text-subtitle2 hover:text-primary100"
+              >
+                <i className="mr-2 text-xs fas fa-chevron-right"></i>
                 Política de privacidad
-                </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-                <img
-                className="relative w-[10.09px] h-[15.63px]"
-                alt="Vector"
-                src="https://c.animaapp.com/ktouw9tT/img/vector-1.svg"
-                />
-
-                <div className="">
+              </a>
+              <a
+                target="_blank"
+                href=""
+                className="inline-flex items-center text-white transition-colors duration-300 text-subtitle2 hover:text-primary100"
+              >
+                <i className="mr-2 text-xs fas fa-chevron-right"></i>
                 Términos de servicio
-                </div>
+              </a>
             </div>
-            </div>
+          </div>
 
-            <div className="space-y-2">
-            <div className="text-white font-bold text-xl text-center">
-                Contacto
-            </div>
-
-            <div className="flex gap-4 items-center justify-center">
-                <img
-                className="relative w-[25px] h-[18.75px]"
-                alt="Vector"
-                src="https://c.animaapp.com/ktouw9tT/img/vector-2.svg"
-                />
-
-                <div className="">
-                info@mobilecer.com
-                </div>
-            </div>
-            </div>
+          <div className="flex flex-col items-start space-y-4">
+            <h3 className="text-white text-title2">Contacto</h3>
+            <a
+              href="mailto:soporte@mabilecer.pe"
+              className="inline-flex items-center text-white transition-colors duration-300 text-subtitle2 hover:text-primary100"
+            >
+              <i className="mr-2 fas fa-envelope"></i>
+              soporte@mabilecer.pe
+            </a>
+          </div>
         </div>
 
-      <div className="text-white text-center">
-        <p className="">
-          © 2025 MobileCer
-          <br />
-          Todos los derechos reservados.
-        </p>
+        <div className="mt-[16px] border-t border-white pt-[8px] text-center text-body text-shadow">
+          <p className="text-[#AAAAAA]">© 2025 MOBILECER SAC</p>
+          <p className="mt-[4px] text-[#AAAAAA]">Todos los derechos reservados</p>
+        </div>
       </div>
-        </div>
-    )
+    </footer>
+  );
 }
