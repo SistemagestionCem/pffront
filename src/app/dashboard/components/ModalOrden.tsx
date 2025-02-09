@@ -67,6 +67,7 @@ export default function ModalOrden({ isOpen, onClose, order }: ModalProps) {
 
                         <div className="border-b border-primary-900 w-[95%] ml-0 pt-2"></div>
                     </div>
+
                 
                 {/*                    
                     <div className="flex justify-between items-center px-4 w-full text-secondary-900">
@@ -84,6 +85,7 @@ export default function ModalOrden({ isOpen, onClose, order }: ModalProps) {
                         </label>
                     </div>
                 */}        
+
                 </div>
 
                 {/* Datos de la orden */}

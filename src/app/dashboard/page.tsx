@@ -32,14 +32,17 @@ export default function DashboardTecnico() {
       const [searchTerm, setSearchTerm] = useState("");
       const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>("asc");
 
-      const filteredOrders = orders
-      .filter(order =>
-          order.id.toString().includes(searchTerm) ||
-          order.device.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.date.includes(searchTerm)
-      )
-      .sort((a, b) => sortOrder === "asc" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
+      const filteredOrders = orders.filter(order => {
+        const searchTerms = searchTerm.toLowerCase().split(" ").filter(Boolean);
+    
+        return searchTerms.every(term => 
+            order.id.toString().includes(term) ||
+            order.device.toLowerCase().includes(term) ||
+            order.status.toLowerCase().includes(term) ||
+            order.date.includes(term)
+        );
+    })
+    .sort((a, b) => sortOrder === "asc" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
 
     const toggleSortOrder = () => {
         setSortOrder(prev => prev === "asc" ? "desc" : "asc");
@@ -64,9 +67,9 @@ export default function DashboardTecnico() {
     };
 
     return (
-        <div className="min-h-screen bg-secondary-700 text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
+        <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
 
-            <div className="gap-16 px-4 py-8 ">
+            <div className="gap-16 px-4">
 
                 <h2 className="display3  text-white flex justify-center w-full py-4">
                     Dashboard de Técnico
@@ -106,17 +109,6 @@ export default function DashboardTecnico() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     </div>
-
-                    {/* <div className="flex justify-between items-center p-4 w-full">
-
-                        <label className="bodyBold"><input type="radio" name="filter" className="mr-2" /> ID orden</label>
-                        <label className="body"><input type="radio" name="filter" className="mr-2" /> Estado</label>
-                        <label className="body"><input type="radio" name="filter" className="mr-2" /> IMEI</label>
-                    </div> */}
-
-                    {/* <button className="flex justify-center items-center gap-2 px-6 py-1 rounded-lg bg-primary-500 text-white text-bodyBold">
-                        Borrar
-                    </button> */}
 
 
                     <table className="w-full mt-4 border-collapse">
