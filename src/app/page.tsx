@@ -62,7 +62,7 @@ export default function Home() {
       </div>
       <div className="p-6">
         <h3 className="text-3xl text-white font-bold text-center pb-4">Por que Elegirnos...</h3>
-        <div className="md:grid md:grid-cols-4 space-y-4 p-4">
+        <div className="sm:grid sm:grid-cols-2 lg:grid-cols-4 space-y-4 p-4">
         {chooseUs.map((service, index) => {
           return (
             <div key={index} className="flex min-w-[300px] items-center">

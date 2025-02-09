@@ -14,11 +14,11 @@ interface ModalProps {
     handleEstadoChange: (id: number, nuevoEstado: EstadoOrden) => void; 
 }
 
-type EstadoOrden = "Iniciado" | "En Proceso" | "Finalizado";
+type EstadoOrden = "Iniciado" | "Pendiente" | "Finalizado";
 
 const estadoColores: Record<EstadoOrden, string> = {
     Iniciado: "text-blue-500",
-    "En Proceso": "text-orange-500",
+    Pendiente: "text-orange-500",
     Finalizado: "text-red-600",
 };
 
@@ -91,7 +91,7 @@ export default function ModalOrden({ isOpen, onClose, order, handleEstadoChange 
                             isDisabled || isFinalizado ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                         disabled={isDisabled || isFinalizado}
-                        onClick={() => handleChangeEstado("En Proceso")}
+                        onClick={() => handleChangeEstado("Iniciado")}
                     >
                         Iniciar
                     </button>

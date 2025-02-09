@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
-import { Search, ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 
 
 export default function DashboardTecnico() {
-    type EstadoOrden = "En Proceso" | "Iniciado" | "Finalizado";
+    type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
 
     const [selectedOrder, setSelectedOrder] = useState<{
         date: string;
@@ -18,13 +18,13 @@ export default function DashboardTecnico() {
     const [orders, setOrders] = useState<{ date: string; id: number; device: string; status: EstadoOrden }[]>([
         { date: "06/02/25", id: 1001, device: "Smartphone", status: "Iniciado" },
         { date: "06/02/25", id: 1002, device: "Tablet", status: "Finalizado" },
-        { date: "07/02/25", id: 1003, device: "Smartwatch", status: "En Proceso" },
+        { date: "07/02/25", id: 1003, device: "Smartwatch", status: "Pendiente" },
         { date: "07/02/25", id: 1004, device: "Laptop", status: "Iniciado" },
         { date: "08/02/25", id: 1005, device: "Smartphone", status: "Iniciado" },
         { date: "08/02/25", id: 1006, device: "Tablet", status: "Finalizado" },
-        { date: "09/02/25", id: 1007, device: "Smartwatch", status: "En Proceso" },
+        { date: "09/02/25", id: 1007, device: "Smartwatch", status: "Pendiente" },
         { date: "09/02/25", id: 1008, device: "Laptop", status: "Finalizado" },
-        { date: "10/02/25", id: 1009, device: "Smartphone", status: "En Proceso" },
+        { date: "10/02/25", id: 1009, device: "Smartphone", status: "Pendiente" },
         { date: "10/02/25", id: 1010, device: "Tablet", status: "Iniciado" }
       ]);
 
@@ -64,7 +64,7 @@ export default function DashboardTecnico() {
 
     const estadoColores = {
         Iniciado: "text-blue-500",
-        "En Proceso": "text-orange-500",
+        Pendiente: "text-orange-500",
         Finalizado: "text-primary-500",
     };
 
@@ -73,10 +73,6 @@ export default function DashboardTecnico() {
         <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
 
             <div className="gap-16 px-4">
-
-                <h2 className="display3  text-white flex justify-center w-full py-4">
-                    Dashboard de Técnico
-                </h2>
 
                 <section className="bg-white text-black p-4 rounded-lg my-4">
                     <h3 className="title1 text-primary-500 border-b border-primary-900 pb-2">Datos de Usuario</h3>
@@ -117,12 +113,12 @@ export default function DashboardTecnico() {
                     <table className="w-full mt-4 border-collapse">
                         <thead>
                             <tr className="title3">
-                                <th className="p-2 flex items-center cursor-pointer " onClick={toggleSortOrder}>
+                                <th className="p-2 flex items-center cursor-pointer text-sm" onClick={toggleSortOrder}>
                                     Fecha {sortOrder === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </th>
-                                <th className="p-2">ID orden</th>
-                                <th className="p-2">Dispositivo</th>
-                                <th className="p-2">Estado</th>
+                                <th className="p-2 text-sm">ID orden</th>
+                                <th className="p-2 text-sm">Dispositivo</th>
+                                <th className="p-2 text-sm">Estado</th>
                             </tr>
                         </thead>
                         <tbody className="text-black text-center body">
