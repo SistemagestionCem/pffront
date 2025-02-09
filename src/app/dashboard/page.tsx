@@ -15,8 +15,7 @@ export default function DashboardTecnico() {
         status: EstadoOrden;
     } | null>(null);
 
-
-    const [orders] = useState<{ date: string; id: number; device: string; status: EstadoOrden }[]>([
+    const [orders, setOrders] = useState<{ date: string; id: number; device: string; status: EstadoOrden }[]>([
         { date: "06/02/25", id: 1001, device: "Smartphone", status: "Iniciado" },
         { date: "06/02/25", id: 1002, device: "Tablet", status: "Finalizado" },
         { date: "07/02/25", id: 1003, device: "Smartwatch", status: "En Proceso" },
@@ -28,6 +27,15 @@ export default function DashboardTecnico() {
         { date: "10/02/25", id: 1009, device: "Smartphone", status: "En Proceso" },
         { date: "10/02/25", id: 1010, device: "Tablet", status: "Iniciado" }
       ]);
+
+      const handleEstadoChange = (id: number, nuevoEstado: EstadoOrden) => {
+        setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+                order.id === id ? { ...order, status: nuevoEstado } : order
+            )
+        );
+        setSelectedOrder(null); // Cierra el modal después del cambio
+    };
 
       const [searchTerm, setSearchTerm] = useState("");
       const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>("asc");
@@ -54,17 +62,12 @@ export default function DashboardTecnico() {
         rol: "Técnico",
     });
 
-    const handleEstadoChange  = (nuevoEstado: EstadoOrden) => {
-        if (!orders) return;
-        
-    };
-
-
     const estadoColores = {
         Iniciado: "text-blue-500",
         "En Proceso": "text-orange-500",
         Finalizado: "text-primary-500",
     };
+
 
     return (
         <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
@@ -145,7 +148,7 @@ export default function DashboardTecnico() {
                     isOpen={!!selectedOrder}
                     onClose={() => setSelectedOrder(null)}
                     order={selectedOrder!}
-                    handleEstadoChange={handleEstadoChange}
+                    handleEstadoChange={handleEstadoChange} 
                 />
             </div>
 
