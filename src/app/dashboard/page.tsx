@@ -41,6 +41,7 @@ const ModalAgregarOrden = ({
     onClose();
   };
 
+<<<<<<< HEAD
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
       <div className="p-6 text-black bg-white rounded-lg w-96">
@@ -111,6 +112,82 @@ const ModalAgregarOrden = ({
               Guardar Orden
             </button>
           </div>
+=======
+    return isOpen ? (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg w-96 text-black">
+                <h3 className="text-xl font-bold mb-4">Agregar Orden</h3>
+                <div className="space-y-4">
+                <select
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={assignedTechnician}
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
+                        <option value="Juan">Juan</option>
+                        <option value="Pablo">Pablo</option>
+                        <option value="Carlos">Carlos</option>
+                    </select>
+                    <input
+                        type="text"
+                        placeholder="DNI Cliente"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={clientDni}
+                        onChange={(e) => setClientDni(e.target.value)}
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email Cliente"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={clientEmail}
+                        onChange={(e) => setClientEmail(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Descripción"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Tipo de Dispositivo"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={equipmentType}
+                        onChange={(e) => setEquipmentType(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="IMEI"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={imei}
+                        onChange={(e) => setImei(e.target.value)}
+                    />
+                    <select
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Iniciado">Iniciado</option>
+                        <option value="Finalizado">Finalizado</option>
+                    </select>
+                    <div className="flex justify-between mt-4">
+                        <button
+                            className="bg-gray-300 text-black px-4 py-2 rounded"
+                            onClick={onClose}
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            className="bg-primary-500 text-white px-4 py-2 rounded"
+                            onClick={handleSubmit}
+                        >
+                            Guardar Orden
+                        </button>
+                    </div>
+                </div>
+            </div>
+>>>>>>> ccc1701f1f5141d7e44489a7726cf07ca9715532
         </div>
       </div>
     </div>

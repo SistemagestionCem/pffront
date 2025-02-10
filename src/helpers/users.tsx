@@ -49,7 +49,7 @@ export const orders = [
         imei: "987654321098765",
         assignedTechnician: "0194f012-973c-72ed-b4d1-54d514574093",
         description: "Fallo en la batería",
-        status: "En progreso",
+        status: "Iniciado",
         user: "0194f012-973c-72ed-b4d1-54d514574094",
         createdAt: new Date("2025-02-11T10:00:00.000Z"),
     },
@@ -73,7 +73,7 @@ export const orders = [
         imei: "667788990011223",
         assignedTechnician: "0194f012-973c-72ed-b4d1-54d514574101",
         description: "Sobrecalentamiento",
-        status: "En progreso",
+        status: "Finalizado",
         user: "0194f012-973c-72ed-b4d1-54d514574102",
         createdAt: new Date("2025-02-15T09:10:00.000Z")
     }
