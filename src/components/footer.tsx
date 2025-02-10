@@ -17,7 +17,7 @@ export default function Footer() {
               <div className="flex flex-col space-y-3">
                 <a
                   target="_blank"
-                  href=""
+                  href="/politicas-de-privacidad"
                   className="inline-flex items-center text-white transition-colors duration-300 text-subtitle2 hover:text-primary100"
                 >
                   <i className="mr-2 text-xs fas fa-chevron-right"></i>
@@ -25,7 +25,7 @@ export default function Footer() {
                 </a>
                 <a
                   target="_blank"
-                  href=""
+                  href="/terminos-y-condiciones"
                   className="inline-flex items-center text-white transition-colors duration-300 text-subtitle2 hover:text-primary100"
                 >
                   <i className="mr-2 text-xs fas fa-chevron-right"></i>
