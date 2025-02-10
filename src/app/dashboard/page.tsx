@@ -38,13 +38,15 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: { isOpen: boole
             <div className="bg-white p-6 rounded-lg w-96 text-black">
                 <h3 className="text-xl font-bold mb-4">Agregar Orden</h3>
                 <div className="space-y-4">
-                    <input
-                        type="text"
-                        placeholder="Asignar Técnico"
+                <select
                         className="w-full p-2 border border-gray-300 rounded"
                         value={assignedTechnician}
-                        onChange={(e) => setAssignedTechnician(e.target.value)}
-                    />
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
+                        <option value="Juan">Juan</option>
+                        <option value="Pablo">Pablo</option>
+                        <option value="Carlos">Carlos</option>
+                    </select>
                     <input
                         type="text"
                         placeholder="DNI Cliente"
