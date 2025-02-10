@@ -1,16 +1,15 @@
-// components/LoginForm.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import { login } from "@/services/authServices";
 import userDataStorage from "@/storage/userStore";
+import orderDataStorage from "@/storage/orderStore";
+import { users, orders } from "../helpers/users";
 
 const LoginForm = () => {
   const router = useRouter();
   const { setUserData } = userDataStorage();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  console.log(setUserData);
 
   // State para los valores del formulario
   const [email, setEmail] = useState("");
@@ -22,50 +21,56 @@ const LoginForm = () => {
   // Expresión regular para validar un correo electrónico
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const authenticateUser = (email: string, password: string) => {
+    const user = users.find((user) => user.email === email && user.password === password);
+  
+    if (!user) return null; // Evita errores si el usuario no existe
+  
+    if (user.role === "User") {
+      const userOrders = orders.filter((order) => order.user === user.id);
+      setUserData(user);
+      orderDataStorage.getState().setOrderData(userOrders);
+      router.push("/dashboard");
+    } else if (user.role === "Technician") {
+      const userOrders = orders.filter((order) => order.assignedTechnician === user.id);
+      setUserData(user);
+      orderDataStorage.getState().setOrderData(userOrders);
+      router.push("/dashboard");
+    } else if (user.role === "Admin") {
+      setUserData(user);
+      orderDataStorage.getState().setOrderData(orders);
+      router.push("/dashboard");
+    }
+  
+    return user;
+  };
+
   // Handler para el submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validación simple
+    // Validaciones
     if (!email || !password) {
       setError("Ambos campos son requeridos!");
       return;
     }
 
-    // Validación de correo electrónico
     if (!emailRegex.test(email)) {
-      setError("Por favor ingrese un email valido");
+      setError("Por favor ingrese un email válido");
       return;
     }
 
     setIsLoggingIn(true);
 
-    if (email === "admin@admin.com" && password === "admin") {
-      // setUserData({ email, password });
-      router.push("/dashboard");
-      return;
+    const user = authenticateUser(email, password);
+
+    if (!user) {
+      setError("Credenciales incorrectas");
+      setIsLoggingIn(false);
+    } else {
+      setError("");
     }
-
-    // try {
-    //   const response = await login({ email, password });
-
-    //   if (response) {
-    //     setUserData(response)
-    //     router.push("/home");
-    //   }
-    // } catch (error) {
-    //   return setError("Error logging in. Please try again.");
-    // } finally {
-    //   setIsLoggingIn(false);
-    // }
-
-    setError("");
   };
-
-  // Función para navegar al registro
-  // const navigateToRegister = () => {
-  //   router.push("/register");
-  // };
 
   return (
     <div className="flex flex-col gap-[24px] mb-[120px] justify-center text-white">
@@ -75,6 +80,7 @@ const LoginForm = () => {
           Entra aquí
         </a>
       </p>
+
       {/* Error Message */}
       {error && <p className="text-red-500 text-center mb-6">{error}</p>}
 
@@ -117,12 +123,6 @@ const LoginForm = () => {
           </button>
         </div>
       </form>
-
-      {/* <div className="mt-6 text-center">
-        <button onClick={navigateToRegister} className="text-black font-semibold hover:underline">
-          No tienes una cuenta? Registrate
-        </button>
-      </div> */}
     </div>
   );
 };
