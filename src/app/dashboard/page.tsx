@@ -70,7 +70,7 @@ export default function DashboardTecnico() {
 
 
     return (
-        <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
+        <div className="max-w-[768px] sm:max-w-screen-lg min-h-screen text-white p-4 sm:p-8 mx-auto">
 
             <div className="gap-16 px-4">
 

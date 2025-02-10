@@ -6,7 +6,7 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     order?: {
-        date: number;
+        date: string;
         id: number;
         device: string;
         status: EstadoOrden;
