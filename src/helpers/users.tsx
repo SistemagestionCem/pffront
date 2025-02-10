@@ -54,28 +54,28 @@ export const orders = [
         createdAt: new Date("2025-02-11T10:00:00.000Z"),
     },
     {
-        "id": "0194f012-9739-76ba-9370-267f48e402d5",
-        "clientEmail": "example1@example.com",
-        "clientDni": 13579246,
-        "equipmentType": "Smartwatch",
-        "imei": "556677889900112",
-        "assignedTechnician": "0194f012-973c-72ed-b4d1-54d514574099",
-        "description": "No carga la batería",
-        "status": "Pendiente",
-        "user": "0194f012-973c-72ed-b4d1-54d514574100",
-        "createdAt": new Date("2025-02-14T12:20:00.000Z")
+        id: "0194f012-9739-76ba-9370-267f48e402d5",
+        clientEmail: "example1@example.com",
+        clientDni: 13579246,
+        equipmentType: "Smartwatch",
+        imei: "556677889900112",
+        assignedTechnician: "0194f012-973c-72ed-b4d1-54d514574099",
+        description: "No carga la batería",
+        status: "Pendiente",
+        user: "0194f012-973c-72ed-b4d1-54d514574100",
+        createdAt: new Date("2025-02-14T12:20:00.000Z")
     },
     {
-        "id": "0194f012-9739-76ba-9370-267f48e402d6",
-        "clientEmail": "example2@example.com",
-        "clientDni": 24681357,
-        "equipmentType": "Consola de videojuegos",
-        "imei": "667788990011223",
-        "assignedTechnician": "0194f012-973c-72ed-b4d1-54d514574101",
-        "description": "Sobrecalentamiento",
-        "status": "En progreso",
-        "user": "0194f012-973c-72ed-b4d1-54d514574102",
-        "createdAt": new Date("2025-02-15T09:10:00.000Z")
+        id: "0194f012-9739-76ba-9370-267f48e402d6",
+        clientEmail: "example2@example.com",
+        clientDni: 24681357,
+        equipmentType: "Consola de videojuegos",
+        imei: "667788990011223",
+        assignedTechnician: "0194f012-973c-72ed-b4d1-54d514574101",
+        description: "Sobrecalentamiento",
+        status: "En progreso",
+        user: "0194f012-973c-72ed-b4d1-54d514574102",
+        createdAt: new Date("2025-02-15T09:10:00.000Z")
     }
     
 ];
