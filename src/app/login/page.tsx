@@ -2,12 +2,11 @@ import LoginForm from "../../components/LoginForm";
 
 export default function Page() {
   return (
-    <div className="bg-black text-black min-h-screen flex flex-col">
-     
-      <section className="mx-auto py-8 px-6">
+    <div className="text-white flex flex-col mt-[72px] gap-8 px-[5vw] py-8 container mx-auto max-w-xl">
+      <h1 className="display3 text-center">Inicia sesión en tu cuenta</h1>
+      <div className="space-y-6">
         <LoginForm />
-      </section>
-      
+      </div>
     </div>
   );
 }
