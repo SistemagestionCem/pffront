@@ -1,84 +1,108 @@
 /* eslint-disable @next/next/no-img-element */
-import Footer from "../components/footer";
 
 export default function Home() {
   const services = [
     {
-      title: 'Pantallas Rotas',
-      description: 'Servicio de reparación de pantallas dañadas para todo tipo de dispositivos, incluyendo celulares, tablets y laptops. Arreglamos grietas, píxeles muertos y problemas de visualización con repuestos de alta calidad.'
+      title: "Pantallas Rotas",
+      description:
+        "Servicio de reparación de pantallas dañadas para todo tipo de dispositivos, incluyendo celulares, tablets y laptops. Arreglamos grietas, píxeles muertos y problemas de visualización con repuestos de alta calidad.",
     },
     {
-      title: 'Baterias Defectuosas',
-      description: 'Reemplazo y reparación de baterías que se descargan rápido, no cargan o causan sobrecalentamiento. Usamos repuestos de calidad para maximizar la vida útil de tu dispositivo. '
+      title: "Baterias Defectuosas",
+      description:
+        "Reemplazo y reparación de baterías que se descargan rápido, no cargan o causan sobrecalentamiento. Usamos repuestos de calidad para maximizar la vida útil de tu dispositivo. ",
     },
     {
-      title: 'Problemas de Software',
-      description: 'Solución de fallos en el sistema, reinicios inesperados, errores de actualización y optimización del rendimiento. Recuperamos datos y reinstalamos software para que tu equipo funcione como nuevo. '
-    }
-  ]
+      title: "Problemas de Software",
+      description:
+        "Solución de fallos en el sistema, reinicios inesperados, errores de actualización y optimización del rendimiento. Recuperamos datos y reinstalamos software para que tu equipo funcione como nuevo. ",
+    },
+  ];
 
   const chooseUs = [
     {
-      title: 'Tecnicos certificados'
+      title: "Tecnicos certificados",
     },
     {
-      title: 'Garantía de 6 meses'
+      title: "Garantía de 6 meses",
     },
     {
-      title: 'Repuestos originales'
+      title: "Repuestos originales",
     },
     {
-      title: 'Servicio rápido'
-    }
-  ]
+      title: "Servicio rápido",
+    },
+  ];
 
   return (
-    <div className="bg-black flex flex-col items-center h-full">
-    
-      <div className="max-w-[1024px] text-center">
-        <img alt="" src="https://www.rollingstone.com/wp-content/uploads/2024/09/iphone-16-pro-featured-image.png?w=1581&h=1054&crop=1" />
+    <div className="container mx-auto flex flex-col items-center px-[5vw] mt-[72px] gap-[24px]">
+      <div className="">
+        <img
+          alt=""
+          src="https://www.rollingstone.com/wp-content/uploads/2024/09/iphone-16-pro-featured-image.png?w=1581&h=1054&crop=1"
+        />
       </div>
-      <div className="md:text-6xl md:p-6 text-white text-2xl text-center font-bold">
-        <h1>Recupera tu dispositivo con nuestro servicio rapido y garantizado!</h1>
+      <div className="text-white text-display3 text-center font-bold">
+        <h1>Recupera tu dispositivo con nuestro servicio rápido y garantizado!</h1>
       </div>
-      <div className="w-full sm:max-w-[768px] text-center p-4">
-        <input type="text" placeholder="Rastrea tu orden" className="py-2 w-full text-center rounded-2xl" />
-        <button className="px-2 py-2 bg-red-500 mt-4 w-full rounded-xl text-white font-bold">Rastrear</button>
-      </div>
-      <div className="md:grid md:grid-cols-3">
-        {services.map((service, index) => {
-          return (
-            <div key={index} className="text-white m-4 p-4 border border-zinc-900 rounded-xl">
-              <div className="text-lg text-zinc-300 font-bold">
-                {service.title}
+      <form className="w-full text-center max-w-[776px]">
+        <input
+          type="text"
+          placeholder="Rastrea tu orden"
+          className="py-2 w-full text-center rounded-[8px]"
+        />
+        <button className="px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold">
+          Buscar
+        </button>
+      </form>
+
+      <div className="space-y-4">
+        <h1 className=" text-white text-display3 text-center font-bold">Nuestros Servicios</h1>
+        <div className="grid gap-[16px] lg:grid-cols-3">
+          {services.map((service, index) => {
+            return (
+              <div
+                key={index}
+                className="text-white p-4 border space-y-4 border-white rounded-[16px] max-w-[420px]"
+              >
+                <div className="text-title2 text-white">{service.title}</div>
+                <div className="text-white">{service.description}</div>
+                <div>
+                  <img src="/servicio-repacion.png" alt="servicio de repacion" width="100%" />
+                </div>
               </div>
-              <div className="text-zinc-300">
-                {service.description}
-              </div>
-              <div></div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="p-6">
-        <h3 className="text-3xl text-white font-bold text-center pb-4">Por que Elegirnos...</h3>
-        <div className="md:grid md:grid-cols-4 space-y-4 p-4">
+            );
+          })}
+        </div>
+        <div className="my-4">
+        <h3 className="text-display3 text-white text-center">¿Por que Elegirnos?</h3>
+        <div className="sm:grid sm:grid-cols-2 lg:grid-cols-4 space-y-4 p-4">
         {chooseUs.map((service, index) => {
           return (
-            <div key={index} className="flex min-w-[300px] items-center">
-              <div className="bg-red-500 w-6 h-6 rounded-full mr-6">
-              </div>
-              <div className="text-zinc-300 text-lg">
+            <div key={index} className="flex items-center lg:justify-center">
+              <svg
+                  width="31"
+                  height="31"
+                  viewBox="0 0 31 31"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-4"
+                >
+                  <rect width="31" height="31" rx="15.5" fill="#E10600" />
+                </svg>
+              <div className="text-white text-bodyBold">
                 {service.title}
               </div>
-              <div></div>
             </div>
           );
         })}
       </div>
+        <div className="flex items-center justify-center mb-8">
+          <img src="/celular-reparacion.png" alt="celular reparado" width="100%" className="max-w-lg"/>
+        </div>
       </div>
-
+      </div>
+      
     </div>
-
   );
 }

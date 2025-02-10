@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 // import { register } from "@/services/authServices";
 import { RegisterFormType } from "@/interfaces";
 
 const RegisterForm = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [formData, setFormData] = useState<RegisterFormType>({
     name: "",
     email: "",
     password: "",
   });
+  const [acceptTerms, setAcceptTerms] = useState(false); // Add this state
 
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,6 +22,10 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!acceptTerms) {
+      return setError("Debes aceptar los términos y condiciones");
+    }
 
     // Validación de los campos
     if (!formData.name || !formData.email || !formData.password) {
@@ -58,19 +63,23 @@ const RegisterForm = () => {
     }));
   };
 
-  const navigateToLogin = () => {
-    router.push("/login");
-  };
+  // const navigateToLogin = () => {
+  //   router.push("/login");
+  // };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-md border border-gray-100">
+    <div className="flex flex-col gap-[24px] mb-[72px] justify-center">
+      <p className="text-title3">
+        ¿Ya tienes una cuenta?{" "}
+        <a href="/login" className="text-title2 text-[#007BFF]">
+          Inicia sesión aquí
+        </a>
+      </p>
       {error && <p className="text-red-500 text-center mb-6">{error}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="name">
-            Nombre
-          </label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-3">
+          <h3 className="text-title1">Nombre completo</h3>
           <input
             type="text"
             id="name"
@@ -78,14 +87,12 @@ const RegisterForm = () => {
             placeholder="Ingresa tu nombre"
             value={formData.name}
             onChange={handleChange}
-            className="w-full p-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
-            Email
-          </label>
+        <div className="space-y-3">
+          <h3 className="text-title1">Correo electrónico</h3>
           <input
             type="email"
             id="email"
@@ -93,14 +100,12 @@ const RegisterForm = () => {
             placeholder="Ingresa tu email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
-            Contraseña
-          </label>
+        <div className="space-y-3">
+          <h3 className="text-title1">Contraseña</h3>
           <input
             type="password"
             id="password"
@@ -108,29 +113,38 @@ const RegisterForm = () => {
             placeholder="Ingresa tu contraseña"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`w-full bg-black text-white text-lg py-3 px-8 rounded-xl hover:bg-gray-800 transition duration-300 ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {isSubmitting ? "Registrando..." : "Registrarse"}
-        </button>
-      </form>
+        <div className="flex items-center gap-2 mt-4">
+          <input
+            type="checkbox"
+            id="terms"
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            className="w-4 h-4 text-primary-500"
+          />
+          <label htmlFor="terms" className="text-white text-subtitle2">
+            Acepto los{" "}
+            <a href="/terms" className="text-[#007BFF] hover:underline">
+              términos y condiciones
+            </a>
+          </label>
+        </div>
 
-      <div className="mt-6 text-center">
-        <button
-          onClick={navigateToLogin}
-          className="text-black font-semibold hover:underline"
-        >
-          Ya tienes una cuenta? Ingresa
-        </button>
-      </div>
+        <div>
+          <button
+            type="submit"
+            disabled={isSubmitting || !acceptTerms}
+            className={`px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold ${
+              !acceptTerms ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isSubmitting ? "Registrando..." : "Registrarse"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
