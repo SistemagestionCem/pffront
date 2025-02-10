@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-'use client'
+"use client";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import ModalOrden from "./components/ModalOrden"; // Importamos el modal
@@ -110,7 +110,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: { isOpen: boole
 };
 
 export default function DashboardTecnico() {
-    type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
+  type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
 
     const [selectedOrder, setSelectedOrder] = useState<{
         date: string;
@@ -168,9 +168,9 @@ export default function DashboardTecnico() {
         );
     }).sort((a, b) => sortOrder === "asc" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
 
-    const toggleSortOrder = () => {
-        setSortOrder(prev => prev === "asc" ? "desc" : "asc");
-    };
+  const toggleSortOrder = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
 
     const [usuario, setUsuario] = useState({
         nombre: "",
@@ -237,35 +237,45 @@ export default function DashboardTecnico() {
                         />
                     </div>
 
-                    <table className="w-full mt-4 border-collapse">
-                        <thead>
-                            <tr className="title3">
-                                <th className="p-2 flex items-center cursor-pointer text-sm" onClick={toggleSortOrder}>
-                                    Fecha {sortOrder === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </th>
-                                <th className="p-2 text-sm">ID orden</th>
-                                <th className="p-2 text-sm">Dispositivo</th>
-                                <th className="p-2 text-sm">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-black text-center body">
-                            {filteredOrders.map((order) => (
-                                <tr
-                                    key={order.id}
-                                    className="border-b border-gray-300 hover:bg-gray-100 cursor-pointer"
-                                    onClick={() => setSelectedOrder(order)}
-                                >
-                                    <td className="p-2 flex">{order.date}</td>
-                                    <td className="p-2">{order.id}</td>
-                                    <td className="p-2">{order.device}</td>
-                                    <td className={`p-2 font-bold ${estadoColores[order.status]}`}>
-                                        {order.status}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </section>
+          <table className="w-full mt-4 border-collapse">
+            <thead>
+              <tr className="title3">
+                <th
+                  className="flex items-center p-2 text-sm cursor-pointer"
+                  onClick={toggleSortOrder}
+                >
+                  Fecha{" "}
+                  {sortOrder === "asc" ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
+                </th>
+                <th className="p-2 text-sm">ID orden</th>
+                <th className="p-2 text-sm">Dispositivo</th>
+                <th className="p-2 text-sm">Estado</th>
+              </tr>
+            </thead>
+            <tbody className="text-center text-black body">
+              {filteredOrders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="border-b border-gray-300 cursor-pointer hover:bg-gray-100"
+                  onClick={() => setSelectedOrder(order)}
+                >
+                  <td className="flex p-2">{order.date}</td>
+                  <td className="p-2">{order.id}</td>
+                  <td className="p-2">{order.device}</td>
+                  <td
+                    className={`p-2 font-bold ${estadoColores[order.status]}`}
+                  >
+                    {order.status}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
 
                 <ModalOrden
                     isOpen={!!selectedOrder}
