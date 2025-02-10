@@ -45,7 +45,7 @@ export default function Home() {
       <div className="text-white text-display3 text-center font-bold">
         <h1>Recupera tu dispositivo con nuestro servicio rápido y garantizado!</h1>
       </div>
-      <div className="w-full text-center">
+      <form className="w-full text-center max-w-[776px]">
         <input
           type="text"
           placeholder="Rastrea tu orden"
@@ -54,7 +54,7 @@ export default function Home() {
         <button className="px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold">
           Buscar
         </button>
-      </div>
+      </form>
 
       <div className="space-y-4">
         <h1 className=" text-white text-display3 text-center font-bold">Nuestros Servicios</h1>
@@ -74,14 +74,13 @@ export default function Home() {
             );
           })}
         </div>
-      </div>
-      <div className="my-4">
+        <div className="my-4">
         <h3 className="text-display3 text-white text-center">¿Por que Elegirnos?</h3>
-        <div className="md:grid md:grid-cols-4 space-y-4 p-4">
-          {chooseUs.map((service, index) => {
-            return (
-              <div key={index} className="flex items-center">
-                <svg
+        <div className="sm:grid sm:grid-cols-2 lg:grid-cols-4 space-y-4 p-4">
+        {chooseUs.map((service, index) => {
+          return (
+            <div key={index} className="flex items-center lg:justify-center">
+              <svg
                   width="31"
                   height="31"
                   viewBox="0 0 31 31"
@@ -91,15 +90,19 @@ export default function Home() {
                 >
                   <rect width="31" height="31" rx="15.5" fill="#E10600" />
                 </svg>
-                <p className="text-white text-lg">{service.title}</p>
+              <div className="text-white text-bodyBold">
+                {service.title}
               </div>
-            );
-          })}
-        </div>
-        <div>
-          <img src="/celular-reparacion.png" alt="celular reparado" width="100%" />
+            </div>
+          );
+        })}
+      </div>
+        <div className="flex items-center justify-center mb-8">
+          <img src="/celular-reparacion.png" alt="celular reparado" width="100%" className="max-w-lg"/>
         </div>
       </div>
+      </div>
+      
     </div>
   );
 }
