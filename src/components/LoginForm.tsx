@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import { users, orders } from "../helpers/users";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -22,17 +23,21 @@ const LoginForm = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const authenticateUser = (email: string, password: string) => {
-    const user = users.find((user) => user.email === email && user.password === password);
-  
+    const user = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
     if (!user) return null; // Evita errores si el usuario no existe
-  
+
     if (user.role === "User") {
       const userOrders = orders.filter((order) => order.user === user.id);
       setUserData(user);
       orderDataStorage.getState().setOrderData(userOrders);
       router.push("/dashboard");
     } else if (user.role === "Technician") {
-      const userOrders = orders.filter((order) => order.assignedTechnician === user.id);
+      const userOrders = orders.filter(
+        (order) => order.assignedTechnician === user.id
+      );
       setUserData(user);
       orderDataStorage.getState().setOrderData(userOrders);
       router.push("/dashboard");
@@ -41,7 +46,7 @@ const LoginForm = () => {
       orderDataStorage.getState().setOrderData(orders);
       router.push("/dashboard");
     }
-  
+
     return user;
   };
 
@@ -51,12 +56,19 @@ const LoginForm = () => {
 
     // Validaciones
     if (!email || !password) {
-      setError("Ambos campos son requeridos!");
+      toast.error("Ambos campos son requeridos!", {
+        style: {
+          background: "red",
+          position: "fixed",
+        },
+      });
       return;
     }
 
     if (!emailRegex.test(email)) {
-      setError("Por favor ingrese un email válido");
+      toast.warning("Por favor ingrese un email válido", {
+        style: {},
+      });
       return;
     }
 
@@ -65,7 +77,7 @@ const LoginForm = () => {
     const user = authenticateUser(email, password);
 
     if (!user) {
-      setError("Credenciales incorrectas");
+      toast.error("Credenciales incorrectas");
       setIsLoggingIn(false);
     } else {
       setError("");
@@ -82,7 +94,7 @@ const LoginForm = () => {
       </p>
 
       {/* Error Message */}
-      {error && <p className="text-red-500 text-center mb-6">{error}</p>}
+      {error && <p className="mb-6 text-center text-red-500">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-3">

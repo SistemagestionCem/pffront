@@ -4,6 +4,7 @@ import { useState } from "react";
 // import { useRouter } from "next/navigation";
 // import { register } from "@/services/authServices";
 import { RegisterFormType } from "@/interfaces";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   // const router = useRouter();
@@ -24,16 +25,16 @@ const RegisterForm = () => {
     e.preventDefault();
 
     if (!acceptTerms) {
-      return setError("Debes aceptar los términos y condiciones");
+      return toast.error("Debes aceptar los términos y condiciones");
     }
 
     // Validación de los campos
     if (!formData.name || !formData.email || !formData.password) {
-      return setError("All fields are required.");
+      return toast.error("Todos los campos son requeridos.");
     }
 
     if (!emailRegex.test(formData.email)) {
-      return setError("Please enter a valid email address.");
+      return toast.error("Por favor ingresa un email válido");
     }
 
     setError("");
@@ -75,7 +76,7 @@ const RegisterForm = () => {
           Inicia sesión aquí
         </a>
       </p>
-      {error && <p className="text-red-500 text-center mb-6">{error}</p>}
+      {error && <p className="mb-6 text-center text-red-500">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-3">
