@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { ChevronUp, ChevronDown } from "lucide-react";
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react";
 import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
+import Order from "./orderTypes"
 
 // Modal para agregar una nueva orden
 const ModalAgregarOrden = ({
@@ -14,7 +16,7 @@ const ModalAgregarOrden = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  handleSaveOrder: (order: any) => void;
+  handleSaveOrder: (order: Order) => void;
 }) => {
   const [assignedTechnician, setAssignedTechnician] = useState("");
   const [clientDni, setClientDni] = useState("");
@@ -22,18 +24,19 @@ const ModalAgregarOrden = ({
   const [description, setDescription] = useState("");
   const [equipmentType, setEquipmentType] = useState("");
   const [imei, setImei] = useState("");
-  const [status, setStatus] = useState("Pendiente");
+  const [status, setStatus] = useState<"Pendiente" | "Iniciado" | "Finalizado">("Pendiente");
+
 
   const handleSubmit = () => {
     const newOrder = {
       assignedTechnician,
-      clientDni,
+      clientDni: Number(clientDni),
       clientEmail,
       description,
       equipmentType,
       imei,
       status,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       id: Date.now().toString(), // Generar un ID único para la nueva orden
       user: "", // Asignar un usuario si es necesario
     };
@@ -91,7 +94,7 @@ const ModalAgregarOrden = ({
           <select
             className="w-full p-2 border border-gray-300 rounded"
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as "Pendiente" | "Iniciado" | "Finalizado")}
           >
             <option value="Pendiente">Pendiente</option>
             <option value="Iniciado">Iniciado</option>
@@ -129,8 +132,9 @@ export default function DashboardTecnico() {
 
   const { orderData, addOrder } = orderDataStorage();
   const [orders, setOrders] = useState<
-    { date: string; id: string; device: string; status: string }[]
-  >([]);
+  { date: string; id: string; device: string; status: string; assignedTechnician: string }[]
+>([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false); // Nuevo estado para abrir/ocultar modal de agregar orden
 
   useEffect(() => {
@@ -140,6 +144,7 @@ export default function DashboardTecnico() {
         id: order.id,
         device: order.equipmentType,
         status: order.status,
+        assignedTechnician: order.assignedTechnician || "No asignado",
       }));
       setOrders(formattedOrders);
     }
@@ -154,13 +159,14 @@ export default function DashboardTecnico() {
     setSelectedOrder(null);
   };
 
-  const handleSaveOrder = (newOrder: any) => {
+  const handleSaveOrder = (newOrder: Order) => {
     addOrder(newOrder); // Guardar la nueva orden en el store de Zustand
     const formattedOrder = {
       date: new Date(newOrder.createdAt).toLocaleDateString("es-ES"),
       id: newOrder.id,
       device: newOrder.equipmentType,
       status: newOrder.status,
+      assignedTechnician: newOrder.assignedTechnician || "No asignado",
     };
     setOrders((prevOrders) => [...prevOrders, formattedOrder]); // Añadir la orden a la lista local
   };
@@ -212,29 +218,29 @@ export default function DashboardTecnico() {
 
   }, []);
 
-    return (
-        <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
+  return (
+    <div className="max-w-[768px] mt-[72px] min-h-screen text-white p-4 sm:p-8  mx-auto">
 
-            <div className="gap-16 px-4">
+      <div className="gap-16 px-4">
 
-                <section className="bg-white text-black p-4 rounded-lg my-4">
-                    <h3 className="title1 text-primary-500 border-b border-primary-900 pb-2">Datos de Usuario</h3>
-                    <div className="mt-2 space-y-4">
+        <section className="bg-white text-black p-4 rounded-lg my-4">
+          <h3 className="title1 text-primary-500 border-b border-primary-900 pb-2">Datos de Usuario</h3>
+          <div className="mt-2 space-y-4">
 
-                        <p className="flex items-center gap-4 bodyBold "><img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
-                            {usuario.nombre}
-                        </p>
+            <p className="flex items-center gap-4 bodyBold "><img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
+              {usuario.nombre}
+            </p>
 
-                        <p className="flex items-center gap-4 bodyBold"><img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
-                            {usuario.email}
-                        </p>
+            <p className="flex items-center gap-4 bodyBold"><img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
+              {usuario.email}
+            </p>
 
-                        <p className="flex items-center gap-4 bodyBold"><img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
-                            {usuario.rol}
-                        </p>
-                    </div>
-                </section>
-            </div>
+            <p className="flex items-center gap-4 bodyBold"><img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
+              {usuario.rol}
+            </p>
+          </div>
+        </section>
+      </div>
 
       <div className="gap-16 p-4 pb-8">
         <section className="p-4 my-4 text-black bg-white rounded-lg">
@@ -263,22 +269,17 @@ export default function DashboardTecnico() {
           <table className="w-full mt-4 border-collapse">
             <thead>
               <tr className="title3">
-                <th
-                  className="flex items-center p-2 text-sm cursor-pointer"
-                  onClick={toggleSortOrder}
-                >
-                  Fecha{" "}
-                  {sortOrder === "asc" ? (
-                    <ChevronUp size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
+                <th className="flex items-center p-2 text-sm cursor-pointer" onClick={toggleSortOrder}>
+                  Fecha {sortOrder === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </th>
                 <th className="p-2 text-sm">ID orden</th>
-                <th className="p-2 text-sm">Dispositivo</th>
+                <th className="p-2 text-sm">
+                  {usuario.rol === "Admin" ? "Técnico Asignado" : "Dispositivo"}
+                </th>
                 <th className="p-2 text-sm">Estado</th>
               </tr>
             </thead>
+
             <tbody className="text-center text-black body">
               {filteredOrders.map((order) => (
                 <tr
@@ -288,10 +289,11 @@ export default function DashboardTecnico() {
                 >
                   <td className="flex p-2">{order.date}</td>
                   <td className="p-2">{order.id}</td>
-                  <td className="p-2">{order.device}</td>
-                  <td
-                    className={`p-2 font-bold ${estadoColores[order.status]}`}
-                  >
+                  <td className="p-2">
+                    {usuario.rol === "Admin" ? order.assignedTechnician : order.device}
+                  </td>
+                  <td className={`p-2 font-bold ${estadoColores[order.status as EstadoOrden]}`}>
+
                     {order.status}
                   </td>
                 </tr>

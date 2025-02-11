@@ -1,18 +1,7 @@
 import { create } from "zustand";
 import { persist, devtools, createJSONStorage } from "zustand/middleware";
+import Order from "../app/dashboard/orderTypes"
 
-interface Order {
-  id: string;
-  clientEmail: string;
-  clientDni: number;
-  equipmentType: string;
-  imei: string;
-  assignedTechnician: string;
-  description: string;
-  status: string;
-  user: string;
-  createdAt: Date;
-}
 
 interface OrderDataStorageType {
   orderData: Order[]; // Array de órdenes
