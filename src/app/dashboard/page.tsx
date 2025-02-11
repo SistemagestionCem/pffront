@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
-import Order from "./orderTypes"
+import Order from "./orderTypes";
+import { users } from "@/helpers/users";
 
 // Modal para agregar una nueva orden
 const ModalAgregarOrden = ({
@@ -24,8 +25,9 @@ const ModalAgregarOrden = ({
   const [description, setDescription] = useState("");
   const [equipmentType, setEquipmentType] = useState("");
   const [imei, setImei] = useState("");
-  const [status, setStatus] = useState<"Pendiente" | "Iniciado" | "Finalizado">("Pendiente");
-
+  const [status, setStatus] = useState<"Pendiente" | "Iniciado" | "Finalizado">(
+    "Pendiente"
+  );
 
   const handleSubmit = () => {
     const newOrder = {
@@ -94,7 +96,11 @@ const ModalAgregarOrden = ({
           <select
             className="w-full p-2 border border-gray-300 rounded"
             value={status}
-            onChange={(e) => setStatus(e.target.value as "Pendiente" | "Iniciado" | "Finalizado")}
+            onChange={(e) =>
+              setStatus(
+                e.target.value as "Pendiente" | "Iniciado" | "Finalizado"
+              )
+            }
           >
             <option value="Pendiente">Pendiente</option>
             <option value="Iniciado">Iniciado</option>
@@ -132,20 +138,32 @@ export default function DashboardTecnico() {
 
   const { orderData, addOrder } = orderDataStorage();
   const [orders, setOrders] = useState<
-  { date: string; id: string; device: string; status: string; assignedTechnician: string }[]
->([]);
+    {
+      date: string;
+      id: string;
+      device: string;
+      status: string;
+      assignedTechnician: string;
+    }[]
+  >([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false); // Nuevo estado para abrir/ocultar modal de agregar orden
 
   useEffect(() => {
     if (orderData) {
-      const formattedOrders = orderData.map((order) => ({
-        date: new Date(order.createdAt).toLocaleDateString("es-ES"),
-        id: order.id,
-        device: order.equipmentType,
-        status: order.status,
-        assignedTechnician: order.assignedTechnician || "No asignado",
-      }));
+      const formattedOrders = orderData.map((order) => {
+        const technician = users.find(
+          (user) => user.id === order.assignedTechnician
+        );
+
+        return {
+          date: new Date(order.createdAt).toLocaleDateString("es-ES"),
+          id: order.id,
+          device: order.equipmentType,
+          status: order.status,
+          assignedTechnician: technician ? technician.name : "No asignado",
+        };
+      });
       setOrders(formattedOrders);
     }
   }, [orderData]);
@@ -210,32 +228,33 @@ export default function DashboardTecnico() {
 
   useEffect(() => {
     setUsuario({
-      nombre: userData.name,
-      email: userData.email,
-      rol: userData.role,
+      nombre: userData?.name || "",
+      email: userData?.email || "",
+      rol: userData?.role || "",
     });
     console.log(userData);
-
-  }, []);
+  }, [userData]);
 
   return (
     <div className="max-w-[768px] mt-[72px] min-h-screen text-white p-4 sm:p-8  mx-auto">
-
       <div className="gap-16 px-4">
-
-        <section className="bg-white text-black p-4 rounded-lg my-4">
-          <h3 className="title1 text-primary-500 border-b border-primary-900 pb-2">Datos de Usuario</h3>
+        <section className="p-4 my-4 text-black bg-white rounded-lg">
+          <h3 className="pb-2 border-b title1 text-primary-500 border-primary-900">
+            Datos de Usuario
+          </h3>
           <div className="mt-2 space-y-4">
-
-            <p className="flex items-center gap-4 bodyBold "><img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
+            <p className="flex items-center gap-4 bodyBold ">
+              <img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
               {usuario.nombre}
             </p>
 
-            <p className="flex items-center gap-4 bodyBold"><img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
+            <p className="flex items-center gap-4 bodyBold">
+              <img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
               {usuario.email}
             </p>
 
-            <p className="flex items-center gap-4 bodyBold"><img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
+            <p className="flex items-center gap-4 bodyBold">
+              <img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
               {usuario.rol}
             </p>
           </div>
@@ -269,8 +288,16 @@ export default function DashboardTecnico() {
           <table className="w-full mt-4 border-collapse">
             <thead>
               <tr className="title3">
-                <th className="flex items-center p-2 text-sm cursor-pointer" onClick={toggleSortOrder}>
-                  Fecha {sortOrder === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                <th
+                  className="flex items-center p-2 text-sm cursor-pointer"
+                  onClick={toggleSortOrder}
+                >
+                  Fecha{" "}
+                  {sortOrder === "asc" ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
                 </th>
                 <th className="p-2 text-sm">ID orden</th>
                 <th className="p-2 text-sm">
@@ -290,10 +317,15 @@ export default function DashboardTecnico() {
                   <td className="flex p-2">{order.date}</td>
                   <td className="p-2">{order.id}</td>
                   <td className="p-2">
-                    {usuario.rol === "Admin" ? order.assignedTechnician : order.device}
+                    {usuario.rol === "Admin"
+                      ? order.assignedTechnician
+                      : order.device}
                   </td>
-                  <td className={`p-2 font-bold ${estadoColores[order.status as EstadoOrden]}`}>
-
+                  <td
+                    className={`p-2 font-bold ${
+                      estadoColores[order.status as EstadoOrden]
+                    }`}
+                  >
                     {order.status}
                   </td>
                 </tr>
