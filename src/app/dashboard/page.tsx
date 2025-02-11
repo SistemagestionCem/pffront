@@ -211,29 +211,29 @@ export default function DashboardTecnico() {
     console.log(userData);
   }, []);
 
-  return (
-    <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto mt-16">
-      <div className="gap-16 px-4">
-        <section className="p-4 my-4 text-black bg-white rounded-lg">
-          <h3 className="pb-2 border-b title1 text-primary-500 border-primary-900">
-            Datos de Usuario
-          </h3>
-          <div className="mt-2 space-y-4">
-            <p className="flex items-center gap-4 bodyBold ">
-              <img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
-              {usuario.nombre}
-            </p>
-            <p className="flex items-center gap-4 bodyBold">
-              <img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
-              {usuario.email}
-            </p>
-            <p className="flex items-center gap-4 bodyBold">
-              <img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
-              {usuario.rol}
-            </p>
-          </div>
-        </section>
-      </div>
+    return (
+        <div className="max-w-[768px] min-h-screen text-white p-4 sm:p-8 max-w-screen-lg mx-auto">
+
+            <div className="gap-16 px-4">
+
+                <section className="bg-white text-black p-4 rounded-lg my-4">
+                    <h3 className="title1 text-primary-500 border-b border-primary-900 pb-2">Datos de Usuario</h3>
+                    <div className="mt-2 space-y-4">
+
+                        <p className="flex items-center gap-4 bodyBold "><img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
+                            {usuario.nombre}
+                        </p>
+
+                        <p className="flex items-center gap-4 bodyBold"><img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
+                            {usuario.email}
+                        </p>
+
+                        <p className="flex items-center gap-4 bodyBold"><img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
+                            {usuario.rol}
+                        </p>
+                    </div>
+                </section>
+            </div>
 
       <div className="gap-16 p-4 pb-8">
         <section className="p-4 my-4 text-black bg-white rounded-lg">
