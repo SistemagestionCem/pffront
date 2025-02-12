@@ -23,6 +23,13 @@ export default function NavBar() {
             >
               Login
             </button>
+          ) : pathname.includes("/dashboard") ? (
+            <button
+              onClick={() => router.push("/")}
+              className="flex items-center justify-center px-6 py-[6px] rounded-[16px] bg-primary-500 text-title3 text-white"
+            >
+              Log out
+            </button>
           ) : (
             <button
               onClick={() => router.push("/")}

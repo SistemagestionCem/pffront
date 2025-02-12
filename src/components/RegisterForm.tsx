@@ -88,7 +88,7 @@ const RegisterForm = () => {
             placeholder="Ingresa tu nombre"
             value={formData.name}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
           />
         </div>
 
@@ -101,7 +101,7 @@ const RegisterForm = () => {
             placeholder="Ingresa tu email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
           />
         </div>
 
@@ -114,7 +114,7 @@ const RegisterForm = () => {
             placeholder="Ingresa tu contraseña"
             value={formData.password}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
           />
         </div>
 

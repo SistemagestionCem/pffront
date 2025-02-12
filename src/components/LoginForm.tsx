@@ -1,5 +1,6 @@
 "use client";
 
+import { OrderType } from "@/interfaces";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
@@ -30,7 +31,9 @@ const LoginForm = () => {
     if (!user) return null; // Evita errores si el usuario no existe
 
     if (user.role === "User") {
-      const userOrders = orders.filter((order) => order.user === user.id);
+      const userOrders: OrderType[] = orders.filter(
+        (order) => order.user === user.id
+      );
       setUserData(user);
       orderDataStorage.getState().setOrderData(userOrders);
       router.push("/dashboard");
@@ -106,7 +109,7 @@ const LoginForm = () => {
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
           />
         </div>
 
@@ -119,7 +122,7 @@ const LoginForm = () => {
             placeholder="Ingresa tu contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full py-[6px] px-[16px] text-lg  rounded-[8px] focus:outline-none focus:ring-2 focus:ring-black text-black"
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
           />
         </div>
 
