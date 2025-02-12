@@ -38,51 +38,52 @@ export default function Home() {
   ];
 
   return (
-    <div className="container mx-auto flex flex-col items-center px-[5vw] mt-[72px] gap-[24px]">
-      <div className="">
+    <div className="container mx-auto flex flex-col items-center px-[5vw] mt-20 gap-8">
+      <div className="w-full max-w-6xl">
         <img
-          alt=""
+          alt="reparacion de celulares"
           src="https://www.rollingstone.com/wp-content/uploads/2024/09/iphone-16-pro-featured-image.png?w=1581&h=1054&crop=1"
+          className="w-full rounded-2xl"
         />
       </div>
-      <section className="container flex flex-col items-center pb-16 mx-auto bg-primary-500 bg-opacity-20 rounded-[16px]">
-        <div className="pt-16 font-bold text-center text-white text-display3 sm:text-3xl md:text-4xl">
-          <h1 className="pb-4">
+      <section className="container flex flex-col items-center py-8 px-6 mb-8 sm:px-8 mx-auto bg-primary-500/20 rounded-[16px] w-full max-w-6xl">
+        <div className="max-w-4xl">
+          <h1 className="pb-8 text-center text-white text-display3 lg:display1 ">
             Recupera tu dispositivo con nuestro servicio rápido y garantizado!
           </h1>
         </div>
-        <form className="w-full text-center max-w-[776px]">
+        <form className="w-full text-center max-w-2xl">
           <input
             type="text"
             placeholder="Rastrea tu orden"
-            className="py-2 w-full text-center rounded-[8px]"
+            className="py-2 px-4 w-full text-center bg-white/90 rounded-[8px] placeholder-gray-500"
           />
-          <button className="px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold text-xl">
+          <button className="px-6 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-title2 hover:bg-primary-600 transition-colors">
             Buscar
           </button>
         </form>
       </section>
-      <div className="space-y-4 ">
-        <div className="pt-16 border-t border-white border-opacity-20">
-          <h1 className="text-4xl font-bold text-center text-white text-display3 sm:text-4xl md:text-5xl">
+      <section className="space-y-6 w-full max-w-6xl">
+        <div className="py-8 border-t border-white-20">
+          <h1 className="text-display3 text-center text-white mt-4">
             Nuestros Servicios
           </h1>
-          <div className="grid gap-[16px] lg:grid-cols-3 pt-8">
+          <div className="grid gap-8 lg:grid-cols-3 pt-8">
             {services.map((service, index) => {
               return (
                 <div
                   key={index}
-                  className="text-white p-6 border border-white rounded-lg max-w-[420px] bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-colors duration-300"
+                  className="text-white mx-4 p-4 border border-white/50 rounded-[16px] bg-white/10 backdrop-blur-sm hover:bg-white/15 transition-all duration-300"
                 >
-                  <div className="mb-4 text-3xl font-semibold text-white text-title2">
+                  <h3 className="mb-4 text-title1 text-white lg:text-title2">
                     {service.title}
-                  </div>
-                  <div className="text-white ">{service.description}</div>
+                  </h3>
+                  <p className="text-white/90 text-subtitle2 mb-4 leading-relaxed ">{service.description}</p>
                   <div className="w-full h-48 overflow-hidden rounded-[16px]">
                     <img
-                      className="object-cover w-full h-full"
+                      className="object-cover w-full h-56 overflow-hidden rounded-[16px]"
                       src={service.img}
-                      alt="servicio de repacion"
+                      alt={service.title}
                     />
                   </div>
                 </div>
@@ -92,7 +93,7 @@ export default function Home() {
         </div>
 
         <div className="pt-4 my-4">
-          <div className="py-16 border-t border-white border-opacity-20">
+          <div className="py-8 border-t border-white border-opacity-20">
             <h3 className="text-4xl text-center text-white text-display3 sm:text-4xl md:text-5xl">
               ¿Por que Elegirnos?
             </h3>
@@ -103,16 +104,9 @@ export default function Home() {
                     key={index}
                     className="flex items-center p-4 transition-colors duration-300 bg-white rounded-lg lg:justify-center bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20"
                   >
-                    <svg
-                      width="31"
-                      height="31"
-                      viewBox="0 0 31 31"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="mr-4"
-                    >
-                      <rect width="31" height="31" rx="15.5" fill="#E10600" />
-                    </svg>
+                    <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center mr-4 text-white font-bold">
+                    {index + 1}
+                    </div>
                     <div className="text-lg text-white text-bodyBold">
                       {service.title}
                     </div>
@@ -121,16 +115,16 @@ export default function Home() {
               })}
             </div>
           </div>
-          <div className="flex items-center justify-center pb-20 mb-8">
+          <div className="flex items-center justify-center pb-6 mb-6">
             <img
               src="/celular-reparacion.png"
               alt="celular reparado"
               width="100%"
-              className="max-w-lg rounded-lg shadow-lg"
+              className="max-w-lg rounded-[16px] shadow-lg"
             />
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
