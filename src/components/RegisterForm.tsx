@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { register } from "@/services/authServices";
+import { useRouter } from "next/navigation";
 import { RegisterFormType } from "@/interfaces";
 import { toast } from "sonner";
+import { register } from "@/services/auth";
 
 const RegisterForm = () => {
-  // const router = useRouter();
+  const router = useRouter();
 
   const [formData, setFormData] = useState<RegisterFormType>({
     name: "",
     email: "",
     password: "",
+    phone: "",
   });
   const [acceptTerms, setAcceptTerms] = useState(false); // Add this state
 
@@ -39,21 +40,23 @@ const RegisterForm = () => {
 
     setError("");
     setIsSubmitting(true);
+    
+    try {
+      // Llamar a la función de registro
+      const response = await register(formData);
 
-    // try {
-    //   // Llamar a la función de registro
-    //   const response = await register(formData);
+      if (response) {
+        alert("Registration successful!");
+        router.push("/login");
+      }
 
-    //   if (response) {
-    //     alert("Registration successful!");
-    //     router.push("/login");
-    //   }
+    } catch (err) {
+      return setError("Failed to register. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
 
-    // } catch (err) {
-    //   return setError("Failed to register. Please try again.");
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+    
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +108,19 @@ const RegisterForm = () => {
           />
         </div>
 
+        <div className="space-y-3">
+          <h3 className="text-title1">Telefono</h3>
+          <input
+            type="text"
+            id="phone"
+            name="phone"
+            placeholder="Ingresa tu telefono "
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+          />
+        </div>
+        
         <div className="space-y-3">
           <h3 className="text-title1">Contraseña</h3>
           <input
