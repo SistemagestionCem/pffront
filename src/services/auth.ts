@@ -21,17 +21,17 @@ export const register = async (data: RegisterFormType) => {
 };
 
 export const login = async (email: string, password: string) => {
-    try {
-        const response = await fetch(`${apiUrl}/auth/signin`, {
-            body: JSON.stringify({ email, password }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-            method: "POST",
-        })
-        const result = await response.json();
-        return result
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    const response = await fetch(`${apiUrl}/auth/signin`, {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
 };

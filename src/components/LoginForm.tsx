@@ -91,14 +91,14 @@ const LoginForm = () => {
       toast.error("Failed to login. Please try again.");
     }
 
-    // const user = authenticateUser(email, password);
+    const user = authenticateUser(email, password);
 
-    // if (!user) {
-    //   toast.error("Credenciales incorrectas");
-    //   setIsLoggingIn(false);
-    // } else {
-    //   setError("");
-    // }
+    if (!user) {
+      toast.error("Credenciales incorrectas");
+      setIsLoggingIn(false);
+    } else {
+      setError("");
+    }
   };
 
   return (
