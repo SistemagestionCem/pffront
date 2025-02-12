@@ -14,6 +14,7 @@ const RegisterForm = () => {
     email: "",
     password: "",
     phone: "",
+    dni: "" as any,
   });
   const [acceptTerms, setAcceptTerms] = useState(false); // Add this state
 
@@ -42,8 +43,12 @@ const RegisterForm = () => {
     setIsSubmitting(true);
     
     try {
+      console.log(formData);
+      
       // Llamar a la función de registro
       const response = await register(formData);
+      console.log(response);
+      
 
       if (response) {
         alert("Registration successful!");
@@ -60,10 +65,11 @@ const RegisterForm = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === "number" ? Number(value) || "" : value, // Convierte a número si es un input number
     }));
   };
 
@@ -121,6 +127,19 @@ const RegisterForm = () => {
           />
         </div>
         
+        <div className="space-y-3">
+          <h3 className="text-title1">Dni</h3>
+          <input
+            type="number"
+            id="dni"
+            name="dni"
+            placeholder="Ingresa tu Dni "
+            value={formData.dni}
+            onChange={handleChange}
+            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+          />
+        </div>
+
         <div className="space-y-3">
           <h3 className="text-title1">Contraseña</h3>
           <input

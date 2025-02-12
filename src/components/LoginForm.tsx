@@ -82,6 +82,8 @@ const LoginForm = () => {
       const response = await login(email, password);
       if (response) {
         toast.success("Login successful!");
+        console.log(response);
+        
         router.push("/dashboard");
       }
     } catch (error) {

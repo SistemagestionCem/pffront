@@ -1,19 +1,22 @@
 import { RegisterFormType } from "@/interfaces";
-const apiUrl = "https://pfback-osdi.onrender.com/"
+const apiUrl = "https://pfback-osdi.onrender.com"
 
 export const register = async (data: RegisterFormType) => {
     try {
-        const response = await fetch(`${apiUrl}/auth/register`, {
-            body: JSON.stringify(data),
+        const response = await fetch(`${apiUrl}/auth/signup`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            method: "POST",
-        })
+            body: JSON.stringify(data), // Convertir a JSON
+        });
+
         const result = await response.json();
-        return result
+        console.log(result); // Usar el resultado real
+
+        return result;
     } catch (error) {
-        console.log(error);
+        console.log("Error en el registro:", error);
     }
 };
 
