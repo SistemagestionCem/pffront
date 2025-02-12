@@ -11,7 +11,11 @@ const userDataStorage = create<userDataStorageType>()(
   devtools(
     persist(
       (set) => ({
-        userData: null, // Estado inicial del usuario
+        userData: {
+          name:"",
+          email:"",
+          role:"",
+        }, // Estado inicial del usuario
         setUserData: (data: any) => set({ userData: data }), // Función para actualizar el usuario
         clearUserData: () => set({ userData: null }), // Función para limpiar el estado del usuario
       }),

@@ -89,6 +89,7 @@ const ModalAgregarOrden = ({
             onChange={(e) => setImei(e.target.value)}
           />
           <select
+            title="status"
             className="w-full p-2 border border-gray-300 rounded"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
@@ -200,8 +201,8 @@ export default function DashboardTecnico() {
     Pendiente: "text-orange-500",
     Finalizado: "text-primary-500",
   };
+  
   const userData = userDataStorage((state) => state.userData);
-
   useEffect(() => {
     setUsuario({
       nombre: userData.name,
@@ -283,15 +284,18 @@ export default function DashboardTecnico() {
                 <tr
                   key={order.id}
                   className="border-b border-gray-300 cursor-pointer hover:bg-gray-100"
-                  onClick={() => setSelectedOrder(order)}
+                  onClick={() => setSelectedOrder({
+                    date: order.date,
+                    id: order.id,
+                    device: order.device,
+                    status: order.status as EstadoOrden, // Cast explícito
+                })}
                 >
                   <td className="flex p-2">{order.date}</td>
                   <td className="p-2">{order.id}</td>
                   <td className="p-2">{order.device}</td>
-                  <td
-                    className={`p-2 font-bold ${estadoColores[order.status]}`}
-                  >
-                    {order.status}
+                  <td className={`p-2 font-bold ${estadoColores[order.status as keyof typeof estadoColores]}`}>
+                      {order.status}
                   </td>
                 </tr>
               ))}
