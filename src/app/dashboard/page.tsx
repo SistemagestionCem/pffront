@@ -9,42 +9,49 @@ import orderDataStorage from "@/storage/orderStore";
 import { users } from "@/helpers/users";
 import { EstadoOrden, Order, DisplayOrder, Usuario } from "@/interfaces";
 import PageTransition from "@/components/PageTransition";
+import { postOrderService } from "@/services/orderService";
+import { toast } from "sonner";
 
 // Modal para agregar una nueva orden
 const ModalAgregarOrden = ({
   isOpen,
   onClose,
-  handleSaveOrder,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  handleSaveOrder: (order: Order) => void;
 }) => {
-  const [assignedTechnician, setAssignedTechnician] = useState("");
-  const [clientDni, setClientDni] = useState("");
-  const [clientEmail, setClientEmail] = useState("");
-  const [description, setDescription] = useState("");
-  const [equipmentType, setEquipmentType] = useState("");
-  const [imei, setImei] = useState("");
-  const [status, setStatus] = useState<"Pendiente" | "Iniciado" | "Finalizado">(
-    "Pendiente"
-  );
+  const [orderData, setOrderData] = useState({
+    assignedTechnician: "",
+    clientDni: "",
+    clientEmail: "",
+    description: "",
+    equipmentType: "",
+    imei: "",
+    status: "Pendiente" as "Pendiente" | "Iniciado" | "Finalizado",
+    user: "",
+    createdAt: new Date(),
+    id: Date.now().toString(),
+  });
 
-  const handleSubmit = () => {
-    const newOrder = {
-      assignedTechnician,
-      clientDni: Number(clientDni),
-      clientEmail,
-      description,
-      equipmentType,
-      imei,
-      status,
-      createdAt: new Date(),
-      id: Date.now().toString(), // Generar un ID único para la nueva orden
-      user: "", // Asignar un usuario si es necesario
-    };
-    handleSaveOrder(newOrder);
-    onClose();
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setOrderData({
+      ...orderData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = async () => {
+    try {
+      const response = await postOrderService(orderData);
+      if (response) {
+        toast.success("Orden creada con éxito");
+        onClose();
+      }
+    } catch (error) {
+      toast.error("Error al crear la orden");
+      console.error(error);
+    }
   };
 
   // Filtrar tecnicos
@@ -58,8 +65,13 @@ const ModalAgregarOrden = ({
           <div className="space-y-4">
             <select
               className="w-full p-2 border border-gray-300 rounded"
-              value={assignedTechnician}
-              onChange={(e) => setAssignedTechnician(e.target.value)}
+              value={orderData.assignedTechnician}
+              onChange={(e) =>
+                setOrderData({
+                  ...orderData,
+                  assignedTechnician: e.target.value,
+                })
+              }
             >
               <option value="">Seleccionar técnico</option>
               {tecnicos.map((tecnico) => (
@@ -73,44 +85,58 @@ const ModalAgregarOrden = ({
               type="text"
               placeholder="DNI Cliente"
               className="w-full p-2 border border-gray-300 rounded"
-              value={clientDni}
-              onChange={(e) => setClientDni(e.target.value)}
+              value={orderData.clientDni}
+              onChange={(e) =>
+                setOrderData({ ...orderData, clientDni: e.target.value })
+              }
             />
             <input
               type="email"
               placeholder="Email Cliente"
               className="w-full p-2 border border-gray-300 rounded"
-              value={clientEmail}
-              onChange={(e) => setClientEmail(e.target.value)}
+              value={orderData.clientEmail}
+              onChange={(e) =>
+                setOrderData({ ...orderData, clientEmail: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="Descripción"
               className="w-full p-2 border border-gray-300 rounded"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={orderData.description}
+              onChange={(e) =>
+                setOrderData({ ...orderData, description: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="Tipo de Dispositivo"
               className="w-full p-2 border border-gray-300 rounded"
-              value={equipmentType}
-              onChange={(e) => setEquipmentType(e.target.value)}
+              value={orderData.equipmentType}
+              onChange={(e) =>
+                setOrderData({ ...orderData, equipmentType: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="IMEI"
               className="w-full p-2 border border-gray-300 rounded"
-              value={imei}
-              onChange={(e) => setImei(e.target.value)}
+              value={orderData.imei}
+              onChange={(e) =>
+                setOrderData({ ...orderData, imei: e.target.value })
+              }
             />
             <select
               className="w-full p-2 border border-gray-300 rounded"
               value={status}
               onChange={(e) =>
-                setStatus(
-                  e.target.value as "Pendiente" | "Iniciado" | "Finalizado"
-                )
+                setOrderData({
+                  ...orderData,
+                  status: e.target.value as
+                    | "Pendiente"
+                    | "Iniciado"
+                    | "Finalizado",
+                })
               }
             >
               <option value="Pendiente">Pendiente</option>

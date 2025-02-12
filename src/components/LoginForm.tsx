@@ -78,25 +78,25 @@ const LoginForm = () => {
 
     setIsLoggingIn(true);
 
-    try {
-      const response = await login(email, password);
-      if (response) {
-        toast.success("Login successful!");
-        router.push("/dashboard");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to login. Please try again.");
-    }
-
-    // const user = authenticateUser(email, password);
-
-    // if (!user) {
-    //   toast.error("Credenciales incorrectas");
-    //   setIsLoggingIn(false);
-    // } else {
-    //   setError("");
+    // try {
+    //   const response = await login(email, password);
+    //   if (response) {
+    //     toast.success("Login successful!");
+    //     router.push("/dashboard");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   toast.error("Failed to login. Please try again.");
     // }
+
+    const user = authenticateUser(email, password);
+
+    if (!user) {
+      toast.error("Credenciales incorrectas");
+      setIsLoggingIn(false);
+    } else {
+      setError("");
+    }
   };
 
   return (
