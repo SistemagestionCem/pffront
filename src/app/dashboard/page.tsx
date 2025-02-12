@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
-import Order from "./orderTypes";
 import { users } from "@/helpers/users";
+import { EstadoOrden, Order, DisplayOrder, Usuario } from "@/interfaces";
+import PageTransition from "@/components/PageTransition";
 
 // Modal para agregar una nueva orden
 const ModalAgregarOrden = ({
@@ -47,111 +48,111 @@ const ModalAgregarOrden = ({
   };
 
   return isOpen ? (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-      <div className="p-6 text-black bg-white rounded-lg w-96">
-        <h3 className="mb-4 text-xl font-bold">Agregar Orden</h3>
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Asignar Técnico"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={assignedTechnician}
-            onChange={(e) => setAssignedTechnician(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="DNI Cliente"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={clientDni}
-            onChange={(e) => setClientDni(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email Cliente"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={clientEmail}
-            onChange={(e) => setClientEmail(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Descripción"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Tipo de Dispositivo"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={equipmentType}
-            onChange={(e) => setEquipmentType(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="IMEI"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={imei}
-            onChange={(e) => setImei(e.target.value)}
-          />
-          <select
-            className="w-full p-2 border border-gray-300 rounded"
-            value={status}
-            onChange={(e) =>
-              setStatus(
-                e.target.value as "Pendiente" | "Iniciado" | "Finalizado"
-              )
-            }
-          >
-            <option value="Pendiente">Pendiente</option>
-            <option value="Iniciado">Iniciado</option>
-            <option value="Finalizado">Finalizado</option>
-          </select>
-          <div className="flex justify-between mt-4">
-            <button
-              className="px-4 py-2 text-black bg-gray-300 rounded"
-              onClick={onClose}
+    <PageTransition>
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50 ">
+        <div className="p-6 text-black bg-white rounded-[16px] w-96">
+          <h2 className="mb-4 text-xl font-bold">Agregar Orden</h2>
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Asignar Técnico"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={assignedTechnician}
+              onChange={(e) => setAssignedTechnician(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="DNI Cliente"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={clientDni}
+              onChange={(e) => setClientDni(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Email Cliente"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={clientEmail}
+              onChange={(e) => setClientEmail(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Descripción"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Tipo de Dispositivo"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={equipmentType}
+              onChange={(e) => setEquipmentType(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="IMEI"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={imei}
+              onChange={(e) => setImei(e.target.value)}
+            />
+            <select
+              className="w-full p-2 border border-gray-300 rounded"
+              value={status}
+              onChange={(e) =>
+                setStatus(
+                  e.target.value as "Pendiente" | "Iniciado" | "Finalizado"
+                )
+              }
             >
-              Cancelar
-            </button>
-            <button
-              className="px-4 py-2 text-white rounded bg-primary-500"
-              onClick={handleSubmit}
-            >
-              Guardar Orden
-            </button>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Iniciado">Iniciado</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
+            <div className="flex justify-between mt-4">
+              <button
+                className="px-4 py-2 text-black bg-gray-300 rounded"
+                onClick={onClose}
+              >
+                Cancelar
+              </button>
+              <button
+                className="px-4 py-2 text-white rounded bg-primary-500"
+                onClick={handleSubmit}
+              >
+                Guardar Orden
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   ) : null;
 };
 
 export default function DashboardTecnico() {
-  type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
-
-  const [selectedOrder, setSelectedOrder] = useState<{
-    date: string;
-    id: string;
-    device: string;
-    status: EstadoOrden;
-  } | null>(null);
-
   const { orderData, addOrder } = orderDataStorage();
-  const [orders, setOrders] = useState<
-    {
-      date: string;
-      id: string;
-      device: string;
-      status: string;
-      assignedTechnician: string;
-    }[]
-  >([]);
+  const userData = userDataStorage((state) => state.userData);
 
-  const [isModalOpen, setIsModalOpen] = useState(false); // Nuevo estado para abrir/ocultar modal de agregar orden
+  const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
+  const [orders, setOrders] = useState<DisplayOrder[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [usuario, setUsuario] = useState<Usuario>({
+    nombre: "",
+    email: "",
+    rol: "",
+  });
+
+  const estadoColores: Record<EstadoOrden, string> = {
+    Iniciado: "text-blue-500",
+    Pendiente: "text-orange-500",
+    Finalizado: "text-primary-500",
+  };
 
   useEffect(() => {
     if (orderData) {
-      const formattedOrders = orderData.map((order) => {
+      const formattedOrders: DisplayOrder[] = orderData.map((order) => {
         const technician = users.find(
           (user) => user.id === order.assignedTechnician
         );
@@ -160,13 +161,23 @@ export default function DashboardTecnico() {
           date: new Date(order.createdAt).toLocaleDateString("es-ES"),
           id: order.id,
           device: order.equipmentType,
-          status: order.status,
-          assignedTechnician: technician ? technician.name : "No asignado",
+          status: order.status as EstadoOrden,
+          assignedTechnician: technician?.name || "No asignado",
         };
       });
       setOrders(formattedOrders);
     }
   }, [orderData]);
+
+  useEffect(() => {
+    if (userData) {
+      setUsuario({
+        nombre: userData.name || "",
+        email: userData.email || "",
+        rol: userData.role || "",
+      });
+    }
+  }, [userData]);
 
   const handleEstadoChange = (id: string, nuevoEstado: EstadoOrden) => {
     setOrders((prevOrders) =>
@@ -178,29 +189,27 @@ export default function DashboardTecnico() {
   };
 
   const handleSaveOrder = (newOrder: Order) => {
-    addOrder(newOrder); // Guardar la nueva orden en el store de Zustand
-    const formattedOrder = {
+    addOrder(newOrder);
+    const formattedOrder: DisplayOrder = {
       date: new Date(newOrder.createdAt).toLocaleDateString("es-ES"),
       id: newOrder.id,
       device: newOrder.equipmentType,
       status: newOrder.status,
       assignedTechnician: newOrder.assignedTechnician || "No asignado",
     };
-    setOrders((prevOrders) => [...prevOrders, formattedOrder]); // Añadir la orden a la lista local
+    setOrders((prevOrders) => [...prevOrders, formattedOrder]);
   };
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const filteredOrders = orders
     .filter((order) => {
+      if (!searchTerm) return true;
       const searchTerms = searchTerm.toLowerCase().split(" ").filter(Boolean);
       return searchTerms.every(
         (term) =>
-          order.id.includes(term) ||
+          order.id.toLowerCase().includes(term) ||
           order.device.toLowerCase().includes(term) ||
           order.status.toLowerCase().includes(term) ||
-          order.date.includes(term)
+          order.date.toLowerCase().includes(term)
       );
     })
     .sort((a, b) =>
@@ -213,83 +222,66 @@ export default function DashboardTecnico() {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const [usuario, setUsuario] = useState({
-    nombre: "",
-    email: "",
-    rol: "",
-  });
-
-  const estadoColores = {
-    Iniciado: "text-blue-500",
-    Pendiente: "text-orange-500",
-    Finalizado: "text-primary-500",
-  };
-  const userData = userDataStorage((state) => state.userData);
-
-  useEffect(() => {
-    setUsuario({
-      nombre: userData?.name || "",
-      email: userData?.email || "",
-      rol: userData?.role || "",
-    });
-    console.log(userData);
-  }, [userData]);
-
   return (
-    <div className="max-w-[768px] mt-[72px] min-h-screen text-white p-4 sm:p-8  mx-auto">
-      <div className="gap-16 px-4">
-        <section className="p-4 my-4 text-black bg-white rounded-lg">
-          <h3 className="pb-2 border-b title1 text-primary-500 border-primary-900">
-            Datos de Usuario
-          </h3>
-          <div className="mt-2 space-y-4">
-            <p className="flex items-center gap-4 bodyBold ">
-              <img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
-              {usuario.nombre}
-            </p>
+    <PageTransition>
+      <div className="container mt-[72px] space-y-8 min-h-screen text-white px-[5vw] py-6  mx-auto">
+        <h1 className="text-white text-display3 text-center ">
+          Dashboard de {usuario.rol}
+        </h1>
+        <div className="gap-16 max-w-[400px] mx-auto">
+          <section className="p-4 my-4 text-black bg-white rounded-[16px]">
+            <h3 className="py-2 border-b title1 text-primary-500 border-primary-900">
+              Datos de Usuario
+            </h3>
+            <div className="mt-4 space-y-4">
+              <p className="flex items-center gap-4 bodyBold ">
+                <img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
+                {usuario.nombre}
+              </p>
 
-            <p className="flex items-center gap-4 bodyBold">
-              <img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
-              {usuario.email}
-            </p>
+              <p className="flex items-center gap-4 bodyBold">
+                <img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
+                {usuario.email}
+              </p>
 
-            <p className="flex items-center gap-4 bodyBold">
-              <img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
-              {usuario.rol}
-            </p>
-          </div>
-        </section>
-      </div>
+              <p className="flex items-center gap-4 bodyBold">
+                <img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
+                {usuario.rol}
+              </p>
+            </div>
+          </section>
+        </div>
 
-      <div className="gap-16 p-4 pb-8">
-        <section className="p-4 my-4 text-black bg-white rounded-lg">
-          <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
-            Ordenes
-            {usuario.rol === "Admin" && (
-              <button
-                onClick={() => setIsModalOpen(true)} // Abrir modal de agregar orden
-                className="px-3 py-1 ml-4 text-sm text-white rounded-lg bg-primary-500"
-              >
-                Agregar Orden
-              </button>
-            )}
-          </h3>
+        <div className="gap-[auto] pb-8">
+          <section className="px-[16px] mx-auto max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
+            <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
+              Ordenes
+              {usuario.rol === "Admin" && (
+                <button
+                  onClick={() => setIsModalOpen(true)} // Abrir modal de agregar orden
+                  className="px-3 py-1 ml-4 text-sm text-white rounded-[16px] bg-primary-500"
+                >
+                  Agregar Orden
+                </button>
+              )}
+            </h3>
 
-          <div className="flex items-center w-full px-3 py-2 mt-4 border rounded-lg border-primary-500">
-            <input
-              type="text"
-              className="flex-1 outline-none"
-              placeholder="Buscar por ID, dispositivo, estado o fecha"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+            <div className="flex items-center w-full px-4 py-2 mt-4 border rounded-[8px] border-gray-400 focus-within:border-primary-500 transition-colors duration-200">
+              <input
+                type="text"
+                className="flex-1 outline-none"
+                placeholder="Buscar"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <i className="fa-solid fa-magnifying-glass text-gray-400 ml-2"></i>
+            </div>
 
-          <table className="w-full mt-4 border-collapse">
-            <thead>
-              <tr className="title3">
-                <th
-                  className="flex items-center p-2 text-sm cursor-pointer"
+            <div className="mt-4">
+              {/* Header */}
+              <div className="grid grid-cols-4 gap-4 py-2 mb-2 text-sm font-semibold border-b border-gray-200">
+                <div
+                  className="flex items-center cursor-pointer"
                   onClick={toggleSortOrder}
                 >
                   Fecha{" "}
@@ -298,54 +290,59 @@ export default function DashboardTecnico() {
                   ) : (
                     <ChevronDown size={16} />
                   )}
-                </th>
-                <th className="p-2 text-sm">ID orden</th>
-                <th className="p-2 text-sm">
+                </div>
+                <div>ID orden</div>
+                <div>
                   {usuario.rol === "Admin" ? "Técnico Asignado" : "Dispositivo"}
-                </th>
-                <th className="p-2 text-sm">Estado</th>
-              </tr>
-            </thead>
+                </div>
+                <div>Estado</div>
+              </div>
 
-            <tbody className="text-center text-black body">
-              {filteredOrders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="border-b border-gray-300 cursor-pointer hover:bg-gray-100"
-                  onClick={() => setSelectedOrder(order)}
-                >
-                  <td className="flex p-2">{order.date}</td>
-                  <td className="p-2">{order.id}</td>
-                  <td className="p-2">
-                    {usuario.rol === "Admin"
-                      ? order.assignedTechnician
-                      : order.device}
-                  </td>
-                  <td
-                    className={`p-2 font-bold ${
-                      estadoColores[order.status as EstadoOrden]
-                    }`}
+              {/* Rows */}
+              <div className="space-y-2">
+                {filteredOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    onClick={() => setSelectedOrder(order)}
+                    className="grid grid-cols-4 gap-4 py-2 text-sm border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
                   >
-                    {order.status}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+                    <div>{order.date}</div>
+                    <div className="overflow-hidden">
+                      <span className="block truncate" title={order.id}>
+                        {order.id}
+                      </span>
+                    </div>
+                    <div>
+                      {usuario.rol === "Admin"
+                        ? order.assignedTechnician
+                        : order.device}
+                    </div>
+                    <div
+                      className={`font-bold ${
+                        estadoColores[order.status as EstadoOrden]
+                      }`}
+                    >
+                      {order.status}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
 
-        <ModalOrden
-          isOpen={!!selectedOrder}
-          onClose={() => setSelectedOrder(null)}
-          order={selectedOrder!}
-          handleEstadoChange={handleEstadoChange}
-        />
-        <ModalAgregarOrden
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          handleSaveOrder={handleSaveOrder}
-        />
+          <ModalOrden
+            isOpen={!!selectedOrder}
+            onClose={() => setSelectedOrder(null)}
+            order={selectedOrder!}
+            handleEstadoChange={handleEstadoChange}
+          />
+          <ModalAgregarOrden
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            handleSaveOrder={handleSaveOrder}
+          />
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
