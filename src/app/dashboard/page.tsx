@@ -47,19 +47,28 @@ const ModalAgregarOrden = ({
     onClose();
   };
 
+  // Filtrar tecnicos
+  const tecnicos = users.filter((user) => user.role === "Technician");
+
   return isOpen ? (
     <PageTransition>
       <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50 ">
         <div className="p-6 text-black bg-white rounded-[16px] w-96">
           <h2 className="mb-4 text-xl font-bold">Agregar Orden</h2>
           <div className="space-y-4">
-            <input
-              type="text"
-              placeholder="Asignar Técnico"
+            <select
               className="w-full p-2 border border-gray-300 rounded"
               value={assignedTechnician}
               onChange={(e) => setAssignedTechnician(e.target.value)}
-            />
+            >
+              <option value="">Seleccionar técnico</option>
+              {tecnicos.map((tecnico) => (
+                <option key={tecnico.id} value={tecnico.id}>
+                  {tecnico.name}
+                </option>
+              ))}
+            </select>
+
             <input
               type="text"
               placeholder="DNI Cliente"
@@ -225,7 +234,7 @@ export default function DashboardTecnico() {
   return (
     <PageTransition>
       <div className="container mt-[72px] space-y-8 min-h-screen text-white px-[5vw] py-6  mx-auto">
-        <h1 className="text-white text-display3 text-center ">
+        <h1 className="text-center text-white text-display3 ">
           Dashboard de {usuario.rol}
         </h1>
         <div className="gap-16 max-w-[400px] mx-auto">
@@ -274,7 +283,7 @@ export default function DashboardTecnico() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <i className="fa-solid fa-magnifying-glass text-gray-400 ml-2"></i>
+              <i className="ml-2 text-gray-400 fa-solid fa-magnifying-glass"></i>
             </div>
 
             <div className="mt-4">
@@ -304,7 +313,7 @@ export default function DashboardTecnico() {
                   <div
                     key={order.id}
                     onClick={() => setSelectedOrder(order)}
-                    className="grid grid-cols-4 gap-4 py-2 text-sm border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                    className="grid grid-cols-4 gap-4 py-2 text-sm transition-colors duration-200 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
                   >
                     <div>{order.date}</div>
                     <div className="overflow-hidden">
