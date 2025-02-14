@@ -1,8 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 
 import PageTransition from "@/components/PageTransition";
+import { getOrderByEmail } from "@/services/orderService";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Home() {
+  const [userEmail, setUserEmail] = useState({
+    email: "",
+  });
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await getOrderByEmail(userEmail.email);
+      console.log(response);
+    } catch (error) {
+      toast.error("Error al crear la orden");
+      console.log(error);
+    }
+  };
+
   const services = [
     {
       title: "Pantallas Rotas",
@@ -58,14 +77,24 @@ export default function Home() {
               Recupera tu dispositivo con nuestro servicio rápido y garantizado!
             </h1>
           </div>
-          <form className="w-full text-center max-w-2xl">
+          <form
+            className="w-full max-w-2xl text-center"
+            onSubmit={handleSubmit}
+          >
             <input
               type="text"
               placeholder="Rastrea tu orden"
               className="py-[10px] px-[16px] w-full text-center bg-white/90 rounded-[8px] placeholder-gray-500 outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 border border-transparent"
+              value={userEmail.email}
+              onChange={(e) =>
+                setUserEmail({
+                  ...userEmail,
+                  email: e.target.value,
+                })
+              }
             />
             <button className="py-[10px] px-[16px]  bg-primary-500 mt-4 w-full rounded-[16px] text-white text-title2 hover:bg-primary-600 transition-colors">
-              <i className="fa-solid fa-xs fa-magnifying-glass mr-2"></i>Buscar
+              <i className="mr-2 fa-solid fa-xs fa-magnifying-glass"></i>Buscar
             </button>
           </form>
         </section>
@@ -73,7 +102,7 @@ export default function Home() {
         {/* Services Section */}
         <section className="w-full max-w-6xl pb-10">
           <div className="py-12 border-t border-white/20">
-            <h2 className="text-display3 text-center text-white mb-12">
+            <h2 className="mb-12 text-center text-white text-display3">
               Nuestros Servicios
             </h2>
             <div className="grid gap-8 lg:grid-cols-3">
@@ -82,10 +111,10 @@ export default function Home() {
                   key={index}
                   className="text-white p-6 border border-white/50 rounded-[16px] bg-white/10 backdrop-blur-sm hover:bg-white/15 transition-all duration-300"
                 >
-                  <h3 className="mb-4 text-title1 text-white lg:text-title2">
+                  <h3 className="mb-4 text-white text-title1 lg:text-title2">
                     {service.title}
                   </h3>
-                  <p className="text-white/90 text-subtitle2 mb-6 leading-relaxed">
+                  <p className="mb-6 leading-relaxed text-white/90 text-subtitle2">
                     {service.description}
                   </p>
                   <div className="w-full h-48 overflow-hidden rounded-[16px]">
@@ -102,7 +131,7 @@ export default function Home() {
 
           {/* Why Choose Us Section */}
           <div className="pt-12 border-t border-white/20">
-            <h2 className="text-display3 text-center text-white mb-12">
+            <h2 className="mb-12 text-center text-white text-display3">
               ¿Por qué Elegirnos?
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -111,7 +140,7 @@ export default function Home() {
                   key={index}
                   className="flex items-center p-4 transition-colors duration-300 lg:justify-center rounded-[16px]"
                 >
-                  <div className="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center mr-4 text-white font-bold">
+                  <div className="flex items-center justify-center w-10 h-10 mr-4 font-bold text-white rounded-full bg-primary-500">
                     {index + 1}
                   </div>
                   <div className="text-lg text-white text-bodyBold">

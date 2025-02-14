@@ -34,19 +34,23 @@ export const postOrderService = async (data: PostOrderType) => {
     throw new Error(error.message);
   }
 };
-//     if (!response.ok) {
-//       const errorMessage = await response.text();
-//       toast.error(`Error: ${errorMessage}`);
-//       return await response.json();
-//     }
-//   } catch (error: any) {
-//     console.log("error en postOrderService", error.message);
-//     throw new Error(error.message);
-//   }
-// };
 
-// export const getAllOrderService = async (token: string) => {};
-// try{ const response = await fetch(`${apiUrl}/orders`, {
-
-// }
-// getAllOrders
+export const getOrderByEmail = async (email: string) => {
+  try {
+    const response = await fetch(`${apiUrl}orders/email/${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Raw response:", response);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Error al cargar el usuarios");
+    }
+    return response.json();
+  } catch (error: any) {
+    console.log("error al obtener los usuarios", error.message);
+    return null;
+  }
+};

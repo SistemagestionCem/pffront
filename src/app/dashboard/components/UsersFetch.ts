@@ -13,10 +13,11 @@ const useUsers = () => {
     fetchUsers();
   }, []);
 
+  console.log("users", users);
   return {
-    tecnicos: users.filter((user) => user.role === "Technician"),
-    clientes: users.filter((user) => user.role === "Client"),
-    admin: users.filter((user) => user.role === "Admin"),
+    tecnicos: users.filter((user) => user.role === "TECHN"),
+    clientes: users.filter((user) => user.role === "CLIENT"),
+    admin: users.filter((user) => user.role === "ADMIN"),
   };
 };
 

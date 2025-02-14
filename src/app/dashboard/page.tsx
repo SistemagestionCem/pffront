@@ -3,7 +3,7 @@
 "use client";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import ModalOrden from "./components/ModalOrden"; // Importamos el modal
+import ModalOrden from "./components/ModalOrden";
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import { users } from "@/helpers/users";
@@ -29,6 +29,9 @@ const ModalAgregarOrden = ({
   onClose: () => void;
 }) => {
   const { tecnicos, admin, clientes } = useUsers();
+  console.log("tecnico", tecnicos);
+  console.log("admin", admin);
+  console.log("clientes", clientes);
   const [orderData, setOrderData] = useState({
     assignedTechnician: "",
     cliente: "",
@@ -56,6 +59,7 @@ const ModalAgregarOrden = ({
       clientId: orderData.cliente,
       assignedTechnicianId: orderData.assignedTechnician,
     };
+
     try {
       const response = await postOrderService(payload);
       if (response) {
@@ -67,8 +71,6 @@ const ModalAgregarOrden = ({
       console.error(error);
     }
   };
-
-  // Obtenemos técnicos desde la base de datos
 
   return isOpen ? (
     <PageTransition>
