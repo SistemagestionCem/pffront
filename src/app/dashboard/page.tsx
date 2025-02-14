@@ -7,10 +7,18 @@ import ModalOrden from "./components/ModalOrden"; // Importamos el modal
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import { users } from "@/helpers/users";
-import { EstadoOrden, Order, DisplayOrder, Usuario } from "@/interfaces";
+import {
+  EstadoOrden,
+  Order,
+  DisplayOrder,
+  OrderType,
+  UserType,
+} from "@/interfaces";
 import PageTransition from "@/components/PageTransition";
 import { postOrderService } from "@/services/orderService";
 import { toast } from "sonner";
+import { getAllUserService } from "@/services/usersServices";
+import useUsers from "./components/UsersFetch";
 
 // Modal para agregar una nueva orden
 const ModalAgregarOrden = ({
@@ -20,10 +28,10 @@ const ModalAgregarOrden = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const { tecnicos, admin, clientes } = useUsers();
   const [orderData, setOrderData] = useState({
     assignedTechnician: "",
-    clientDni: "",
-    clientEmail: "",
+    cliente: "",
     description: "",
     equipmentType: "",
     imei: "",
@@ -42,8 +50,14 @@ const ModalAgregarOrden = ({
     });
   };
   const handleSubmit = async () => {
+    const selectAdmin = admin[0];
+    const payload = {
+      userId: selectAdmin.id,
+      clientId: orderData.cliente,
+      assignedTechnicianId: orderData.assignedTechnician,
+    };
     try {
-      const response = await postOrderService(orderData);
+      const response = await postOrderService(payload);
       if (response) {
         toast.success("Orden creada con éxito");
         onClose();
@@ -54,8 +68,7 @@ const ModalAgregarOrden = ({
     }
   };
 
-  // Filtrar tecnicos
-  const tecnicos = users.filter((user) => user.role === "Technician");
+  // Obtenemos técnicos desde la base de datos
 
   return isOpen ? (
     <PageTransition>
@@ -81,24 +94,24 @@ const ModalAgregarOrden = ({
               ))}
             </select>
 
-            <input
-              type="text"
-              placeholder="DNI Cliente"
+            <select
               className="w-full p-2 border border-gray-300 rounded"
-              value={orderData.clientDni}
+              value={orderData.cliente}
               onChange={(e) =>
-                setOrderData({ ...orderData, clientDni: e.target.value })
+                setOrderData({
+                  ...orderData,
+                  cliente: e.target.value,
+                })
               }
-            />
-            <input
-              type="email"
-              placeholder="Email Cliente"
-              className="w-full p-2 border border-gray-300 rounded"
-              value={orderData.clientEmail}
-              onChange={(e) =>
-                setOrderData({ ...orderData, clientEmail: e.target.value })
-              }
-            />
+            >
+              <option value="">Seleccionar Cliente</option>
+              {clientes.map((cliente) => (
+                <option key={cliente.id} value={cliente.id}>
+                  {cliente.name}
+                </option>
+              ))}
+            </select>
+
             <input
               type="text"
               placeholder="Descripción"
