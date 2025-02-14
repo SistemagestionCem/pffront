@@ -5,17 +5,26 @@ import PageTransition from "@/components/PageTransition";
 import { getOrderByEmail } from "@/services/orderService";
 import { useState } from "react";
 import { toast } from "sonner";
+import Modal from "@/components/ModalHome";
+import { OrderByMail } from "@/interfaces";
+import { useEffect } from "react";
 
 export default function Home() {
   const [userEmail, setUserEmail] = useState({
     email: "",
   });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [orderData, setOrderData] = useState<OrderByMail[]>([]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       const response = await getOrderByEmail(userEmail.email);
-      console.log(response);
+      console.log("respuesta del server", response);
+      if (response) {
+        setOrderData(response);
+        setModalOpen(true);
+      }
     } catch (error) {
       toast.error("Error al crear la orden");
       console.log(error);
@@ -29,6 +38,7 @@ export default function Home() {
         "Servicio de reparación de pantallas dañadas para todo tipo de dispositivos, incluyendo celulares, tablets y laptops. Arreglamos grietas, píxeles muertos y problemas de visualización con repuestos de alta calidad.",
       img: "/servicio-repacion.png",
     },
+
     {
       title: "Baterías Defectuosas",
       description:
@@ -97,6 +107,29 @@ export default function Home() {
               <i className="mr-2 fa-solid fa-xs fa-magnifying-glass"></i>Buscar
             </button>
           </form>
+          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+            <h2 className="mb-4 text-xl font-bold">Detalles de la Orden</h2>
+            {orderData.length > 0 ? (
+              orderData.map((order, index) => (
+                <div key={index} className="pb-2 mb-4 border-b">
+                  <p>
+                    <strong>ID:</strong> {order.id}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {order.clientEmail}
+                  </p>
+                  <p>
+                    <strong>Historial:</strong> {order.statusHistory}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong> {order.status}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>Cargando...</p>
+            )}
+          </Modal>
         </section>
 
         {/* Services Section */}

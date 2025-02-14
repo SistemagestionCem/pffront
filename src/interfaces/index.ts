@@ -35,13 +35,10 @@ export interface UserType {
 
 export interface PostOrderType {
   userId: string;
-  // clientEmail: string;
+
   clientId: string;
-  // equipmentType: string;
-  // imei: string;
+
   assignedTechnicianId: string;
-  // description: string;
-  // status: "Pendiente" | "Iniciado" | "Finalizado";
 }
 
 export interface OrdeType {
@@ -55,4 +52,10 @@ export interface OrdeType {
   status: "Pendiente" | "Iniciado" | "Finalizado";
   user: string;
   date: string;
+}
+
+export interface OrderByMail {
+  id: string;
+  status: string;
+  clientEmail: string;
 }
