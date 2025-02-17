@@ -29,9 +29,9 @@ export const postOrderService = async (data: PostOrderType) => {
     }
 
     return responseData;
-  } catch (error: any) {
-    console.error("Error en postOrderService:", error.message);
-    throw new Error(error.message);
+  } catch (error) {
+    console.error("Error en postOrderService:", error);
+    throw new Error("Error en postOrderService", { cause: error });
   }
 };
 
@@ -49,8 +49,8 @@ export const getOrderByEmail = async (email: string) => {
       throw new Error(errorText || "Error al cargar el usuarios");
     }
     return response.json();
-  } catch (error: any) {
-    console.log("error al obtener los usuarios", error.message);
+  } catch (error) {
+    console.log("error al obtener los usuarios", error);
     return null;
   }
 };

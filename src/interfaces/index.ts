@@ -59,4 +59,5 @@ export interface OrderByMail {
   id: string;
   status: string;
   clientEmail: string;
+  statusHistory: string;
 }

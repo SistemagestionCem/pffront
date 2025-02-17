@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -25,7 +23,6 @@ interface ModalAgregarOrdenProps {
 const ModalAgregarOrden = ({
   isOpen,
   onClose,
-  handleSaveOrder,
 }: ModalAgregarOrdenProps) => {
   const { tecnicos, admin, clientes } = useUsers();
   console.log("tecnico", tecnicos);
@@ -44,14 +41,6 @@ const ModalAgregarOrden = ({
     id: Date.now().toString(),
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setOrderData({
-      ...orderData,
-      [e.target.name]: e.target.value,
-    });
-  };
   const handleSubmit = async () => {
     const selectAdmin = admin[0];
     const payload = {
@@ -207,7 +196,7 @@ export default function DashboardTecnico() {
     assignedTechnician: string;
   };
 
-  const estadoColores: any = {
+  const estadoColores = {
     Iniciado: "text-blue-500",
     Pendiente: "text-orange-500",
     Finalizado: "text-primary-500",

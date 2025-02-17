@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { persist, devtools, createJSONStorage } from "zustand/middleware";
-import Order from "../app/dashboard/orderTypes";
+import { OrderType } from "@/interfaces/index";
 
 interface OrderDataStorageType {
-  orderData: Order[]; // Array de órdenes
-  setOrderData: (data: Order[]) => void;
-  addOrder: (order: Order) => void;
+  orderData: OrderType[]; // Array de órdenes
+  setOrderData: (data: OrderType[]) => void;
+  addOrder: (order: OrderType) => void;
   clearOrderData: () => void;
 }
 

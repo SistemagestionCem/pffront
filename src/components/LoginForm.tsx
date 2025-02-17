@@ -1,11 +1,11 @@
 "use client";
 
-import { OrderType } from "@/interfaces";
+// import { OrderType } from "@/interfaces";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
-import orderDataStorage from "@/storage/orderStore";
-import { users, orders } from "../helpers/users";
+// import orderDataStorage from "@/storage/orderStore";
+// import { users, orders } from "../helpers/users";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
 
@@ -24,35 +24,35 @@ const LoginForm = () => {
   // Expresión regular para validar un correo electrónico
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const authenticateUser = (email: string, password: string) => {
-    const user = users.find(
-      (user) => user.email === email && user.password === password
-    );
+  // const authenticateUser = (email: string, password: string) => {
+  //   const user = users.find(
+  //     (user) => user.email === email && user.password === password
+  //   );
 
-    if (!user) return null; // Evita errores si el usuario no existe
+  //   if (!user) return null; // Evita errores si el usuario no existe
 
-    if (user.role === "User") {
-      const userOrders: OrderType[] = orders.filter(
-        (order) => order.user === user.id
-      );
-      setUserData(user);
-      orderDataStorage.getState().setOrderData(userOrders);
-      router.push("/dashboard");
-    } else if (user.role === "Technician") {
-      const userOrders = orders.filter(
-        (order) => order.assignedTechnician === user.id
-      );
-      setUserData(user);
-      orderDataStorage.getState().setOrderData(userOrders);
-      router.push("/dashboard");
-    } else if (user.role === "Admin") {
-      setUserData(user);
-      orderDataStorage.getState().setOrderData(orders);
-      router.push("/dashboard");
-    }
+  //   if (user.role === "User") {
+  //     const userOrders: OrderType[] = orders.filter(
+  //       (order) => order.user === user.id
+  //     );
+  //     setUserData(user);
+  //     orderDataStorage.getState().setOrderData(userOrders);
+  //     router.push("/dashboard");
+  //   } else if (user.role === "Technician") {
+  //     const userOrders = orders.filter(
+  //       (order) => order.assignedTechnician === user.id
+  //     );
+  //     setUserData(user);
+  //     orderDataStorage.getState().setOrderData(userOrders);
+  //     router.push("/dashboard");
+  //   } else if (user.role === "Admin") {
+  //     setUserData(user);
+  //     orderDataStorage.getState().setOrderData(orders);
+  //     router.push("/dashboard");
+  //   }
 
-    return user;
-  };
+  //   return user;
+  // };
 
   // Handler para el submit
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,32 +78,33 @@ const LoginForm = () => {
 
     setIsLoggingIn(true);
 
-    // try {
-    //   const response = await login(email, password);
-    //   if (response) {
-    //     toast.success("Login successful!");
-    //     console.log(response);
-    //     setUserData({
-    //       id: response.userFound.id,
-    //       name: response.userFound.name,
-    //       email: response.userFound.email,
-    //       role: response.userFound.role,
-    //     })
-    //     router.push("/dashboard");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error("Failed to login. Please try again.");
-    // }
-
-    const user = authenticateUser(email, password);
-
-    if (!user) {
-      toast.error("Credenciales incorrectas");
-      setIsLoggingIn(false);
-    } else {
-      setError("");
+    try {
+      const response = await login(email, password);
+      if (response) {
+        toast.success("Login successful!");
+        console.log(response);
+        setUserData({
+          id: response.userFound.id,
+          name: response.userFound.name,
+          email: response.userFound.email,
+          role: response.userFound.role,
+        })
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Error al iniciar sesión");
+      toast.error("Failed to login. Please try again.");
     }
+
+    // const user = authenticateUser(email, password);
+
+    // if (!user) {
+    //   toast.error("Credenciales incorrectas");
+    //   setIsLoggingIn(false);
+    // } else {
+    //   setError("");
+    // }
   };
 
   return (

@@ -1,5 +1,3 @@
-import { error } from "console";
-
 const apiUrl = "https://pfback-osdi.onrender.com/";
 console.log("Fetching from:", apiUrl);
 
@@ -19,7 +17,7 @@ export const getAllUserService = async () => {
 
     console.log("Response status:", response.status);
     return response.json();
-  } catch (error: any) {
-    console.log("error al obtener los usuarios", error.message);
+  } catch (error) {
+    console.log("error al obtener los usuarios", error);
   }
 };

@@ -1,23 +1,27 @@
 import { create } from "zustand";
 import { persist, devtools, createJSONStorage } from "zustand/middleware";
 
-interface userDataStorageType {
-  userData: any;
-  setUserData: (data: any) => void;
+// Define el tipo de los datos del usuario
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+// Define el tipo del store
+interface UserDataStorageType {
+  userData: UserData | null; // userData puede ser null si no está disponible
+  setUserData: (data: UserData) => void;
   clearUserData: () => void;
 }
 
-const userDataStorage = create<userDataStorageType>()(
+const userDataStorage = create<UserDataStorageType>()(
   devtools(
     persist(
       (set) => ({
-        userData: {
-          id: "",
-          name: "",
-          email: "",
-          role: "",
-        }, // Estado inicial del usuario
-        setUserData: (data: any) => set({ userData: data }), // Función para actualizar el usuario
+        userData: null, // Estado inicial del usuario
+        setUserData: (data: UserData) => set({ userData: data }), // Función para actualizar el usuario
         clearUserData: () => set({ userData: null }), // Función para limpiar el estado del usuario
       }),
       {

@@ -7,7 +7,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Modal from "@/components/ModalHome";
 import { OrderByMail } from "@/interfaces";
-import { useEffect } from "react";
 
 export default function Home() {
   const [userEmail, setUserEmail] = useState({

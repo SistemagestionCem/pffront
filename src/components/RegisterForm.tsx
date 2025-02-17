@@ -14,7 +14,7 @@ const RegisterForm = () => {
     email: "",
     password: "",
     phone: "",
-    dni: "" as any,
+    dni: 0,
   });
   const [acceptTerms, setAcceptTerms] = useState(false); // Add this state
 
@@ -55,7 +55,8 @@ const RegisterForm = () => {
         router.push("/login");
       }
 
-    } catch (err) {
+    } catch (error) {
+      console.log(error);
       return setError("Failed to register. Please try again.");
     } finally {
       setIsSubmitting(false);
