@@ -8,11 +8,11 @@ interface ModalProps {
   onClose: () => void;
   order?: {
     date: string;
-    id: number;
+    id: string;
     device: string;
     status: EstadoOrden;
   };
-  handleEstadoChange: (id: number, nuevoEstado: EstadoOrden) => void;
+  handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
 type EstadoOrden = "Iniciado" | "Pendiente" | "Finalizado";
@@ -48,6 +48,36 @@ export default function ModalOrden({
     }
   };
 
+  const handlePayment = async () => {
+    const order = {
+      clientId: "1",
+      title: "title",
+      description: "description",
+      quantity: 1,
+      unit_price: 1,
+      productId: "1",
+      external: "false",
+    };
+  
+    try {
+      const response = await fetch("/api/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order),
+      });
+  
+      const data = await response.json();
+      console.log(data);
+      
+      if (data.init_point) {
+        window.location.href = data.init_point; // Redirige a MercadoPago
+      }
+    } catch (error) {
+      console.error("Error en el pago:", error);
+    }
+  };
+  
+
   return (
     <AnimatePresence>
       {isOpen && order && (
@@ -67,6 +97,7 @@ export default function ModalOrden({
             <button
               onClick={onClose}
               className="absolute top-4 right-4 text-gray-400 hover:text-primary-500 transition-colors duration-200"
+              title="Cerrar"
             >
               <X size={20} />
             </button>
@@ -116,6 +147,7 @@ export default function ModalOrden({
             </div>
 
             <div className="p-6 flex flex-col gap-3 w-full">
+              <button className="text-black" onClick={handlePayment}> Pagar </button>
               <button
                 className={`flex justify-center items-center w-full py-2.5 px-6 rounded-[8px] bg-blue-500 text-white text-subtitle1 font-semibold hover:bg-blue-600 transition-colors duration-200 ${
                   isDisabled || isFinalizado

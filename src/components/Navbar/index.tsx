@@ -1,10 +1,18 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import userDataStorage from "@/storage/userStore";
 
 export default function NavBar() {
   const router = useRouter();
   const pathname = usePathname();
+
+  const { clearUserData } = userDataStorage();
+
+  const handleLogout = () => {
+    clearUserData();
+    router.push("/");
+  };
 
   return (
     <nav
@@ -25,7 +33,7 @@ export default function NavBar() {
             </button>
           ) : pathname.includes("/dashboard") ? (
             <button
-              onClick={() => router.push("/")}
+              onClick={handleLogout}
               className="flex items-center justify-center px-6 py-[6px] rounded-[16px] bg-primary-500 text-title3 text-white"
             >
               Log out

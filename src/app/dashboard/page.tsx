@@ -8,30 +8,30 @@ import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import { users } from "@/helpers/users";
 import {
-  EstadoOrden,
-  Order,
-  DisplayOrder,
   OrderType,
-  UserType,
 } from "@/interfaces";
 import PageTransition from "@/components/PageTransition";
 import { postOrderService } from "@/services/orderService";
 import { toast } from "sonner";
-import { getAllUserService } from "@/services/usersServices";
 import useUsers from "./components/UsersFetch";
 
 // Modal para agregar una nueva orden
+interface ModalAgregarOrdenProps {
+  isOpen: boolean;
+  onClose: () => void;
+  handleSaveOrder: (newOrder: OrderType) => void; // Añadido el tipo handleSaveOrder
+}
+
 const ModalAgregarOrden = ({
   isOpen,
   onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
+  handleSaveOrder,
+}: ModalAgregarOrdenProps) => {
   const { tecnicos, admin, clientes } = useUsers();
   console.log("tecnico", tecnicos);
   console.log("admin", admin);
   console.log("clientes", clientes);
+
   const [orderData, setOrderData] = useState({
     assignedTechnician: "",
     cliente: "",
@@ -81,6 +81,7 @@ const ModalAgregarOrden = ({
             <select
               className="w-full p-2 border border-gray-300 rounded"
               value={orderData.assignedTechnician}
+              title="Tecnico"
               onChange={(e) =>
                 setOrderData({
                   ...orderData,
@@ -99,6 +100,7 @@ const ModalAgregarOrden = ({
             <select
               className="w-full p-2 border border-gray-300 rounded"
               value={orderData.cliente}
+              title="Cliente"
               onChange={(e) =>
                 setOrderData({
                   ...orderData,
@@ -144,6 +146,7 @@ const ModalAgregarOrden = ({
             <select
               className="w-full p-2 border border-gray-300 rounded"
               value={status}
+              title="Estado"
               onChange={(e) =>
                 setOrderData({
                   ...orderData,
@@ -188,13 +191,23 @@ export default function DashboardTecnico() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [usuario, setUsuario] = useState<Usuario>({
+  const [usuario, setUsuario] = useState({
     nombre: "",
     email: "",
     rol: "",
   });
 
-  const estadoColores: Record<EstadoOrden, string> = {
+  type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
+
+  type DisplayOrder = {
+    date: string;
+    id: string;
+    device: string;
+    status: EstadoOrden;
+    assignedTechnician: string;
+  };
+
+  const estadoColores: any = {
     Iniciado: "text-blue-500",
     Pendiente: "text-orange-500",
     Finalizado: "text-primary-500",
@@ -211,7 +224,7 @@ export default function DashboardTecnico() {
           date: new Date(order.createdAt).toLocaleDateString("es-ES"),
           id: order.id,
           device: order.equipmentType,
-          status: order.status as EstadoOrden,
+          status: order.status,
           assignedTechnician: technician?.name || "No asignado",
         };
       });
@@ -238,7 +251,7 @@ export default function DashboardTecnico() {
     setSelectedOrder(null);
   };
 
-  const handleSaveOrder = (newOrder: Order) => {
+  const handleSaveOrder = (newOrder: OrderType) => {
     addOrder(newOrder);
     const formattedOrder: DisplayOrder = {
       date: new Date(newOrder.createdAt).toLocaleDateString("es-ES"),
@@ -369,7 +382,7 @@ export default function DashboardTecnico() {
                     </div>
                     <div
                       className={`font-bold ${
-                        estadoColores[order.status as EstadoOrden]
+                        estadoColores[order.status]
                       }`}
                     >
                       {order.status}
