@@ -8,6 +8,7 @@ export interface RegisterFormType {
   email: string;
   password: string;
   phone: string;
+  dni: number;
 }
 
 export interface OrderType {

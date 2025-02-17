@@ -12,6 +12,7 @@ const userDataStorage = create<userDataStorageType>()(
     persist(
       (set) => ({
         userData: {
+          id: "",
           name: "",
           email: "",
           role: "",

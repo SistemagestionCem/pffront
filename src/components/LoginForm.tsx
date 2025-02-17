@@ -83,7 +83,12 @@ const LoginForm = () => {
       if (response) {
         toast.success("Login successful!");
         console.log(response);
-        
+        setUserData({
+          id: response.userFound.id,
+          name: response.userFound.name,
+          email: response.userFound.email,
+          role: response.userFound.role,
+        })
         router.push("/dashboard");
       }
     } catch (error) {
@@ -91,14 +96,14 @@ const LoginForm = () => {
       toast.error("Failed to login. Please try again.");
     }
 
-    const user = authenticateUser(email, password);
+    // const user = authenticateUser(email, password);
 
-    if (!user) {
-      toast.error("Credenciales incorrectas");
-      setIsLoggingIn(false);
-    } else {
-      setError("");
-    }
+    // if (!user) {
+    //   toast.error("Credenciales incorrectas");
+    //   setIsLoggingIn(false);
+    // } else {
+    //   setError("");
+    // }
   };
 
   return (
