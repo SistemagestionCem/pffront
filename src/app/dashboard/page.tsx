@@ -120,7 +120,7 @@ export default function DashboardTecnico() {
 
   return (
     <PageTransition>
-      <div className="container mt-[72px] space-y-2 min-h-screen text-white px-[5vw] py-6  mx-auto">
+      <div className="container mt-[72px] space-y-6 min-h-screen text-white px-[5vw] py-6  mx-auto">
         <h1 className="text-center text-white text-display3 ">
           Dashboard de {usuario.rol}
         </h1>
@@ -130,13 +130,13 @@ export default function DashboardTecnico() {
 
         <div className="gap-[auto] pb-8">
         <div className="flex justify-end">
-          {usuario.rol === "ADMIN" &&
+          {usuario.rol === "ADMIN" && (
           <button
           onClick={() => setMostrarOrdenes(!mostrarOrdenes)}
           className="px-4 py-2 text-white font-bold rounded"
           >
             {mostrarOrdenes ? "Ver Usuarios" : "Ver Órdenes"}
-          </button>
+          </button>)
           }
         </div>
           {mostrarOrdenes ?
