@@ -21,7 +21,7 @@ const orderDataStorage = create<OrderDataStorageType>()(
       }),
       {
         name: "order-data", // Clave en storage
-        storage: createJSONStorage(() => localStorage), // Guarda en sessionStorage
+        storage: createJSONStorage(() => localStorage), // Guarda en localStorage
         partialize: (state) => ({
           orderData: state.orderData.map((order) => ({
             ...order,

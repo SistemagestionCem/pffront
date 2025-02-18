@@ -13,7 +13,6 @@ const useUsers = () => {
     fetchUsers();
   }, []);
 
-  console.log("users", users);
   return {
     tecnicos: users.filter((user) => user.role === "TECHN"),
     clientes: users.filter((user) => user.role === "CLIENT"),

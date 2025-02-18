@@ -1,6 +1,6 @@
 import OrderRow from "./OrderRow";
 
-type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
+type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
 
 type DisplayOrder = {
   date: string;

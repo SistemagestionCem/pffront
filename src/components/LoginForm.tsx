@@ -1,18 +1,16 @@
 "use client";
-
-// import { OrderType } from "@/interfaces";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
-// import { users, orders } from "../helpers/users";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
+import { getOrderByEmail, getTechOrders } from "@/services/orderService";
+import { OrderType } from "@/interfaces";
 
 const LoginForm = () => {
   const router = useRouter();
   const { setUserData } = userDataStorage();
-  const { setOrderData } = orderDataStorage();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // State para los valores del formulario
@@ -24,36 +22,6 @@ const LoginForm = () => {
 
   // Expresión regular para validar un correo electrónico
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // const authenticateUser = (email: string, password: string) => {
-  //   const user = users.find(
-  //     (user) => user.email === email && user.password === password
-  //   );
-
-  //   if (!user) return null; // Evita errores si el usuario no existe
-
-  //   if (user.role === "User") {
-  //     const userOrders: OrderType[] = orders.filter(
-  //       (order) => order.user === user.id
-  //     );
-  //     setUserData(user);
-  //     orderDataStorage.getState().setOrderData(userOrders);
-  //     router.push("/dashboard");
-  //   } else if (user.role === "Technician") {
-  //     const userOrders = orders.filter(
-  //       (order) => order.assignedTechnician === user.id
-  //     );
-  //     setUserData(user);
-  //     orderDataStorage.getState().setOrderData(userOrders);
-  //     router.push("/dashboard");
-  //   } else if (user.role === "Admin") {
-  //     setUserData(user);
-  //     orderDataStorage.getState().setOrderData(orders);
-  //     router.push("/dashboard");
-  //   }
-
-  //   return user;
-  // };
 
   // Handler para el submit
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +58,67 @@ const LoginForm = () => {
           email: response.userFound.email,
           role: response.userFound.role,
         })
-        setOrderData(response.userFound.orders)
+        if (response.userFound.role === "CLIENT") {
+          const orders  = await getOrderByEmail(response.userFound.email)
+          console.log("orders user:",orders)
+          if (orders) {
+            const ordersData = orders.map((order: OrderType) => ({
+              id: order.id,
+              clientEmail: order.clientEmail,
+              clientDni: order.clientDni,
+              equipmentType: order.equipmentType,
+              imei: order.imei,
+              assignedTechnician: order.assignedTechnician || "",
+              description: order.description,
+              status: order.status as "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado",
+              user: order.user,
+              createdAt: new Date(), // O la fecha correspondiente
+              statusHistory: order.statusHistory || [],
+              isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
+            }));
+            
+            orderDataStorage.getState().setOrderData(ordersData);
+          }
+        } else if (response.userFound.role === "TECHN") {
+          const orders = await getTechOrders(response.userFound.id)
+          console.log("orders tech:", orders)
+          if (orders) {
+            const ordersData = orders.map((order: OrderType) => ({
+              id: order.id,
+              clientEmail: order.clientEmail,
+              clientDni: order.clientDni,
+              equipmentType: order.equipmentType,
+              imei: order.imei,
+              assignedTechnician: order.assignedTechnician || "",
+              description: order.description,
+              status: order.status as "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado",
+              user: order.user,
+              createdAt: new Date(), // O la fecha correspondiente
+              statusHistory: order.statusHistory || [],
+              isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
+            }));
+            
+            orderDataStorage.getState().setOrderData(ordersData);
+          }
+        } else {
+          const orders = response.userFound.orders;
+          const ordersData = orders.map((order: OrderType) => ({
+            id: order.id,
+            clientEmail: order.clientEmail,
+            clientDni: order.clientDni,
+            equipmentType: order.equipmentType,
+            imei: order.imei,
+            assignedTechnician: order.assignedTechnician || "",
+            description: order.description,
+            status: order.status as "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado",
+            user: order.user,
+            createdAt: new Date(), // O la fecha correspondiente
+            statusHistory: order.statusHistory || [],
+            isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
+          }));
+          
+          orderDataStorage.getState().setOrderData(ordersData);
+        }
         router.push("/dashboard");
       }
     } catch (error) {
@@ -98,15 +126,6 @@ const LoginForm = () => {
       setError("Error al iniciar sesión");
       toast.error("Failed to login. Please try again.");
     }
-
-    // const user = authenticateUser(email, password);
-
-    // if (!user) {
-    //   toast.error("Credenciales incorrectas");
-    //   setIsLoggingIn(false);
-    // } else {
-    //   setError("");
-    // }
   };
 
   return (

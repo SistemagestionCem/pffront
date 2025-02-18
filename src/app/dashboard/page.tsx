@@ -29,7 +29,7 @@ export default function DashboardTecnico() {
     rol: "",
   });
 
-  type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
+  type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
 
   type DisplayOrder = {
     date: string;
@@ -128,9 +128,9 @@ export default function DashboardTecnico() {
 
         <div className="gap-[auto] pb-8">
           <section className="px-[16px] mx-auto max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
-            <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
-              Ordenes
-              {usuario.rol === "Admin" && (
+            <div className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
+            <h3>Ordenes</h3>
+              {usuario.rol === "ADMIN" && (
                 <button
                   onClick={() => setIsModalOpen(true)} // Abrir modal de agregar orden
                   className="px-3 py-1 ml-4 text-sm text-white rounded-[16px] bg-primary-500"
@@ -138,12 +138,12 @@ export default function DashboardTecnico() {
                   Agregar Orden
                 </button>
               )}
-            </h3>
+              </div>
 
             <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
             <div className="mt-4">
-              {/* Header */}
+
               <div className="grid grid-cols-4 gap-4 py-2 mb-2 text-sm font-semibold border-b border-gray-200">
                 <div
                   className="flex items-center cursor-pointer"
@@ -163,10 +163,9 @@ export default function DashboardTecnico() {
                 <div>Estado</div>
               </div>
 
-
-              {/* Rows */}
               <OrderList orders={filteredOrders} setSelectedOrder={setSelectedOrder} estadoColores={estadoColores} />
             </div>
+
           </section>
 
           <ModalOrden

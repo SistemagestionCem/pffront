@@ -15,9 +15,10 @@ interface ModalProps {
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
-type EstadoOrden = "Iniciado" | "Pendiente" | "Finalizado";
+type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
 
 const estadoColores: Record<EstadoOrden, string> = {
+  Actualizar:"text-black",
   Iniciado: "text-blue-500",
   Pendiente: "text-orange-500",
   Finalizado: "text-red-600",

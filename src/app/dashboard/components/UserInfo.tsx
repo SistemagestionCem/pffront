@@ -4,7 +4,7 @@ interface UserInfoProps {
   
   const UserInfo: React.FC<UserInfoProps> = ({ usuario }) => {
     return (
-      <section className="p-4 my-4 text-black bg-white rounded-[16px]">
+      <section className="mx-auto max-w-[768px] p-4 my-4 text-black bg-white rounded-[16px]">
         <h3 className="py-2 border-b title1 text-primary-500 border-primary-900">
           Datos de Usuario
         </h3>

@@ -18,9 +18,6 @@ interface ModalAgregarOrdenProps {
     onClose,
   }: ModalAgregarOrdenProps) => {
     const { tecnicos, admin, clientes } = useUsers();
-    console.log("tecnico", tecnicos);
-    console.log("admin", admin);
-    console.log("clientes", clientes);
   
     const [orderData, setOrderData] = useState({
       assignedTechnician: "",

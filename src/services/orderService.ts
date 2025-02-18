@@ -54,3 +54,18 @@ export const getOrderByEmail = async (email: string) => {
     return null;
   }
 };
+
+export const getTechOrders = async (id: string) => {
+  try {
+    const response = await fetch(`${apiUrl}orders/technician/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    return response.json();
+  } catch (error) {
+    console.log(error);
+    return null
+  }
+}

@@ -19,10 +19,19 @@ export interface OrderType {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "Pendiente" | "Iniciado" | "Finalizado";
-  user: string;
+  status: "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+  };
   createdAt: Date;
+  statusHistory: []; // Array de historial de estado
+  isActive: boolean;
 }
+
 
 export interface UserType {
   id: string;
