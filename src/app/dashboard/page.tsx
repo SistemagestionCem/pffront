@@ -13,11 +13,12 @@ import PageTransition from "@/components/PageTransition";
 import UserInfo from "@/app/dashboard/components/UserInfo";
 import SearchBar from "@/app/dashboard/components/SearchBar";
 import OrderList from "./components/OrderList";
+import UsersList from "./components/UsersList";
 
 export default function DashboardTecnico() {
   const { orderData, addOrder } = orderDataStorage();
   const userData = userDataStorage((state) => state.userData);
-
+  const [mostrarOrdenes, setMostrarOrdenes] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
   const [orders, setOrders] = useState<DisplayOrder[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,14 +120,26 @@ export default function DashboardTecnico() {
 
   return (
     <PageTransition>
-      <div className="container mt-[72px] space-y-8 min-h-screen text-white px-[5vw] py-6  mx-auto">
+      <div className="container mt-[72px] space-y-2 min-h-screen text-white px-[5vw] py-6  mx-auto">
         <h1 className="text-center text-white text-display3 ">
           Dashboard de {usuario.rol}
         </h1>
         
         <UserInfo usuario={usuario} />
 
+
         <div className="gap-[auto] pb-8">
+        <div className="flex justify-end">
+          {usuario.rol === "ADMIN" &&
+          <button
+          onClick={() => setMostrarOrdenes(!mostrarOrdenes)}
+          className="px-4 py-2 text-white font-bold rounded"
+          >
+            {mostrarOrdenes ? "Ver Usuarios" : "Ver Órdenes"}
+          </button>
+          }
+        </div>
+          {mostrarOrdenes ?
           <section className="px-[16px] mx-auto max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
             <div className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
             <h3>Ordenes</h3>
@@ -167,7 +180,11 @@ export default function DashboardTecnico() {
             </div>
 
           </section>
-
+          :
+          <section className="px-[16px] mx-auto max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
+            <UsersList/>
+          </section>
+          }
           <ModalOrden
             isOpen={!!selectedOrder}
             onClose={() => setSelectedOrder(null)}
