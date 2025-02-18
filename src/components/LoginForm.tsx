@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
-// import orderDataStorage from "@/storage/orderStore";
+import orderDataStorage from "@/storage/orderStore";
 // import { users, orders } from "../helpers/users";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
@@ -12,6 +12,7 @@ import { login } from "@/services/auth";
 const LoginForm = () => {
   const router = useRouter();
   const { setUserData } = userDataStorage();
+  const { setOrderData } = orderDataStorage();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // State para los valores del formulario
@@ -89,6 +90,7 @@ const LoginForm = () => {
           email: response.userFound.email,
           role: response.userFound.role,
         })
+        setOrderData(response.userFound.orders)
         router.push("/dashboard");
       }
     } catch (error) {

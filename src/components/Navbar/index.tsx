@@ -2,15 +2,18 @@
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import userDataStorage from "@/storage/userStore";
+import orderDataStorage from "@/storage/orderStore";
 
 export default function NavBar() {
   const router = useRouter();
   const pathname = usePathname();
 
   const { clearUserData } = userDataStorage();
+  const { clearOrderData } = orderDataStorage();
 
   const handleLogout = () => {
     clearUserData();
+    clearOrderData();
     router.push("/");
   };
 
