@@ -56,43 +56,14 @@ const LoginForm = () => {
 
     if (!validateEmail(email) || !validatePassword(password)) {
       toast.error("Por favor, corrija los errores en el formulario", {
-        duration: 3000,
         position: "top-center",
         richColors: true,
       });
       return;
     }
 
-    // setError("");
-
-    // Validaciones
     if (!email || !password) {
-      // Error notifications
       toast.error("Ambos campos son requeridos!", {
-        duration: 3000,
-        position: "top-center",
-        richColors: true,
-      });
-
-      // Warning/Info notifications
-      toast.warning("Por favor ingrese un email válido", {
-        duration: 3000,
-        position: "top-center",
-        richColors: true,
-      });
-
-      // Success notifications
-      toast.success("Inicio de sesión exitoso", {
-        duration: 3000,
-        position: "top-center",
-        richColors: true,
-      });
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      toast.warning("Por favor ingrese un email válido", {
-        duration: 3000,
         position: "top-center",
         richColors: true,
       });
@@ -104,64 +75,26 @@ const LoginForm = () => {
     try {
       const response = await login(email, password);
       if (response) {
+        // Guardar datos del usuario
         setUserData({
           id: response.userFound.id,
           name: response.userFound.name,
           email: response.userFound.email,
           role: response.userFound.role,
         });
+
+        // Obtener órdenes según el rol
+        let orders;
         if (response.userFound.role === "CLIENT") {
-          const orders = await getOrderByEmail(response.userFound.email);
-          console.log("orders user:", orders);
-          if (orders) {
-            const ordersData = orders.map((order: OrderType) => ({
-              id: order.id,
-              clientEmail: order.clientEmail,
-              clientDni: order.clientDni,
-              equipmentType: order.equipmentType,
-              imei: order.imei,
-              assignedTechnician: order.assignedTechnician || "",
-              description: order.description,
-              status: order.status as
-                | "Actualizar"
-                | "Pendiente"
-                | "Iniciado"
-                | "Finalizado",
-              user: order.user,
-              createdAt: new Date(), // O la fecha correspondiente
-              statusHistory: order.statusHistory || [],
-              isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
-            }));
-
-            orderDataStorage.getState().setOrderData(ordersData);
-          }
+          orders = await getOrderByEmail(response.userFound.email);
         } else if (response.userFound.role === "TECHN") {
-          const orders = await getTechOrders(response.userFound.id);
-          console.log("orders tech:", orders);
-          if (orders) {
-            const ordersData = orders.map((order: OrderType) => ({
-              id: order.id,
-              clientEmail: order.clientEmail,
-              clientDni: order.clientDni,
-              equipmentType: order.equipmentType,
-              imei: order.imei,
-              assignedTechnician: order.assignedTechnician || "",
-              description: order.description,
-              status: order.status as
-                | "Actualizar"
-                | "Pendiente"
-                | "Iniciado"
-                | "Finalizado",
-              user: order.user,
-              createdAt: new Date(), // O la fecha correspondiente
-              statusHistory: order.statusHistory || [],
-              isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
-            }));
-
-            orderDataStorage.getState().setOrderData(ordersData);
-          }
+          orders = await getTechOrders(response.userFound.id);
         } else {
-          const orders = response.userFound.orders;
+          orders = response.userFound.orders;
+        }
+
+        // Procesar órdenes si existen
+        if (orders) {
           const ordersData = orders.map((order: OrderType) => ({
             id: order.id,
             clientEmail: order.clientEmail,
@@ -170,19 +103,20 @@ const LoginForm = () => {
             imei: order.imei,
             assignedTechnician: order.assignedTechnician || "",
             description: order.description,
-            status: order.status as
-              | "Actualizar"
-              | "Pendiente"
-              | "Iniciado"
-              | "Finalizado",
+            status: order.status,
             user: order.user,
-            createdAt: new Date(), // O la fecha correspondiente
+            createdAt: order.createdAt || new Date(),
             statusHistory: order.statusHistory || [],
-            isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
+            isActive: order.isActive || false,
           }));
 
           orderDataStorage.getState().setOrderData(ordersData);
         }
+
+        toast.success(`Bienvenido ${response.userFound.name}!`, {
+          position: "top-center",
+          richColors: true,
+        });
         router.push("/dashboard");
       }
     } catch (err) {
@@ -190,7 +124,6 @@ const LoginForm = () => {
       setIsLoggingIn(false);
       setPassword("");
       toast.error("Usuario o contraseña incorrectos", {
-        duration: 3000,
         position: "top-center",
         richColors: true,
       });
@@ -205,14 +138,6 @@ const LoginForm = () => {
           Entra aquí
         </a>
       </p>
-
-      {/* Remove these lines */}
-      {/* {error && <p className="mb-6 text-center text-red-500">{error}</p>} */}
-      {/* {error && (
-        <p className="p-3 mb-6 text-sm text-center text-white rounded-lg bg-red-500/80">
-          {error}
-        </p>
-      )} */}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-3">

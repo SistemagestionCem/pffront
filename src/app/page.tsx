@@ -42,7 +42,7 @@ export default function Home() {
       title: "Baterías Defectuosas",
       description:
         "Reemplazo y reparación de baterías que se descargan rápido, no cargan o causan sobrecalentamiento. Usamos repuestos de calidad para maximizar la vida útil de tu dispositivo.",
-      img: "/baterias.jpg",
+      img: "/baterias-mobil.jpg",
     },
     {
       title: "Problemas de Software",
