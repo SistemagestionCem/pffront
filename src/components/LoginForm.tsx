@@ -1,15 +1,7 @@
 "use client";
-<<<<<<< Updated upstream
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
-=======
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import userDataStorage from "@/storage/userStore";
-import { getOrderByEmail } from "@/services/orderService";
->>>>>>> Stashed changes
 import orderDataStorage from "@/storage/orderStore";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
@@ -117,11 +109,10 @@ const LoginForm = () => {
           name: response.userFound.name,
           email: response.userFound.email,
           role: response.userFound.role,
-<<<<<<< Updated upstream
-        })
+        });
         if (response.userFound.role === "CLIENT") {
-          const orders  = await getOrderByEmail(response.userFound.email)
-          console.log("orders user:",orders)
+          const orders = await getOrderByEmail(response.userFound.email);
+          console.log("orders user:", orders);
           if (orders) {
             const ordersData = orders.map((order: OrderType) => ({
               id: order.id,
@@ -131,18 +122,22 @@ const LoginForm = () => {
               imei: order.imei,
               assignedTechnician: order.assignedTechnician || "",
               description: order.description,
-              status: order.status as "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado",
+              status: order.status as
+                | "Actualizar"
+                | "Pendiente"
+                | "Iniciado"
+                | "Finalizado",
               user: order.user,
               createdAt: new Date(), // O la fecha correspondiente
               statusHistory: order.statusHistory || [],
               isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
             }));
-            
+
             orderDataStorage.getState().setOrderData(ordersData);
           }
         } else if (response.userFound.role === "TECHN") {
-          const orders = await getTechOrders(response.userFound.id)
-          console.log("orders tech:", orders)
+          const orders = await getTechOrders(response.userFound.id);
+          console.log("orders tech:", orders);
           if (orders) {
             const ordersData = orders.map((order: OrderType) => ({
               id: order.id,
@@ -152,13 +147,17 @@ const LoginForm = () => {
               imei: order.imei,
               assignedTechnician: order.assignedTechnician || "",
               description: order.description,
-              status: order.status as "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado",
+              status: order.status as
+                | "Actualizar"
+                | "Pendiente"
+                | "Iniciado"
+                | "Finalizado",
               user: order.user,
               createdAt: new Date(), // O la fecha correspondiente
               statusHistory: order.statusHistory || [],
               isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
             }));
-            
+
             orderDataStorage.getState().setOrderData(ordersData);
           }
         } else {
@@ -171,38 +170,19 @@ const LoginForm = () => {
             imei: order.imei,
             assignedTechnician: order.assignedTechnician || "",
             description: order.description,
-            status: order.status as "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado",
+            status: order.status as
+              | "Actualizar"
+              | "Pendiente"
+              | "Iniciado"
+              | "Finalizado",
             user: order.user,
             createdAt: new Date(), // O la fecha correspondiente
             statusHistory: order.statusHistory || [],
             isActive: order.isActive || false, // Asegurarte de que tenga valor por defecto
           }));
-          
+
           orderDataStorage.getState().setOrderData(ordersData);
         }
-=======
-        });
-
-        try {
-          const orders = await getOrderByEmail(response.userFound.email);
-          if (orders) {
-            orderDataStorage.getState().setOrderData(orders);
-          }
-        } catch (orderError) {
-          console.error("Error fetching orders:", orderError);
-          toast.error("Error al cargar las órdenes", {
-            duration: 3000,
-            position: "top-center",
-            richColors: true,
-          });
-        }
-
-        toast.success("Inicio de sesión exitoso", {
-          duration: 3000,
-          position: "top-center",
-          richColors: true,
-        });
->>>>>>> Stashed changes
         router.push("/dashboard");
       }
     } catch (err) {
