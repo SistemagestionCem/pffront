@@ -30,21 +30,21 @@ export default function NavBar() {
           {pathname === "/" ? (
             <button
               onClick={() => router.push("/login")}
-              className="flex items-center justify-center px-6 py-[6px] rounded-[16px] bg-primary-500 text-title3 text-white"
+              className="flex items-center justify-center px-8 py-[8px] rounded-[16px] bg-primary-500 text-title3 text-white lg:px-12 lg:py-[10px]"
             >
               Login
             </button>
           ) : pathname.includes("/dashboard") ? (
             <button
               onClick={handleLogout}
-              className="flex items-center justify-center px-6 py-[6px] rounded-[16px] bg-primary-500 text-title3 text-white"
+              className="flex items-center justify-center px-8 py-[8px] rounded-[16px] bg-primary-500 text-title3 text-white lg:px-12 lg:py-[10px]"
             >
               Log out
             </button>
           ) : (
             <button
               onClick={() => router.push("/")}
-              className="flex items-center justify-center px-6 py-[6px] rounded-[16px] bg-primary-500 text-title3 text-white"
+              className="flex items-center justify-center px-8 py-[8px] rounded-[16px] bg-primary-500 text-title3 text-white lg:px-12 lg:py-[10px]"
             >
               Home
             </button>

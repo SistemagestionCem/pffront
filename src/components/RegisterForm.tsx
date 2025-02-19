@@ -16,79 +16,115 @@ const RegisterForm = () => {
     phone: "",
     dni: 0,
   });
-  const [acceptTerms, setAcceptTerms] = useState(false); // Add this state
 
-  const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState({
+    name: false,
+    email: false,
+    password: false,
+    phone: false,
+    dni: false,
+  });
+
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^[0-9]{9}$/;
+  const dniRegex = /^[0-9]{8}$/;
+
+  const validateField = (name: string, value: string | number) => {
+    switch (name) {
+      case "name":
+        return value.toString().length >= 3;
+      case "email":
+        return emailRegex.test(value.toString());
+      case "password":
+        return value.toString().length >= 10;
+      case "phone":
+        return phoneRegex.test(value.toString());
+      case "dni":
+        return dniRegex.test(value.toString());
+      default:
+        return true;
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    const newValue = type === "number" ? Number(value) || 0 : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [name]: value.length > 0 && !validateField(name, value),
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!acceptTerms) {
-      return toast.error("Debes aceptar los términos y condiciones");
+      toast.error("Debes aceptar los términos y condiciones", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
+      return;
     }
 
-    // Validación de los campos
-    if (!formData.name || !formData.email || !formData.password) {
-      return toast.error("Todos los campos son requeridos.");
+    // Validate all fields
+    const hasErrors = Object.keys(formData).some(
+      (key) => !validateField(key, formData[key as keyof RegisterFormType])
+    );
+
+    if (hasErrors) {
+      toast.error("Por favor, corrija los errores en el formulario", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
+      return;
     }
 
-    if (!emailRegex.test(formData.email)) {
-      return toast.error("Por favor ingresa un email válido");
-    }
-
-    setError("");
     setIsSubmitting(true);
-    
-    try {
-      console.log(formData);
-      
-      // Llamar a la función de registro
-      const response = await register(formData);
-      console.log(response);
-      
 
+    try {
+      const response = await register(formData);
       if (response) {
-        alert("Registration successful!");
+        toast.success("¡Registro exitoso!", {
+          duration: 3000,
+          position: "top-center",
+          richColors: true,
+        });
         router.push("/login");
       }
-
-    } catch (error) {
-      console.log(error);
-      return setError("Failed to register. Please try again.");
+    } catch (err) {
+      console.log(err);
+      toast.error("Error al registrar. Por favor, intente nuevamente", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
     } finally {
       setIsSubmitting(false);
     }
-
-    
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "number" ? Number(value) || "" : value, // Convierte a número si es un input number
-    }));
-  };
-
-  // const navigateToLogin = () => {
-  //   router.push("/login");
-  // };
 
   return (
-    <div className="flex flex-col gap-[24px] mb-[72px] justify-center">
+    <div className="flex flex-col gap-[24px] mb-[72px] justify-center text-white">
       <p className="text-title3">
         ¿Ya tienes una cuenta?{" "}
         <a href="/login" className="text-title2 text-[#007BFF]">
           Inicia sesión aquí
         </a>
       </p>
-      {error && <p className="mb-6 text-center text-red-500">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Name Input */}
         <div className="space-y-3">
           <h3 className="text-title1">Nombre completo</h3>
           <input
@@ -98,10 +134,18 @@ const RegisterForm = () => {
             placeholder="Ingresa tu nombre"
             value={formData.name}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              formErrors.name ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {formErrors.name && (
+            <p className="text-primary-500 text-sm">
+              El nombre debe tener al menos 3 caracteres
+            </p>
+          )}
         </div>
 
+        {/* Email Input */}
         <div className="space-y-3">
           <h3 className="text-title1">Correo electrónico</h3>
           <input
@@ -111,36 +155,60 @@ const RegisterForm = () => {
             placeholder="Ingresa tu email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              formErrors.email ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {formErrors.email && (
+            <p className="text-primary-500 text-sm">
+              Ingresa un correo electrónico válido
+            </p>
+          )}
         </div>
 
+        {/* Phone Input */}
         <div className="space-y-3">
-          <h3 className="text-title1">Telefono</h3>
+          <h3 className="text-title1">Teléfono</h3>
           <input
             type="text"
             id="phone"
             name="phone"
-            placeholder="Ingresa tu telefono "
+            placeholder="Ingresa tu teléfono"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              formErrors.phone ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {formErrors.phone && (
+            <p className="text-primary-500 text-sm">
+              El teléfono debe tener 9 dígitos
+            </p>
+          )}
         </div>
-        
+
+        {/* DNI Input */}
         <div className="space-y-3">
-          <h3 className="text-title1">Dni</h3>
+          <h3 className="text-title1">DNI</h3>
           <input
             type="number"
             id="dni"
             name="dni"
-            placeholder="Ingresa tu Dni "
+            placeholder="Ingresa tu DNI"
             value={formData.dni}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              formErrors.dni ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {formErrors.dni && (
+            <p className="text-primary-500 text-sm">
+              El DNI debe tener 8 dígitos
+            </p>
+          )}
         </div>
 
+        {/* Password Input */}
         <div className="space-y-3">
           <h3 className="text-title1">Contraseña</h3>
           <input
@@ -150,10 +218,18 @@ const RegisterForm = () => {
             placeholder="Ingresa tu contraseña"
             value={formData.password}
             onChange={handleChange}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              formErrors.password ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {formErrors.password && (
+            <p className="text-primary-500 text-sm">
+              La contraseña debe tener al menos 10 caracteres
+            </p>
+          )}
         </div>
 
+        {/* Terms Checkbox */}
         <div className="flex items-center gap-2 mt-4">
           <input
             type="checkbox"
@@ -170,15 +246,46 @@ const RegisterForm = () => {
           </label>
         </div>
 
+        {/* Submit Button */}
         <div>
           <button
             type="submit"
-            disabled={isSubmitting || !acceptTerms}
-            className={`px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold ${
-              !acceptTerms ? "opacity-50 cursor-not-allowed" : ""
+            disabled={
+              isSubmitting ||
+              !acceptTerms ||
+              Object.values(formErrors).some(Boolean)
+            }
+            className={`px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold flex items-center justify-center gap-2 ${
+              !acceptTerms || Object.values(formErrors).some(Boolean)
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
           >
-            {isSubmitting ? "Registrando..." : "Registrarse"}
+            {isSubmitting && (
+              <div className="animate-spin w-5 h-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="w-5 h-5"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="white"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="white"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            )}
+            Registrarse
           </button>
         </div>
       </form>

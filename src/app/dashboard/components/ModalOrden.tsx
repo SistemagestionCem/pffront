@@ -33,10 +33,10 @@ export default function ModalOrden({
   const [descripcion, setDescripcion] = useState("");
 
   useEffect(() => {
-    setDescripcion(""); // Resetea la descripción cada vez que cambia la orden
+    setDescripcion("");
   }, [order]);
 
-  if (!isOpen || !order) return null; // No renderiza nada si no está abierto
+  if (!isOpen || !order) return null;
 
   const minCaracteres = 3;
   const isDisabled = descripcion.length < minCaracteres;
@@ -59,17 +59,17 @@ export default function ModalOrden({
       productId: "1",
       external: "false",
     };
-  
+
     try {
       const response = await fetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(order),
       });
-  
+
       const data = await response.json();
       console.log(data);
-      
+
       if (data.init_point) {
         window.location.href = data.init_point; // Redirige a MercadoPago
       }
@@ -77,7 +77,6 @@ export default function ModalOrden({
       console.error("Error en el pago:", error);
     }
   };
-  
 
   return (
     <AnimatePresence>
@@ -148,7 +147,10 @@ export default function ModalOrden({
             </div>
 
             <div className="p-6 flex flex-col gap-3 w-full">
-              <button className="text-black" onClick={handlePayment}> Pagar </button>
+              <button className="text-black" onClick={handlePayment}>
+                {" "}
+                Pagar{" "}
+              </button>
               <button
                 className={`flex justify-center items-center w-full py-2.5 px-6 rounded-[8px] bg-blue-500 text-white text-subtitle1 font-semibold hover:bg-blue-600 transition-colors duration-200 ${
                   isDisabled || isFinalizado

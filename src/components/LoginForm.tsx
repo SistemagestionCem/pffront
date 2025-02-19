@@ -1,7 +1,15 @@
 "use client";
+<<<<<<< Updated upstream
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
+=======
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import userDataStorage from "@/storage/userStore";
+import { getOrderByEmail } from "@/services/orderService";
+>>>>>>> Stashed changes
 import orderDataStorage from "@/storage/orderStore";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
@@ -17,30 +25,84 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // State para manejar los errores
-  const [error, setError] = useState("");
+  // Remove this unused state
+  // const [error, setError] = useState("");
 
   // Expresión regular para validar un correo electrónico
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   // Handler para el submit
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  const validateEmail = (email: string) => {
+    const isValid = emailRegex.test(email);
+    setEmailError(!isValid && email.length > 0);
+    return isValid;
+  };
+
+  const validatePassword = (password: string) => {
+    const isValid = password.length >= 10;
+    setPasswordError(!isValid && password.length > 0);
+    return isValid;
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    validateEmail(value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    validatePassword(value);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!validateEmail(email) || !validatePassword(password)) {
+      toast.error("Por favor, corrija los errores en el formulario", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
+      return;
+    }
+
+    // setError("");
+
     // Validaciones
     if (!email || !password) {
+      // Error notifications
       toast.error("Ambos campos son requeridos!", {
-        style: {
-          background: "red",
-          position: "fixed",
-        },
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
+
+      // Warning/Info notifications
+      toast.warning("Por favor ingrese un email válido", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
+
+      // Success notifications
+      toast.success("Inicio de sesión exitoso", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
       });
       return;
     }
 
     if (!emailRegex.test(email)) {
       toast.warning("Por favor ingrese un email válido", {
-        style: {},
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
       });
       return;
     }
@@ -50,13 +112,12 @@ const LoginForm = () => {
     try {
       const response = await login(email, password);
       if (response) {
-        toast.success("Login successful!");
-        console.log(response);
         setUserData({
           id: response.userFound.id,
           name: response.userFound.name,
           email: response.userFound.email,
           role: response.userFound.role,
+<<<<<<< Updated upstream
         })
         if (response.userFound.role === "CLIENT") {
           const orders  = await getOrderByEmail(response.userFound.email)
@@ -119,12 +180,40 @@ const LoginForm = () => {
           
           orderDataStorage.getState().setOrderData(ordersData);
         }
+=======
+        });
+
+        try {
+          const orders = await getOrderByEmail(response.userFound.email);
+          if (orders) {
+            orderDataStorage.getState().setOrderData(orders);
+          }
+        } catch (orderError) {
+          console.error("Error fetching orders:", orderError);
+          toast.error("Error al cargar las órdenes", {
+            duration: 3000,
+            position: "top-center",
+            richColors: true,
+          });
+        }
+
+        toast.success("Inicio de sesión exitoso", {
+          duration: 3000,
+          position: "top-center",
+          richColors: true,
+        });
+>>>>>>> Stashed changes
         router.push("/dashboard");
       }
-    } catch (error) {
-      console.log(error);
-      setError("Error al iniciar sesión");
-      toast.error("Failed to login. Please try again.");
+    } catch (err) {
+      console.error(err);
+      setIsLoggingIn(false);
+      setPassword("");
+      toast.error("Usuario o contraseña incorrectos", {
+        duration: 3000,
+        position: "top-center",
+        richColors: true,
+      });
     }
   };
 
@@ -137,8 +226,13 @@ const LoginForm = () => {
         </a>
       </p>
 
-      {/* Error Message */}
-      {error && <p className="mb-6 text-center text-red-500">{error}</p>}
+      {/* Remove these lines */}
+      {/* {error && <p className="mb-6 text-center text-red-500">{error}</p>} */}
+      {/* {error && (
+        <p className="p-3 mb-6 text-sm text-center text-white rounded-lg bg-red-500/80">
+          {error}
+        </p>
+      )} */}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-3">
@@ -149,9 +243,16 @@ const LoginForm = () => {
             name="email"
             placeholder="you@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            onChange={handleEmailChange}
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              emailError ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {emailError && (
+            <p className="text-primary-500 text-sm">
+              Por favor ingrese un correo electrónico válido
+            </p>
+          )}
         </div>
 
         <div className="space-y-3">
@@ -162,20 +263,55 @@ const LoginForm = () => {
             name="password"
             placeholder="Ingresa tu contraseña"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border border-transparent focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200"
+            onChange={handlePasswordChange}
+            className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
+              passwordError ? "border-primary-500" : "border-transparent"
+            } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}
           />
+          {passwordError && (
+            <p className="text-primary-500 text-sm">
+              La contraseña debe tener al menos 10 caracteres
+            </p>
+          )}
         </div>
 
         <div>
           <button
             type="submit"
-            disabled={isLoggingIn || !email || !password}
-            className={`px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold ${
-              !email || !password ? "opacity-50 cursor-not-allowed" : ""
+            disabled={
+              isLoggingIn || !email || !password || emailError || passwordError
+            }
+            className={`px-2 py-2 bg-primary-500 mt-4 w-full rounded-[16px] text-white text-bodyBold flex items-center justify-center gap-2 ${
+              !email || !password || emailError || passwordError
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
           >
-            {isLoggingIn ? "Ingresando..." : "Iniciar sesión"}
+            {isLoggingIn && (
+              <div className="animate-spin w-5 h-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="w-5 h-5"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="white"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="white"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            )}
+            Iniciar sesión
           </button>
         </div>
       </form>
