@@ -1,4 +1,8 @@
-export type EstadoOrden = "Pendiente" | "Iniciado" | "Finalizado";
+export type EstadoOrden =
+  | "Actualizar"
+  | "Pendiente"
+  | "Iniciado"
+  | "Finalizado";
 
 export type DisplayOrder = {
   date: string;

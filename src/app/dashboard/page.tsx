@@ -8,6 +8,8 @@ import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import PageTransition from "@/components/PageTransition";
 import { users } from "@/helpers/users";
+import { OrderType } from "@/interfaces";
+import { EstadoOrden, DisplayOrder } from "./types"; // Añadir esta importación
 
 export default function DashboardTecnico() {
   const { orderData, addOrder } = orderDataStorage();
@@ -22,16 +24,6 @@ export default function DashboardTecnico() {
     email: "",
     rol: "",
   });
-
-  type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
-
-  type DisplayOrder = {
-    date: string;
-    id: string;
-    device: string;
-    status: EstadoOrden;
-    assignedTechnician: string;
-  };
 
   const estadoColores = {
     Iniciado: "text-blue-500",

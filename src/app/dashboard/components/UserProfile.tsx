@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface UserProfileProps {
   nombre: string;
   email: string;
@@ -14,21 +16,39 @@ export const UserProfile = ({ nombre, email, rol }: UserProfileProps) => {
         <div className="mt-6 flex flex-col lg:flex-row lg:justify-evenly items-center space-y-6 lg:space-y-0">
           <div className="flex items-center gap-4 bodyBold min-w-[200px] lg:justify-center">
             <div className="p-2 bg-primary-500/10 rounded-full">
-              <img src="/svg/user.svg" alt="Usuario" className="w-6 h-6" />
+              <Image
+                src="/svg/user.svg"
+                alt="Usuario"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
             </div>
             <span>{nombre}</span>
           </div>
 
           <div className="flex items-center gap-4 bodyBold min-w-[200px] lg:justify-center">
             <div className="p-2 bg-primary-500/10 rounded-full">
-              <img src="/svg/mail.svg" alt="Mail" className="w-6 h-6" />
+              <Image
+                src="/svg/mail.svg"
+                alt="Mail"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
             </div>
             <span>{email}</span>
           </div>
 
           <div className="flex items-center gap-4 bodyBold min-w-[200px] lg:justify-center">
             <div className="p-2 bg-primary-500/10 rounded-full">
-              <img src="/svg/rol.svg" alt="rol" className="w-6 h-6" />
+              <Image
+                src="/svg/rol.svg"
+                alt="rol"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
             </div>
             <span>{rol}</span>
           </div>
