@@ -9,6 +9,7 @@ import orderDataStorage from "@/storage/orderStore";
 import PageTransition from "@/components/PageTransition";
 import { users } from "@/helpers/users";
 import { OrderType } from "@/interfaces";
+import UsersList from "./components/UsersList";
 
 export default function DashboardTecnico() {
   const { orderData, addOrder } = orderDataStorage();
@@ -129,7 +130,7 @@ export default function DashboardTecnico() {
           <section className="px-[16px] mx-auto max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
             <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
               Ordenes
-              {usuario.rol === "Admin" && (
+              {usuario.rol === "ADMIN" && (
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="px-3 py-1 ml-4 text-sm text-white rounded-[16px] bg-primary-500"
@@ -150,6 +151,7 @@ export default function DashboardTecnico() {
               estadoColores={estadoColores}
             />
           </section>
+            <UsersList/>
 
           <ModalOrden
             isOpen={!!selectedOrder}
