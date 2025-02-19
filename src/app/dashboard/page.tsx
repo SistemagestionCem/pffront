@@ -12,7 +12,7 @@ import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
 
 export default function DashboardTecnico() {
-  const { orderData, addOrder } = orderDataStorage();
+  const { orderData, addOrder, updateOrder } = orderDataStorage();
   const userData = userDataStorage((state) => state.userData);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
   const [orders, setOrders] = useState<DisplayOrder[]>([]);
@@ -52,13 +52,13 @@ export default function DashboardTecnico() {
           date: new Date(order.createdAt).toLocaleDateString("es-ES"),
           id: order.id,
           device: order.equipmentType,
-          status: order.status,
+          status: order.status as EstadoOrden,
           assignedTechnician: technician?.name || "No asignado",
         };
       });
       setOrders(formattedOrders);
     }
-  }, [orderData]);
+  }, [orderData]); // Este efecto se ejecutará cada vez que orderData cambie
 
   useEffect(() => {
     if (userData) {
@@ -70,14 +70,51 @@ export default function DashboardTecnico() {
     }
   }, [userData]);
 
-  const handleEstadoChange = (id: string, nuevoEstado: EstadoOrden) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === id ? { ...order, status: nuevoEstado } : order
-      )
-    );
-    setSelectedOrder(null);
+  // Modificar el handleEstadoChange
+  const handleEstadoChange = async (id: string, nuevoEstado: EstadoOrden) => {
+    try {
+      // Actualizar en el store
+      const orderToUpdate = orderData.find((order) => order.id === id);
+      if (orderToUpdate) {
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: nuevoEstado,
+        };
+        updateOrder(updatedOrder);
+      }
+
+      // Actualizar el estado local
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === id ? { ...order, status: nuevoEstado } : order
+        )
+      );
+
+      setSelectedOrder(null);
+    } catch (error) {
+      console.error("Error al actualizar el estado:", error);
+    }
   };
+
+  // Modificar el useEffect que observa orderData
+  useEffect(() => {
+    if (orderData) {
+      const formattedOrders: DisplayOrder[] = orderData.map((order) => {
+        const technician = users.find(
+          (user) => user.id === order.assignedTechnician
+        );
+
+        return {
+          date: new Date(order.createdAt).toLocaleDateString("es-ES"),
+          id: order.id,
+          device: order.equipmentType,
+          status: order.status as EstadoOrden,
+          assignedTechnician: technician?.name || "No asignado",
+        };
+      });
+      setOrders(formattedOrders);
+    }
+  }, [orderData]); // Este efecto se ejecutará cada vez que orderData cambie
 
   const handleSaveOrder = (newOrder: OrderType) => {
     addOrder(newOrder);
@@ -126,14 +163,15 @@ export default function DashboardTecnico() {
           rol={usuario.rol}
         />
 
-        <div className="gap-[auto] pb-8">
-          <section className="px-[16px] mx-auto max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
+        <div className="flex flex-col gap-8 pb-8">
+          {/* Sección de Órdenes */}
+          <section className="px-[16px] mx-auto w-full max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
             <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
-              Ordenes
+              Órdenes
               {usuario.rol === "ADMIN" && (
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="px-3 py-1 ml-4 text-sm text-white rounded-[16px] bg-primary-500"
+                  className="px-3 py-1 ml-4 text-sm text-white rounded-[16px] bg-primary-500 hover:bg-primary-600 transition-colors"
                 >
                   Agregar Orden
                 </button>
@@ -151,7 +189,16 @@ export default function DashboardTecnico() {
               estadoColores={estadoColores}
             />
           </section>
-            <UsersList/>
+
+          {/* Sección de Usuarios (solo para admin) */}
+          {usuario.rol === "ADMIN" && (
+            <section className="px-[16px] mx-auto w-full max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
+              <h3 className="pb-2 border-b title1 text-primary-500 border-primary-900">
+                Gestión de Usuarios
+              </h3>
+              <UsersList />
+            </section>
+          )}
 
           <ModalOrden
             isOpen={!!selectedOrder}

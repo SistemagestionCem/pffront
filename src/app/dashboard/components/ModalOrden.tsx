@@ -92,67 +92,68 @@ export default function ModalOrden({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="relative flex flex-col w-full max-w-[500px] mx-4 rounded-[16px] border border-primary-900/20 bg-white shadow-xl"
+            className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md mx-4"
           >
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 text-gray-400 hover:text-primary-500 transition-colors duration-200"
-              title="Cerrar"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="w-full p-6">
-              <h3 className="text-primary-500 display3 mb-2">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
                 Detalle de orden
-              </h3>
-              <div className="border-b border-primary-900/20 w-full"></div>
+              </h2>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            <div className="flex flex-col px-6 gap-4 w-full text-secondary-900">
-              <p className="flex justify-between items-center w-full">
-                <span className="title3 text-gray-600">Estado:</span>
-                <span
-                  className={`subtitle1 font-semibold ${estadoColores[order.status]}`}
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="text-bodyBold font-bold text-gray-700">
+                  Estado:
+                </label>
+                <p
+                  className={`mt-1 font-medium ${estadoColores[order.status]}`}
                 >
                   {order.status}
-                </span>
-              </p>
-              <p className="flex justify-between items-center w-full">
-                <span className="title3 text-gray-600">Dispositivo:</span>
-                <span className="subtitle1">{order.device}</span>
-              </p>
-              <p className="flex justify-between items-center w-full">
-                <span className="title3 text-gray-600">ID Orden:</span>
-                <span
-                  className="subtitle1 max-w-[200px] truncate"
-                  title={order.id.toString()}
-                >
+                </p>
+              </div>
+              <div>
+                <label className="text-bodyBold font-bold text-gray-700">
+                  Dispositivo:
+                </label>
+                <p className="mt-1 text-gray-900">{order.device}</p>
+              </div>
+              <div>
+                <label className="text-bodyBold font-bold text-gray-700">
+                  ID Orden:
+                </label>
+                <p className="mt-1 text-gray-900 truncate" title={order.id}>
                   {order.id}
-                </span>
-              </p>
+                </p>
+              </div>
+
+              <div>
+                <label className="text-bodyBold font-bold text-gray-700">
+                  Descripción:
+                </label>
+                <textarea
+                  placeholder="Ingrese una descripción detallada aquí..."
+                  className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                />
+              </div>
             </div>
 
-            <div className="px-6 pt-4 w-full">
-              <textarea
-                placeholder="Ingrese una descripción detallada aquí..."
-                className="w-full h-[120px] px-4 py-3 border border-gray-300 rounded-[8px] text-black resize-none body placeholder:text-gray-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200 text-base selection:bg-transparent outline-none"
-                style={{
-                  fontSize: "16px",
-                  WebkitTapHighlightColor: "transparent",
-                }}
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-              ></textarea>
-            </div>
-
-            <div className="p-6 flex flex-col gap-3 w-full">
-              <button className="text-black" onClick={handlePayment}>
-                {" "}
-                Pagar{" "}
+            <div className="space-y-3">
+              <button
+                onClick={handlePayment}
+                className="w-full px-4 py-2 text-bodyBold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              >
+                Pagar
               </button>
               <button
-                className={`flex justify-center items-center w-full py-2.5 px-6 rounded-[8px] bg-blue-500 text-white text-subtitle1 font-semibold hover:bg-blue-600 transition-colors duration-200 ${
+                className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   isDisabled || isFinalizado
                     ? "opacity-50 cursor-not-allowed"
                     : ""
@@ -160,12 +161,10 @@ export default function ModalOrden({
                 disabled={isDisabled || isFinalizado}
                 onClick={() => handleChangeEstado("Iniciado")}
               >
-                <i className="fa-solid fa-play mr-2 fa-xs"></i>
                 Iniciar
               </button>
-
               <button
-                className={`flex justify-center items-center w-full py-2.5 px-6 rounded-[8px] bg-primary-500 text-white text-subtitle1 font-semibold hover:bg-primary-600 transition-colors duration-200 ${
+                className={`w-full px-4 py-2 text-bodyBold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   isDisabled || isFinalizado
                     ? "opacity-50 cursor-not-allowed"
                     : ""
@@ -173,7 +172,6 @@ export default function ModalOrden({
                 disabled={isDisabled || isFinalizado}
                 onClick={() => handleChangeEstado("Finalizado")}
               >
-                <i className="fa-solid fa-check mr-2 fa-xs"></i>
                 Finalizar
               </button>
             </div>

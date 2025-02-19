@@ -21,60 +21,84 @@ export const OrdersTable = ({
   onOrderClick,
   onToggleSort,
   onSearchChange,
-  estadoColores,
 }: OrdersTableProps) => {
   return (
     <>
-      <div className="flex items-center w-full px-4 py-2 mt-4 border rounded-[8px] border-gray-400 focus-within:border-primary-500 transition-colors duration-200">
+      <div className="p-2 sm:p-4">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">
+          Lista de órdenes
+        </h2>
         <input
           type="text"
-          className="flex-1 outline-none"
-          placeholder="Buscar"
+          className="w-full p-2 text-sm border border-gray-300 rounded-lg"
+          placeholder="Buscar orden..."
           value={searchTerm}
           onChange={onSearchChange}
         />
-        <i className="ml-2 text-gray-400 fa-solid fa-magnifying-glass"></i>
-      </div>
-
-      <div className="mt-4">
-        <div className="grid grid-cols-4 gap-4 py-2 mb-2 text-sm font-semibold border-b border-gray-200">
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={onToggleSort}
-          >
-            Fecha{" "}
-            {sortOrder === "asc" ? (
-              <ChevronUp size={16} />
-            ) : (
-              <ChevronDown size={16} />
-            )}
-          </div>
-          <div>ID orden</div>
-          <div>{userRole === "Admin" ? "Técnico Asignado" : "Dispositivo"}</div>
-          <div>Estado</div>
-        </div>
-
-        <div className="space-y-2">
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              onClick={() => onOrderClick(order)}
-              className="grid grid-cols-4 gap-4 py-2 text-sm transition-colors duration-200 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
-            >
-              <div>{order.date}</div>
-              <div className="overflow-hidden">
-                <span className="block truncate" title={order.id}>
-                  {order.id}
-                </span>
-              </div>
-              <div>
-                {userRole === "Admin" ? order.assignedTechnician : order.device}
-              </div>
-              <div className={`font-bold ${estadoColores[order.status]}`}>
-                {order.status}
-              </div>
-            </div>
-          ))}
+        <div className="overflow-x-auto mt-4 -mx-2 sm:mx-0 ">
+          <table className="min-w-full divide-y divide-gray-200 ">
+            <thead>
+              <tr className="text-xs sm:text-sm bg-gray-50">
+                <th
+                  className="text-start p-2 font-medium"
+                  onClick={onToggleSort}
+                >
+                  Fecha{" "}
+                  {sortOrder === "asc" ? (
+                    <ChevronUp size={14} />
+                  ) : (
+                    <ChevronDown size={14} />
+                  )}
+                </th>
+                <th className="text-start p-2 font-medium">ID orden</th>
+                <th className="text-start p-2 font-medium hidden sm:table-cell">
+                  {userRole === "Admin" ? "Técnico" : "Dispositivo"}
+                </th>
+                <th className="text-start p-2 font-medium">Estado</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {orders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
+                  onClick={() => onOrderClick(order)}
+                >
+                  <td className="p-2 whitespace-nowrap">{order.date}</td>
+                  <td className="p-2">
+                    <span
+                      className="block truncate max-w-[100px] sm:max-w-none"
+                      title={order.id}
+                    >
+                      {order.id}
+                    </span>
+                  </td>
+                  <td className="p-2 hidden sm:table-cell">
+                    {userRole === "Admin"
+                      ? order.assignedTechnician
+                      : order.device}
+                  </td>
+                  <td className="p-2">
+                    <span
+                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${
+                        order.status === "Actualizar"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.status === "Pendiente"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.status === "Iniciado"
+                              ? "bg-green-100 text-green-800"
+                              : order.status === "Finalizado"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>
