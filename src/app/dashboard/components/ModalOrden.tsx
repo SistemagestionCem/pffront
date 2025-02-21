@@ -37,6 +37,7 @@ export default function ModalOrden({
   order,
   handleEstadoChange,
 }: ModalProps) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const { userData } = userDataStorage();
   const isAdmin = userData?.role === "ADMIN";
   const isUser = userData?.role === "CLIENT"
@@ -65,6 +66,9 @@ export default function ModalOrden({
   };
 
   const handlePayment = async () => {
+    if (monto <= 0) return;
+    setIsProcessing(true);
+
     const order = {
       clientId: "1",
       title: "title",
@@ -90,6 +94,8 @@ export default function ModalOrden({
       }
     } catch (error) {
       console.error("Error en el pago:", error);
+    } finally {
+      setIsProcessing(false); // Desactiva el spinner al finalizar
     }
   };
 
@@ -176,15 +182,43 @@ export default function ModalOrden({
             <div className="space-y-3">
               <button
                 onClick={handlePayment}
-                className={`w-full px-4 py-2 text-bodyBold rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
-                  canAdminPay
-                  ? "text-gray-700 bg-gray-100 hover:bg-gray-200 focus:ring-gray-400"
-                  : "text-gray-500 bg-gray-200 opacity-50 cursor-not-allowed focus:ring-gray-300"
-              }`}
-              disabled={!canAdminPay}  
+                disabled={!canAdminPay || isProcessing}
+                className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200  ${canAdminPay
+                  ? "bg-gray-600 hover:bg-gray-700 focus:ring-gray-400"
+                  : "bg-gray-700 opacity-50 cursor-not-allowed focus:ring-gray-300"
+                  }`}
+
               >
-                Pagar
+                {isProcessing ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="white"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="white"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span>Procesando...</span>
+                  </>
+                ) : (
+                  "Pagar"
+                )}
               </button>
+
+
               <button
                 className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDisabled || isFinalizado
                   ? "opacity-50 cursor-not-allowed"
