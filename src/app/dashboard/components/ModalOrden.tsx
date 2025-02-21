@@ -2,8 +2,9 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PaymentForm } from "@/components/PaymentForm";
-import { useMontoStore } from "@/storage/montoStore"; 
+import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
+import { useMontoStore } from "@/storage/montoStore";
+import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 
 
 
@@ -35,7 +36,7 @@ export default function ModalOrden({
   handleEstadoChange,
 }: ModalProps) {
   const [descripcion, setDescripcion] = useState("");
-  const { monto } = useMontoStore(); 
+  const { monto } = useMontoStore();
 
   useEffect(() => {
     setDescripcion("");
@@ -43,7 +44,7 @@ export default function ModalOrden({
 
   if (!isOpen || !order) return null;
 
- 
+
   const minCaracteres = 3;
   const isDisabled = descripcion.length < minCaracteres;
   const isFinalizado = order.status === "Finalizado";
@@ -99,7 +100,7 @@ export default function ModalOrden({
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
             className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col"
-            >
+          >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
                 Detalle de orden
@@ -152,7 +153,8 @@ export default function ModalOrden({
             </div>
 
             <div className="space-y-4 mb-4">
-              <PaymentForm />
+             <PaymentForm orderId={order.id} />
+              <OrderPaymentUser orderId={order.id}  />
             </div>
 
             <div className="space-y-3">
@@ -164,8 +166,8 @@ export default function ModalOrden({
               </button>
               <button
                 className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDisabled || isFinalizado
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
                   }`}
                 disabled={isDisabled || isFinalizado}
                 onClick={() => handleChangeEstado("Iniciado")}
@@ -174,8 +176,8 @@ export default function ModalOrden({
               </button>
               <button
                 className={`w-full px-4 py-2 text-bodyBold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ${isDisabled || isFinalizado
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
                   }`}
                 disabled={isDisabled || isFinalizado}
                 onClick={() => handleChangeEstado("Finalizado")}

@@ -2,6 +2,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DisplayOrder, EstadoOrden } from "../types";
 
+
 interface OrdersTableProps {
   orders: DisplayOrder[];
   sortOrder: "asc" | "desc";

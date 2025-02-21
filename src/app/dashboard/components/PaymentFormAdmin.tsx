@@ -3,25 +3,32 @@ import { useMontoStore } from "@/storage/montoStore";
 import { toast } from "sonner";
 
 
-export const PaymentForm = () => {
-    const { monto, setMonto } = useMontoStore();
+interface PaymentFormProps {
+    orderId: string; 
+  }
+
+
+  export const PaymentForm = ({ orderId }: PaymentFormProps) => {
+    const { monto, setMonto, resetMonto } = useMontoStore();
+
 
     useEffect(() => {
-        setMonto(0); // Reinicia el monto cuando se abre una nueva orden
-    }, [setMonto]);
+        resetMonto(); // ✅ Reinicia monto y orderId cuando cambia la orden
+      }, [orderId, resetMonto]);
 
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
 
         if (/^\d*$/.test(value)) {
-            setMonto(Number(value));
+            setMonto(Number(value), orderId);
         }
+        setMonto(Number(value), orderId); 
     };
 
     const handleGenerarPago = () => {
         if (monto > 0) {
-            toast.success(`Orden generada exitosamente por $${monto}`, {
+            toast.success(`Orden #${orderId} generada exitosamente por $${monto}`,{
                 position: "top-center",
                 richColors: true,
               });
