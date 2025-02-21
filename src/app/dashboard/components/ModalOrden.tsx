@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
 import { useMontoStore } from "@/storage/montoStore";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
-
+import userDataStorage from "@/storage/userStore";
 
 
 interface ModalProps {
@@ -29,12 +29,17 @@ const estadoColores: Record<EstadoOrden, string> = {
   Finalizado: "text-red-600",
 };
 
+
+
 export default function ModalOrden({
   isOpen,
   onClose,
   order,
   handleEstadoChange,
 }: ModalProps) {
+  const { userData } = userDataStorage();
+  const isAdmin = userData?.role === "ADMIN";
+  const isUser = userData?.role === "CLIENT"
   const [descripcion, setDescripcion] = useState("");
   const { monto } = useMontoStore();
 
@@ -43,6 +48,8 @@ export default function ModalOrden({
   }, [order]);
 
   if (!isOpen || !order) return null;
+
+
 
 
   const minCaracteres = 3;
@@ -152,10 +159,18 @@ export default function ModalOrden({
               </div>
             </div>
 
-            <div className="space-y-4 mb-4">
-             <PaymentForm orderId={order.id} />
-              <OrderPaymentUser orderId={order.id}  />
-            </div>
+            {isAdmin && (
+              <div className="space-y-4 mb-4">
+                <PaymentForm orderId={order.id} />
+              </div>
+            )}
+
+            {isUser && (
+              <div className="space-y-4 mb-4">
+                <OrderPaymentUser orderId={order.id} />
+              </div>
+            )}
+
 
             <div className="space-y-3">
               <button

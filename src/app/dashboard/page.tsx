@@ -161,6 +161,7 @@ export default function DashboardTecnico() {
           nombre={usuario.nombre}
           email={usuario.email}
           rol={usuario.rol}
+
         />
 
         <div className="flex flex-col gap-8 pb-8">
