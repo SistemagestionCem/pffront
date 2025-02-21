@@ -90,7 +90,7 @@ export default function ModalOrden({
       console.log(data);
 
       if (data.init_point) {
-        window.location.href = data.init_point; // Redirige a MercadoPago
+        window.open(data.init_point, "_blank") // Redirige a MercadoPago en pestaña nueva
       }
     } catch (error) {
       console.error("Error en el pago:", error);
