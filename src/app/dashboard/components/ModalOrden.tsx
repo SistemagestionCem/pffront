@@ -42,6 +42,7 @@ export default function ModalOrden({
   const isUser = userData?.role === "CLIENT"
   const [descripcion, setDescripcion] = useState("");
   const { monto } = useMontoStore();
+  const canAdminPay = isAdmin && monto > 0;
 
   useEffect(() => {
     setDescripcion("");
@@ -175,7 +176,12 @@ export default function ModalOrden({
             <div className="space-y-3">
               <button
                 onClick={handlePayment}
-                className="w-full px-4 py-2 text-bodyBold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className={`w-full px-4 py-2 text-bodyBold rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                  canAdminPay
+                  ? "text-gray-700 bg-gray-100 hover:bg-gray-200 focus:ring-gray-400"
+                  : "text-gray-500 bg-gray-200 opacity-50 cursor-not-allowed focus:ring-gray-300"
+              }`}
+              disabled={!canAdminPay}  
               >
                 Pagar
               </button>
