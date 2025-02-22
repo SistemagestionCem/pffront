@@ -3,6 +3,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 import { DisplayOrder, EstadoOrden } from "../types";
 
 
+
 interface OrdersTableProps {
   orders: DisplayOrder[];
   sortOrder: "asc" | "desc";
@@ -67,9 +68,9 @@ export const OrdersTable = ({
                   <td className="p-2">
                     <span
                       className="block truncate max-w-[100px] sm:max-w-none"
-                      title={order.id}
+                      title={order.id} // Tooltip con el ID completo
                     >
-                      {order.id}
+                      {order.id.slice(0, 4)}...{order.id.slice(-4)}
                     </span>
                   </td>
                   <td className="p-2 hidden sm:table-cell">
@@ -80,14 +81,14 @@ export const OrdersTable = ({
                   <td className="p-2">
                     <span
                       className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "Actualizar"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : order.status === "Pendiente"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.status === "Iniciado"
-                              ? "bg-green-100 text-green-800"
-                              : order.status === "Finalizado"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-gray-100 text-gray-800"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : order.status === "Pendiente"
+                          ? "bg-blue-100 text-blue-800"
+                          : order.status === "Iniciado"
+                            ? "bg-green-100 text-green-800"
+                            : order.status === "Finalizado"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-gray-100 text-gray-800"
                         }`}
                     >
                       {order.status}
