@@ -41,6 +41,7 @@ export default function ModalOrden({
   const { userData } = userDataStorage();
   const isAdmin = userData?.role === "ADMIN";
   const isUser = userData?.role === "CLIENT"
+  const isTechn = userData?.role === "TECHN";
   const [descripcion, setDescripcion] = useState("");
   const { monto } = useMontoStore();
   const canAdminPay = isAdmin && monto > 0;
@@ -180,6 +181,7 @@ export default function ModalOrden({
 
 
             <div className="space-y-3">
+            {!isTechn && (
               <button
                 onClick={handlePayment}
                 disabled={!canAdminPay || isProcessing}
@@ -217,7 +219,7 @@ export default function ModalOrden({
                   "Pagar"
                 )}
               </button>
-
+            )}
 
               <button
                 className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDisabled || isFinalizado
