@@ -81,6 +81,8 @@ const LoginForm = () => {
           name: response.userFound.name,
           email: response.userFound.email,
           role: response.userFound.role,
+          dni: response.userFound.dni,   
+          phone: response.userFound.phone,
         });
 
         // Obtener órdenes según el rol

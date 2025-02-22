@@ -7,6 +7,8 @@ interface UserData {
   name: string;
   email: string;
   role: string;
+  dni: number;
+  phone: string; 
 }
 
 // Define el tipo del store

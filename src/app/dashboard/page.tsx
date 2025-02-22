@@ -23,6 +23,8 @@ export default function DashboardTecnico() {
     nombre: "",
     email: "",
     rol: "",
+    dni: 0,    
+    phone: "",  
   });
 
   type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
@@ -62,10 +64,13 @@ export default function DashboardTecnico() {
 
   useEffect(() => {
     if (userData) {
+      console.log("Datos del usuario:", userData);
       setUsuario({
         nombre: userData.name || "",
         email: userData.email || "",
         rol: userData.role || "",
+        dni: userData.dni || 0,  
+        phone: userData.phone || "" 
       });
     }
   }, [userData]);
@@ -161,7 +166,8 @@ export default function DashboardTecnico() {
           nombre={usuario.nombre}
           email={usuario.email}
           rol={usuario.rol}
-
+          phone={usuario.phone}
+          dni={usuario.dni}
         />
 
         <div className="flex flex-col gap-8 pb-8">
