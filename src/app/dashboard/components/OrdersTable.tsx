@@ -41,28 +41,26 @@ export const OrdersTable = ({
             <thead>
               <tr className="text-xs sm:text-sm bg-gray-50">
                 <th
-                  className="text-start p-2 font-medium"
+                  className="text-center p-2 sm:p-3 font-semibold text-gray-600 cursor-pointer"
                   onClick={onToggleSort}
                 >
-                  Fecha{" "}
-                  {sortOrder === "asc" ? (
-                    <ChevronUp size={14} />
-                  ) : (
-                    <ChevronDown size={14} />
-                  )}
+                  <div className="flex items-center justify-center gap-1">
+                    <span>Fecha</span>
+                    {sortOrder === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </div>
                 </th>
-                <th className="text-start p-2 font-medium">ID orden</th>
-                <th className="text-start p-2 font-medium hidden sm:table-cell">
+                <th className="text-center p-2 font-semibold text-gray-600">ID orden</th>
+                <th className="text-center p-2 font-semibold text-gray-600 hidden sm:table-cell">
                   {userRole === "Admin" ? "Técnico" : "Dispositivo"}
                 </th>
-                <th className="text-start p-2 font-medium">Estado</th>
+                <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {orders.map((order) => (
                 <tr
                   key={order.id}
-                  className="text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
+                  className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
                   onClick={() => onOrderClick(order)}
                 >
                   <td className="p-2 whitespace-nowrap">{order.date}</td>
@@ -81,8 +79,7 @@ export const OrdersTable = ({
                   </td>
                   <td className="p-2">
                     <span
-                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${
-                        order.status === "Actualizar"
+                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "Actualizar"
                           ? "bg-yellow-100 text-yellow-800"
                           : order.status === "Pendiente"
                             ? "bg-blue-100 text-blue-800"
@@ -91,7 +88,7 @@ export const OrdersTable = ({
                               : order.status === "Finalizado"
                                 ? "bg-red-100 text-red-800"
                                 : "bg-gray-100 text-gray-800"
-                      }`}
+                        }`}
                     >
                       {order.status}
                     </span>

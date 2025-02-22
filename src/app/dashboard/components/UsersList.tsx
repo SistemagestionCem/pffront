@@ -128,13 +128,13 @@ const UsersList = () => {
         <table className="w-full table-fixed">
           <thead>
             <tr className="text-xs sm:text-sm bg-gray-50">
-              <th className="text-start p-2 sm:p-3 font-semibold text-gray-600 w-[25%]">
+              <th className="text-center p-2 sm:p-3 font-semibold text-gray-600 w-[25%]">
                 Nombre
               </th>
-              <th className="text-start p-2 sm:p-3 font-semibold text-gray-600 w-[45%]">
+              <th className="text-center p-2 sm:p-3 font-semibold text-gray-600 w-[45%]">
                 Email
               </th>
-              <th className="text-start p-2 sm:p-3 font-semibold text-gray-600 w-[30%]">
+              <th className="text-center p-2 sm:p-3 font-semibold text-gray-600 w-[30%]">
                 Rol
               </th>
             </tr>
@@ -143,7 +143,7 @@ const UsersList = () => {
             {filteredUsers.map((user) => (
               <tr
                 key={user.id}
-                className="text-xs sm:text-sm hover:bg-gray-50 cursor-pointer transition-colors"
+                className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer transition-colors"
                 onClick={() => openModal(user)}
               >
                 <td className="p-2 sm:p-3">
