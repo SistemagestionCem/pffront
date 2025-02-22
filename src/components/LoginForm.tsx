@@ -105,8 +105,14 @@ const LoginForm = () => {
                 createdAt: order.createdAt || new Date(),
                 statusHistory: order.statusHistory || [],
                 isActive: order.isActive || false,
+                payment: order.payment ? {
+                  externalOrderId: order.payment.externalOrderId || '',
+                  id: order.payment.id,
+                  invoicePaidAt: order.payment.invoicePaidAt || '',
+                  price: order.payment.price,
+                  status: order.payment.status,
+                } : null,
               }));
-
               orderDataStorage.getState().setOrderData(ordersData);
             }
           } catch (error) {

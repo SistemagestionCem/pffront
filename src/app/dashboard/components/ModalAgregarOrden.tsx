@@ -14,27 +14,33 @@ interface ModalAgregarOrdenProps {
 }
 
 const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
-  const { tecnicos, admin, clientes } = useUsers();
+  const { tecnicos, admin } = useUsers();
 
   const [orderData, setOrderData] = useState({
-    assignedTechnician: "",
-    cliente: "",
-    description: "",
+    clientEmail: "",
+    clientDni: 0,
     equipmentType: "",
     imei: "",
-    status: "Pendiente" as "Pendiente" | "Iniciado" | "Finalizado",
+    assignedTechnician: "",
+    description: "",
+    status: "PENDIENTE" as "PENDIENTE" | "Iniciado" | "Finalizado",
     user: "",
+    payment: {
+      id: "",
+      price: 0,
+    },
     createdAt: new Date(),
-    id: Date.now().toString(),
   });
 
   const handleSubmit = async () => {
     const selectAdmin = admin[0];
     const payload = {
-      userId: selectAdmin.id,
-      clientId: orderData.cliente,
-      assignedTechnicianId: orderData.assignedTechnician,
+      ...orderData,
+      user: selectAdmin.id,
+      assignedTechnician: orderData.assignedTechnician,
     };
+
+    console.log(payload);
 
     try {
       const response = await postOrderService(payload);
@@ -73,24 +79,25 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               ))}
             </select>
 
-            <select
+            <input
+              type="text"
+              placeholder="Email Cliente"
               className="w-full p-2 border border-gray-300 rounded"
-              value={orderData.cliente}
-              title="Cliente"
+              value={orderData.clientEmail}
               onChange={(e) =>
-                setOrderData({
-                  ...orderData,
-                  cliente: e.target.value,
-                })
+                setOrderData({ ...orderData, clientEmail: e.target.value })
               }
-            >
-              <option value="">Seleccionar Cliente</option>
-              {clientes.map((cliente) => (
-                <option key={cliente.id} value={cliente.id}>
-                  {cliente.name}
-                </option>
-              ))}
-            </select>
+            />
+
+            <input
+              type="number"
+              placeholder="Dni Cliente"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={orderData.clientDni}
+              onChange={(e) =>
+                setOrderData({ ...orderData, clientDni: Number(e.target.value) })
+              }
+            />
 
             <input
               type="text"
@@ -127,7 +134,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
                 setOrderData({
                   ...orderData,
                   status: e.target.value as
-                    | "Pendiente"
+                    | "PENDIENTE"
                     | "Iniciado"
                     | "Finalizado",
                 })

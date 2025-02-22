@@ -30,10 +30,7 @@ const orderDataStorage = create<OrderDataStorageType>()(
         name: "order-data",
         storage: createJSONStorage(() => localStorage),
         partialize: (state) => ({
-          orderData: state.orderData.map((order) => ({
-            ...order,
-            createdAt: new Date(order.createdAt).toISOString(),
-          })),
+          orderData: state.orderData,
         }),
       }
     )

@@ -184,6 +184,7 @@ const UsersList = () => {
                 Editar Usuario
               </h2>
               <button
+                title="Cerrar"
                 onClick={closeModal}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
@@ -209,6 +210,7 @@ const UsersList = () => {
                   Rol:
                 </label>
                 <select
+                  title="Rol"
                   value={role}
                   onChange={(e) => setRole(e.target.value as Role)}
                   className="mt-1 w-full p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -246,6 +248,8 @@ const UsersList = () => {
                 Editar Usuario
               </h2>
               <button
+                type="button"
+                title="Cerrar"
                 onClick={closeModal}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
@@ -271,6 +275,7 @@ const UsersList = () => {
                   Rol:
                 </label>
                 <select
+                  title="Rol"
                   value={role}
                   onChange={(e) => setRole(e.target.value as Role)}
                   className="mt-1 w-full p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

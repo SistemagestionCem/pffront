@@ -1,4 +1,5 @@
-const apiUrl = "https://pfback-osdi.onrender.com/";
+// const apiUrl = "https://pfback-osdi.onrender.com/";
+const apiUrl = "http://localhost:3000/";
 console.log("Fetching from:", apiUrl);
 
 export const getAllUserService = async () => {

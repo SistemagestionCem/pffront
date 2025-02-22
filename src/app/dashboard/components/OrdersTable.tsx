@@ -4,6 +4,7 @@ import { DisplayOrder, EstadoOrden } from "../types";
 
 
 
+
 interface OrdersTableProps {
   orders: DisplayOrder[];
   sortOrder: "asc" | "desc";
@@ -76,17 +77,17 @@ export const OrdersTable = ({
                   <td className="p-2 hidden sm:table-cell">
                     {userRole === "Admin"
                       ? order.assignedTechnician
-                      : order.device}
+                      : order.equipmentType}
                   </td>
                   <td className="p-2">
                     <span
-                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "Actualizar"
+                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "PENDIENTE"
                         ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "Pendiente"
+                        : order.status === "REVISION"
                           ? "bg-blue-100 text-blue-800"
-                          : order.status === "Iniciado"
+                          : order.status === "CONFIRMADO"
                             ? "bg-green-100 text-green-800"
-                            : order.status === "Finalizado"
+                            : order.status === "CANCELADO"
                               ? "bg-red-100 text-red-800"
                               : "bg-gray-100 text-gray-800"
                         }`}

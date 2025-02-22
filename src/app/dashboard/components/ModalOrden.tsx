@@ -1,31 +1,44 @@
+/* eslint-disable */
 "use client";
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
-import { useMontoStore } from "@/storage/montoStore";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
+import { updateOrderStatus } from "@/services/orderService";
+import orderDataStorage from "@/storage/orderStore";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   order?: {
-    date: string;
     id: string;
-    device: string;
-    status: EstadoOrden;
+    clientEmail: string;
+    clientDni: number;
+    equipmentType: string;
+    imei: string;
+    assignedTechnician?: string;
+    description: string;
+    status: string;
+    payment: null | {
+      externalOrderId: string | null;
+      id: string;
+      invoicePaidAt: string | null;
+      price: string;
+      status: string;
+    };
   };
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
-type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
+type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO";
 
 const estadoColores: Record<EstadoOrden, string> = {
-  Actualizar: "text-black",
-  Iniciado: "text-blue-500",
-  Pendiente: "text-orange-500",
-  Finalizado: "text-red-600",
+  PENDIENTE: "text-black",
+  REVISION: "text-blue-500",
+  CONFIRMADO: "text-orange-500",
+  CANCELADO: "text-red-600",
 };
 
 export default function ModalOrden({
@@ -40,11 +53,10 @@ export default function ModalOrden({
   const isUser = userData?.role === "CLIENT";
   const isTechn = userData?.role === "TECHN";
   const [descripcion, setDescripcion] = useState("");
-  const { monto } = useMontoStore();
-  const canAdminPay = isAdmin && monto > 0;
 
   useEffect(() => {
     setDescripcion("");
+    
   }, [order]);
 
   if (!isOpen || !order) return null;
@@ -60,17 +72,18 @@ export default function ModalOrden({
     }
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (price: string, orderId: string ) => {
+    const monto = Number(price);
     if (monto <= 0) return;
     setIsProcessing(true);
 
     const order = {
       clientId: "1",
-      title: "title",
+      title: orderId,
       description: "description",
       quantity: 1,
-      unit_price: monto,
-      productId: "1",
+      unit_price: Number(monto),
+      productId: orderId,
       external: "false",
     };
 
@@ -82,7 +95,6 @@ export default function ModalOrden({
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (data.init_point) {
         window.open(data.init_point, "_blank"); // Redirige a MercadoPago en pestaña nueva
@@ -91,6 +103,26 @@ export default function ModalOrden({
       console.error("Error en el pago:", error);
     } finally {
       setIsProcessing(false); // Desactiva el spinner al finalizar
+    }
+  };
+
+  const handleRepair = async (orderId: string) => {
+    try {
+      const response = await updateOrderStatus(orderId, "REPARACION");
+      if (response) {
+        // Actualizamos solo el status, manteniendo los demás valores
+        const order = orderDataStorage.getState().orderData.find(order => order.id === orderId);
+        if (order) {
+          orderDataStorage.getState().updateOrder({
+            ...order, // Mantenemos el resto de los valores
+            status: "REPARACION", // Solo actualizamos el status
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      onClose();
     }
   };
 
@@ -115,6 +147,8 @@ export default function ModalOrden({
                 Detalle de orden
               </h2>
               <button
+                type="button"
+                title="Cerrar"
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
@@ -128,7 +162,7 @@ export default function ModalOrden({
                   Estado:
                 </label>
                 <p
-                  className={`mt-1 font-medium ${estadoColores[order.status]}`}
+                  className={`mt-1 font-medium text-gray-700`}
                 >
                   {order.status}
                 </p>
@@ -137,7 +171,7 @@ export default function ModalOrden({
                 <label className="text-bodyBold font-bold text-gray-700">
                   Dispositivo:
                 </label>
-                <p className="mt-1 text-gray-900">{order.device}</p>
+                <p className="mt-1 text-gray-900">{order.equipmentType}</p>
               </div>
               <div>
                 <label className="text-bodyBold font-bold text-gray-700">
@@ -145,6 +179,22 @@ export default function ModalOrden({
                 </label>
                 <p className="mt-1 text-gray-900 truncate" title={order.id}>
                   {order.id}
+                </p>
+              </div>
+              <div>
+                <label className="text-bodyBold font-bold text-gray-700">
+                  Email Cliente:
+                </label>
+                <p className="mt-1 text-gray-900 truncate" title={order.id}>
+                  {order.clientEmail}
+                </p>
+              </div>
+              <div>
+                <label className="text-bodyBold font-bold text-gray-700">
+                  Dni Cliente:
+                </label>
+                <p className="mt-1 text-gray-900 truncate" title={order.id}>
+                  {order.clientDni}
                 </p>
               </div>
 
@@ -155,34 +205,29 @@ export default function ModalOrden({
                 <textarea
                   placeholder="Ingrese una descripción detallada aquí..."
                   className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
-                  value={descripcion}
+                  value={order.description}
                   onChange={(e) => setDescripcion(e.target.value)}
                 />
               </div>
             </div>
 
-            {isAdmin && (
+            {(isAdmin && order.status === "REVISION") &&  (
               <div className="space-y-2 mb-4">
                 <PaymentForm orderId={order.id} />
               </div>
             )}
 
-            {isUser && (
+            {(isUser && order.status === "REVISION" && order.payment !== null) && (
               <div className="space-y-2 mb-4">
-                <OrderPaymentUser orderId={order.id} />
+                <OrderPaymentUser orderId={order?.id} price={order?.payment?.price} onClose={onClose} />
               </div>
             )}
 
+          {(isUser && order.status === "CONFIRMADO" && order.payment?.status === "PENDING") && (
             <div className="space-y-3">
-              {!isTechn && (
                 <button
-                  onClick={handlePayment}
-                  disabled={!canAdminPay || isProcessing}
-                  className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200  ${
-                    canAdminPay
-                      ? "bg-gray-600 hover:bg-gray-700 focus:ring-gray-400"
-                      : "bg-gray-700 opacity-50 cursor-not-allowed focus:ring-gray-300"
-                  }`}
+                  onClick={() => handlePayment(order.payment?.price ?? '0', order.id)}
+                  className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${isProcessing ? "cursor-not-allowed" : ""}`}
                 >
                   {isProcessing ? (
                     <>
@@ -199,12 +244,12 @@ export default function ModalOrden({
                           r="10"
                           stroke="white"
                           strokeWidth="4"
-                        />
+                          />
                         <path
                           className="opacity-75"
                           fill="white"
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
+                          />
                       </svg>
                       <span>Procesando...</span>
                     </>
@@ -212,31 +257,14 @@ export default function ModalOrden({
                     "Pagar"
                   )}
                 </button>
-              )}
-
-              <button
-                className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  isDisabled || isFinalizado
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-                disabled={isDisabled || isFinalizado}
-                onClick={() => handleChangeEstado("Iniciado")}
-              >
-                Iniciar
-              </button>
-              <button
-                className={`w-full px-4 py-2 text-bodyBold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                  isDisabled || isFinalizado
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-                disabled={isDisabled || isFinalizado}
-                onClick={() => handleChangeEstado("Finalizado")}
-              >
-                Finalizar
-              </button>
             </div>
+                        )}
+
+            {(isTechn && order.status === "CONFIRMADO") && (
+              <div>
+                <button onClick={() => handleRepair(order.id)} className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600">REPARACION</button>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}

@@ -19,7 +19,7 @@ export interface OrderType {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
+  status: "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
   user: {
     id: string;
     name: string;
@@ -27,10 +27,18 @@ export interface OrderType {
     password: string;
     phone: string;
   };
+  payment: null | {
+    externalOrderId: string | null;
+    id: string;
+    invoicePaidAt: string | null;
+    price: string;
+    status: string;
+  };
   createdAt: Date;
   statusHistory: []; // Array de historial de estado
   isActive: boolean;
 }
+
 
 
 export interface UserType {
@@ -44,11 +52,12 @@ export interface UserType {
 }
 
 export interface PostOrderType {
-  userId: string;
-
-  clientId: string;
-
-  assignedTechnicianId: string;
+  clientEmail: string;
+  clientDni: number;
+  equipmentType: string;
+  imei: string;
+  assignedTechnician: string;
+  description: string;
 }
 
 export interface OrdeType {
@@ -60,6 +69,7 @@ export interface OrdeType {
   assignedTechnician: string;
   description: string;
   status: "Pendiente" | "Iniciado" | "Finalizado";
+  payment: number;
   user: string;
   date: string;
 }

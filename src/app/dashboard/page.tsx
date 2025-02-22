@@ -27,15 +27,27 @@ export default function DashboardTecnico() {
     phone: "",  
   });
 
-  type EstadoOrden = "Actualizar" | "Pendiente" | "Iniciado" | "Finalizado";
+  type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
 
   type DisplayOrder = {
-    date: string;
     id: string;
-    device: string;
+    clientEmail: string;
+    clientDni: number;
+    equipmentType: string;
+    imei: string;
+    assignedTechnician?: string;
+    description: string;
     status: EstadoOrden;
-    assignedTechnician: string;
+    payment: null | {
+      externalOrderId: string | null;
+      id: string;
+      invoicePaidAt: string | null;
+      price: string;
+      status: string;
+    };
+    date: string;
   };
+  
 
   const estadoColores = {
     Iniciado: "text-blue-500",
@@ -44,18 +56,30 @@ export default function DashboardTecnico() {
   };
 
   useEffect(() => {
+    
     if (orderData) {
       const formattedOrders: DisplayOrder[] = orderData.map((order) => {
-        const technician = users.find(
-          (user) => user.id === order.assignedTechnician
-        );
-
+        const technician = users.find((user) => user.id === order.assignedTechnician);
+      
         return {
-          date: new Date(order.createdAt).toLocaleDateString("es-ES"),
           id: order.id,
-          device: order.equipmentType,
-          status: order.status as EstadoOrden,
+          clientEmail: order.clientEmail,
+          clientDni: order.clientDni,
+          equipmentType: order.equipmentType,
+          imei: order.imei,
           assignedTechnician: technician?.name || "No asignado",
+          description: order.description,
+          status: order.status as EstadoOrden,
+          payment: order.payment
+            ? {
+                externalOrderId: order.payment.externalOrderId ?? null,
+                id: order.payment.id ?? "",
+                invoicePaidAt: order.payment.invoicePaidAt ?? null,
+                price: order.payment.price ?? "0",
+                status: order.payment.status ?? "Desconocido",
+              }
+            : null,
+          date: order.createdAt ? new Date(order.createdAt).toLocaleDateString("es-ES") : "Fecha desconocida",
         };
       });
       setOrders(formattedOrders);
@@ -64,7 +88,6 @@ export default function DashboardTecnico() {
 
   useEffect(() => {
     if (userData) {
-      console.log("Datos del usuario:", userData);
       setUsuario({
         nombre: userData.name || "",
         email: userData.email || "",
@@ -101,35 +124,21 @@ export default function DashboardTecnico() {
     }
   };
 
-  // Modificar el useEffect que observa orderData
-  useEffect(() => {
-    if (orderData) {
-      const formattedOrders: DisplayOrder[] = orderData.map((order) => {
-        const technician = users.find(
-          (user) => user.id === order.assignedTechnician
-        );
-
-        return {
-          date: new Date(order.createdAt).toLocaleDateString("es-ES"),
-          id: order.id,
-          device: order.equipmentType,
-          status: order.status as EstadoOrden,
-          assignedTechnician: technician?.name || "No asignado",
-        };
-      });
-      setOrders(formattedOrders);
-    }
-  }, [orderData]); // Este efecto se ejecutará cada vez que orderData cambie
-
   const handleSaveOrder = (newOrder: OrderType) => {
     addOrder(newOrder);
     const formattedOrder: DisplayOrder = {
-      date: new Date(newOrder.createdAt).toLocaleDateString("es-ES"),
       id: newOrder.id,
-      device: newOrder.equipmentType,
-      status: newOrder.status,
+      clientEmail: newOrder.clientEmail,
+      clientDni: newOrder.clientDni,
+      equipmentType: newOrder.equipmentType,
+      imei: newOrder.imei,
       assignedTechnician: newOrder.assignedTechnician || "No asignado",
+      description: newOrder.description,
+      status: newOrder.status,
+      payment: newOrder.payment,
+      date: new Date(newOrder.createdAt).toLocaleDateString("es-ES"),
     };
+
     setOrders((prevOrders) => [...prevOrders, formattedOrder]);
   };
 
@@ -140,7 +149,7 @@ export default function DashboardTecnico() {
       return searchTerms.every(
         (term) =>
           order.id.toLowerCase().includes(term) ||
-          order.device.toLowerCase().includes(term) ||
+          order.equipmentType.toLowerCase().includes(term) ||
           order.status.toLowerCase().includes(term) ||
           order.date.toLowerCase().includes(term)
       );

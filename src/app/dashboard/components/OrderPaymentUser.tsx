@@ -1,16 +1,55 @@
-import { useMontoStore } from "@/storage/montoStore";
-
+import { updateOrderStatus } from "@/services/orderService";
+import orderDataStorage from "@/storage/orderStore";
 
 interface OrderPaymentUserProps {
   orderId: string;
+  price: string; // Agregamos el precio como prop
+  onClose: () => void;
 }
 
-export const OrderPaymentUser = ({ orderId }: OrderPaymentUserProps) => {
-  const { monto, orderId: storedOrderId } = useMontoStore();
+export const OrderPaymentUser = ({ orderId, price, onClose }: OrderPaymentUserProps) => {
+  const montoMostrar = price ? price : "0"; // Mostramos el precio si está disponible
 
-  const montoMostrar = storedOrderId === orderId ? monto : 0;
+  const handleConfirmar = async (orderId: string) => {
+    try {
+      const response = await updateOrderStatus(orderId, "CONFIRMADO");
+      if (response) {
+        // Actualizamos solo el status, manteniendo los demás valores
+        const order = orderDataStorage.getState().orderData.find(order => order.id === orderId);
+        if (order) {
+          orderDataStorage.getState().updateOrder({
+            ...order, // Mantenemos el resto de los valores
+            status: "CONFIRMADO", // Solo actualizamos el status
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      onClose();
+    }
+  };
 
- 
+  const handleCancelar = async (orderId: string) => {
+    try {
+      const response = await updateOrderStatus(orderId, "CANCELADO");
+      if (response) {
+        // Actualizamos solo el status, manteniendo los demás valores
+        const order = orderDataStorage.getState().orderData.find(order => order.id === orderId);
+        if (order) {
+          orderDataStorage.getState().updateOrder({
+            ...order, // Mantenemos el resto de los valores
+            status: "CANCELADO", // Solo actualizamos el status
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      onClose();
+    }
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-md">
       <h3 className="text-lg font-semibold text-gray-900">Monto a Pagar</h3>
@@ -19,22 +58,22 @@ export const OrderPaymentUser = ({ orderId }: OrderPaymentUserProps) => {
       <div className="flex gap-4 mt-4">
         <button
           className={`w-full px-4 py-2 text-white font-semibold rounded-lg ${
-            montoMostrar > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"
+            parseFloat(montoMostrar) > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"
           }`}
-
-          disabled={montoMostrar <= 0}
+          disabled={parseFloat(montoMostrar) <= 0}
+          onClick={() => handleConfirmar(orderId)} // Llamada a handleConfirmar
         >
           Confirmar
         </button>
         <button
           className={`w-full px-4 py-2 text-white font-semibold rounded-lg ${
-            montoMostrar > 0 ? "bg-primary-500 hover:bg-primary-600" : "bg-gray-400 transition-colors"
+            parseFloat(montoMostrar) > 0 ? "bg-primary-500 hover:bg-primary-600" : "bg-gray-400"
           }`}
-
-          disabled={montoMostrar <= 0}
+          disabled={parseFloat(montoMostrar) <= 0}
+          onClick={() => handleCancelar(orderId)} // Llamada a handleCancelar
         >
           Cancelar
-        </button> 
+        </button>
       </div>
     </div>
   );

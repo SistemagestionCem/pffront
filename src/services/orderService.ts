@@ -1,6 +1,7 @@
 import { PostOrderType } from "@/interfaces";
 import { toast } from "sonner";
-const apiUrl = "https://pfback-osdi.onrender.com/";
+// const apiUrl = "https://pfback-osdi.onrender.com/";
+const apiUrl = "http://localhost:3000/";
 
 export const postOrderService = async (data: PostOrderType) => {
   try {
@@ -69,3 +70,24 @@ export const getTechOrders = async (id: string) => {
     return null
   }
 }
+
+export const updateOrderStatus = async (id: string, status: string) => {
+  try {
+    const response = await fetch(`${apiUrl}orders/${id}/status/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    });
+    console.log("Raw response:", response);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Error al cargar el usuarios");
+    }
+    return response.json();
+  } catch (error) {
+    console.log("error al obtener los usuarios", error);
+    return null;
+  }
+};
