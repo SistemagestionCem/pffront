@@ -1,4 +1,4 @@
-import LoginForm from "../../components/LoginForm";
+import LoginForm from "@/components/LoginForm";
 import PageTransition from "@/components/PageTransition";
 
 export default function Page() {

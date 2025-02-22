@@ -62,64 +62,69 @@ const LoginForm = () => {
       return;
     }
 
-    if (!email || !password) {
-      toast.error("Ambos campos son requeridos!", {
-        position: "top-center",
-        richColors: true,
-      });
-      return;
-    }
-
     setIsLoggingIn(true);
 
     try {
+      // 1. Login y obtener datos del usuario
       const response = await login(email, password);
+
       if (response) {
-        // Guardar datos del usuario
+        // 2. Guardar datos del usuario inmediatamente
         setUserData({
           id: response.userFound.id,
           name: response.userFound.name,
           email: response.userFound.email,
           role: response.userFound.role,
-          dni: response.userFound.dni,   
+          dni: response.userFound.dni,
           phone: response.userFound.phone,
         });
 
-        // Obtener órdenes según el rol
-        let orders;
-        if (response.userFound.role === "CLIENT") {
-          orders = await getOrderByEmail(response.userFound.email);
-        } else if (response.userFound.role === "TECHN") {
-          orders = await getTechOrders(response.userFound.id);
-        } else {
-          orders = response.userFound.orders;
-        }
+        // 3. Iniciar carga de órdenes
+        const loadOrders = async () => {
+          try {
+            let orders;
+            if (response.userFound.role === "CLIENT") {
+              orders = await getOrderByEmail(response.userFound.email);
+            } else if (response.userFound.role === "TECHN") {
+              orders = await getTechOrders(response.userFound.id);
+            } else {
+              orders = response.userFound.orders;
+            }
 
-        // Procesar órdenes si existen
-        if (orders) {
-          const ordersData = orders.map((order: OrderType) => ({
-            id: order.id,
-            clientEmail: order.clientEmail,
-            clientDni: order.clientDni,
-            equipmentType: order.equipmentType,
-            imei: order.imei,
-            assignedTechnician: order.assignedTechnician || "",
-            description: order.description,
-            status: order.status,
-            user: order.user,
-            createdAt: order.createdAt || new Date(),
-            statusHistory: order.statusHistory || [],
-            isActive: order.isActive || false,
-          }));
+            if (orders) {
+              const ordersData = orders.map((order: OrderType) => ({
+                id: order.id,
+                clientEmail: order.clientEmail,
+                clientDni: order.clientDni,
+                equipmentType: order.equipmentType,
+                imei: order.imei,
+                assignedTechnician: order.assignedTechnician || "",
+                description: order.description,
+                status: order.status,
+                user: order.user,
+                createdAt: order.createdAt || new Date(),
+                statusHistory: order.statusHistory || [],
+                isActive: order.isActive || false,
+              }));
 
-          orderDataStorage.getState().setOrderData(ordersData);
-        }
+              orderDataStorage.getState().setOrderData(ordersData);
+            }
+          } catch (error) {
+            console.error("Error cargando órdenes:", error);
+          }
+        };
 
+        // 4. Mostrar mensaje de éxito y redirigir
         toast.success(`Bienvenido ${response.userFound.name}!`, {
           position: "top-center",
           richColors: true,
         });
-        router.push("/dashboard");
+
+        // 5. Cargar órdenes en segundo plano y redirigir
+        loadOrders().finally(() => {
+          router.push("/dashboard");
+          setIsLoggingIn(false);
+        });
       }
     } catch (err) {
       console.error(err);

@@ -92,7 +92,7 @@ export default function Home() {
           >
             <input
               type="text"
-              placeholder="Rastrea tu orden"
+              placeholder="Ingresa tu correo"
               className="py-[10px] px-[16px] w-full text-center bg-white/90 rounded-[8px] placeholder-gray-500 outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 border border-transparent"
               value={userEmail.email}
               onChange={(e) =>
@@ -104,30 +104,43 @@ export default function Home() {
             />
             <button className="py-[10px] px-[16px]  bg-primary-500 mt-4 w-full rounded-[16px] text-white text-title2 hover:bg-primary-600 transition-colors">
               <i className="mr-2 fa-solid fa-xs fa-magnifying-glass"></i>Buscar
+              orden
             </button>
           </form>
           <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-            <h2 className="mb-4 text-xl font-bold">Detalles de la Orden</h2>
-            {orderData.length > 0 ? (
-              orderData.map((order, index) => (
-                <div key={index} className="pb-2 mb-4 border-b">
-                  <p>
-                    <strong>ID:</strong> {order.id}
+            <div className="bg-secondary-500 p-4 rounded-[16px]">
+              <h2 className="mb-4 text-xl font-bold text-white">
+                Detalles de la Orden
+              </h2>
+              {orderData.length > 0 ? (
+                orderData.map((order, index) => (
+                  <div key={index} className="pb-2 space-y-3 text-white">
+                    <p>
+                      <strong>ID:</strong> {order.id}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {order.clientEmail}
+                    </p>
+                    <p>
+                      <strong>Historial:</strong> {order.statusHistory}
+                    </p>
+                    <p>
+                      <strong>Estado:</strong> {order.status}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="space-y-3 text-center">
+                  <i className="fa-solid fa-circle-exclamation text-primary-500 text-4xl mb-4"></i>
+                  <p className="text-title2 text-white">
+                    No se encontraron órdenes para este correo
                   </p>
-                  <p>
-                    <strong>Email:</strong> {order.clientEmail}
-                  </p>
-                  <p>
-                    <strong>Historial:</strong> {order.statusHistory}
-                  </p>
-                  <p>
-                    <strong>Estado:</strong> {order.status}
+                  <p className="text-subtitle2 text-white/70">
+                    Por favor, verifica el correo ingresado
                   </p>
                 </div>
-              ))
-            ) : (
-              <p>Cargando...</p>
-            )}
+              )}
+            </div>
           </Modal>
         </section>
 

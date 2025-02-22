@@ -7,7 +7,6 @@ import { useMontoStore } from "@/storage/montoStore";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
 
-
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,8 +28,6 @@ const estadoColores: Record<EstadoOrden, string> = {
   Finalizado: "text-red-600",
 };
 
-
-
 export default function ModalOrden({
   isOpen,
   onClose,
@@ -40,7 +37,7 @@ export default function ModalOrden({
   const [isProcessing, setIsProcessing] = useState(false);
   const { userData } = userDataStorage();
   const isAdmin = userData?.role === "ADMIN";
-  const isUser = userData?.role === "CLIENT"
+  const isUser = userData?.role === "CLIENT";
   const isTechn = userData?.role === "TECHN";
   const [descripcion, setDescripcion] = useState("");
   const { monto } = useMontoStore();
@@ -51,9 +48,6 @@ export default function ModalOrden({
   }, [order]);
 
   if (!isOpen || !order) return null;
-
-
-
 
   const minCaracteres = 3;
   const isDisabled = descripcion.length < minCaracteres;
@@ -91,7 +85,7 @@ export default function ModalOrden({
       console.log(data);
 
       if (data.init_point) {
-        window.open(data.init_point, "_blank") // Redirige a MercadoPago en pestaña nueva
+        window.open(data.init_point, "_blank"); // Redirige a MercadoPago en pestaña nueva
       }
     } catch (error) {
       console.error("Error en el pago:", error);
@@ -107,16 +101,16 @@ export default function ModalOrden({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col"
+            className="bg-white p-6 rounded-xl shadow-lg w-full max-w-[480px] max-h-[90vh] overflow-y-auto mx-auto"
           >
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-900">
                 Detalle de orden
               </h2>
@@ -128,7 +122,7 @@ export default function ModalOrden({
               </button>
             </div>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-2 mb-6">
               <div>
                 <label className="text-bodyBold font-bold text-gray-700">
                   Estado:
@@ -168,74 +162,75 @@ export default function ModalOrden({
             </div>
 
             {isAdmin && (
-              <div className="space-y-4 mb-4">
+              <div className="space-y-2 mb-4">
                 <PaymentForm orderId={order.id} />
               </div>
             )}
 
             {isUser && (
-              <div className="space-y-4 mb-4">
+              <div className="space-y-2 mb-4">
                 <OrderPaymentUser orderId={order.id} />
               </div>
             )}
 
-
             <div className="space-y-3">
-            {!isTechn && (
-              <button
-                onClick={handlePayment}
-                disabled={!canAdminPay || isProcessing}
-                className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200  ${canAdminPay
-                  ? "bg-gray-600 hover:bg-gray-700 focus:ring-gray-400"
-                  : "bg-gray-700 opacity-50 cursor-not-allowed focus:ring-gray-300"
+              {!isTechn && (
+                <button
+                  onClick={handlePayment}
+                  disabled={!canAdminPay || isProcessing}
+                  className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200  ${
+                    canAdminPay
+                      ? "bg-gray-600 hover:bg-gray-700 focus:ring-gray-400"
+                      : "bg-gray-700 opacity-50 cursor-not-allowed focus:ring-gray-300"
                   }`}
-
-              >
-                {isProcessing ? (
-                  <>
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="white"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="white"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    <span>Procesando...</span>
-                  </>
-                ) : (
-                  "Pagar"
-                )}
-              </button>
-            )}
+                >
+                  {isProcessing ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="white"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="white"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      <span>Procesando...</span>
+                    </>
+                  ) : (
+                    "Pagar"
+                  )}
+                </button>
+              )}
 
               <button
-                className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDisabled || isFinalizado
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-                  }`}
+                className={`w-full px-4 py-2 text-bodyBold text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  isDisabled || isFinalizado
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                 disabled={isDisabled || isFinalizado}
                 onClick={() => handleChangeEstado("Iniciado")}
               >
                 Iniciar
               </button>
               <button
-                className={`w-full px-4 py-2 text-bodyBold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ${isDisabled || isFinalizado
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-                  }`}
+                className={`w-full px-4 py-2 text-bodyBold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  isDisabled || isFinalizado
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
                 disabled={isDisabled || isFinalizado}
                 onClick={() => handleChangeEstado("Finalizado")}
               >
