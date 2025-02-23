@@ -100,12 +100,25 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
 
     try {
       const response = await postOrderService(payload);
-      if (response) {
-        toast.success("Orden creada con éxito");
-        onClose();
+      console.log("Respuesta del servidor:", response);
+
+      if (response && response.ok) {
+        console.log("Orden creada con éxito"); // Verifica que llega aquí
+
+        toast.success(`Bienvenido ${response.userFound.name}!`, {
+          position: "top-center",
+          richColors: true,
+        });
+        setTimeout(() => {
+          console.log("Cerrando modal"); // Verifica si este mensaje aparece
+          onClose();
+        }, 2000);
       }
     } catch (error) {
-      toast.error("Error al crear la orden");
+      toast.error("Error al crear la orden", {
+        position: "top-center",
+        richColors: true,
+      });
       console.error(error);
     }
   };
@@ -264,8 +277,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               onChange={handleInputChange}
             >
               <option value="Pendiente">Pendiente</option>
-              <option value="Iniciado">Iniciado</option>
-              <option value="Finalizado">Finalizado</option>
+              
             </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
               {touchInput.status && <p className="text-primary-500 text-sm">{errors.status}</p>}
