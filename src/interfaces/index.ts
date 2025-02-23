@@ -68,7 +68,7 @@ export interface OrdeType {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "Pendiente" | "Iniciado" | "Finalizado";
+  status: "PENDIENTE" | "INICIADO" | "FINALIZADO";
   payment: number;
   user: string;
   date: string;
@@ -79,4 +79,24 @@ export interface OrderByMail {
   status: string;
   clientEmail: string;
   statusHistory: string;
+}
+
+export interface OrdeTypeValidate {
+  clientEmail: string;
+  clientDni: number;
+  equipmentType: string;
+  imei: string;
+  assignedTechnician: string;
+  description: string;
+  status: "PENDIENTE" | "INICIADO" | "FINALIZADO";
+}
+
+export interface OrderErrors {
+  clientEmail: string;
+  clientDni: string;
+  equipmentType: string;
+  imei: string;
+  assignedTechnician: string;
+  description: string;
+  status: string;
 }
