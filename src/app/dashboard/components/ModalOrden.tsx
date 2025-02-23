@@ -32,13 +32,15 @@ interface ModalProps {
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
-type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO";
+type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
 
 const estadoColores: Record<EstadoOrden, string> = {
   PENDIENTE: "text-black",
   REVISION: "text-blue-500",
   CONFIRMADO: "text-orange-500",
   CANCELADO: "text-red-600",
+  REPARACION: "text-yellow-500",
+  FINALIZADO: "text-green-500"
 };
 
 export default function ModalOrden({
@@ -56,7 +58,7 @@ export default function ModalOrden({
 
   useEffect(() => {
     setDescripcion("");
-    
+
   }, [order]);
 
   if (!isOpen || !order) return null;
@@ -72,7 +74,7 @@ export default function ModalOrden({
     }
   };
 
-  const handlePayment = async (price: string, orderId: string ) => {
+  const handlePayment = async (price: string, orderId: string) => {
     const monto = Number(price);
     if (monto <= 0) return;
     setIsProcessing(true);
@@ -125,6 +127,7 @@ export default function ModalOrden({
       onClose();
     }
   };
+
 
   return (
     <AnimatePresence>
@@ -211,20 +214,20 @@ export default function ModalOrden({
               </div>
             </div>
 
-            {(isAdmin && order.status === "REVISION") &&  (
+            {(isAdmin && order.status === "REVISION") && (
               <div className="space-y-2 mb-4">
                 <PaymentForm orderId={order.id} />
               </div>
             )}
 
-            {(isUser && order.status === "REVISION" && order.payment !== null) && (
+            {isUser && order.status === "REVISION" && order.payment !== null && (
               <div className="space-y-2 mb-4">
                 <OrderPaymentUser orderId={order?.id} price={order?.payment?.price} onClose={onClose} />
               </div>
             )}
 
-          {(isUser && order.status === "CONFIRMADO" && order.payment?.status === "PENDING") && (
-            <div className="space-y-3">
+            {(isUser && order.status === "REPARACION" && order.payment?.status === "PENDING") && (
+              <div className="space-y-3">
                 <button
                   onClick={() => handlePayment(order.payment?.price ?? '0', order.id)}
                   className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${isProcessing ? "cursor-not-allowed" : ""}`}
@@ -244,12 +247,12 @@ export default function ModalOrden({
                           r="10"
                           stroke="white"
                           strokeWidth="4"
-                          />
+                        />
                         <path
                           className="opacity-75"
                           fill="white"
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
+                        />
                       </svg>
                       <span>Procesando...</span>
                     </>
@@ -257,14 +260,36 @@ export default function ModalOrden({
                     "Pagar"
                   )}
                 </button>
-            </div>
-                        )}
-
-            {(isTechn && order.status === "CONFIRMADO") && (
-              <div>
-                <button onClick={() => handleRepair(order.id)} className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600">REPARACION</button>
               </div>
             )}
+
+            {isTechn && order.status === "PENDIENTE" && (
+              <button
+                onClick={() => handleEstadoChange(order.id, "REVISION")}
+                className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-blue-500 hover:bg-blue-600"
+              >
+                Revisión
+              </button>
+            )}
+
+            {isTechn && order.status === "CONFIRMADO" && (
+              <button
+                onClick={() => handleEstadoChange(order.id, "REPARACION")}
+                className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-orange-500 hover:bg-orange-600"
+              >
+                Reparación
+              </button>
+            )}
+
+            {isTechn && order.status === "REPARACION" && (
+              <button
+                onClick={() => handleEstadoChange(order.id, "FINALIZADO")}
+                className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
+              >
+                Finalizar
+              </button>
+            )}
+
           </motion.div>
         </motion.div>
       )}

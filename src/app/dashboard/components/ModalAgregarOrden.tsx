@@ -15,7 +15,7 @@ interface ModalAgregarOrdenProps {
   handleSaveOrder: (newOrder: OrderType) => void; // Añadido el tipo handleSaveOrder
 }
 
-const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
+const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrdenProps) => {
   const { tecnicos, admin } = useUsers();
 
   const [orderData, setOrderData] = useState({
@@ -93,7 +93,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
       description: orderData.description.trim(),
       status: orderData.status.trim(),
       user: selectAdmin.id,
-      assignedTechnician: orderData.assignedTechnician, // Evita enviar string vacío
+      assignedTechnician: orderData.assignedTechnician,
     };
 
     console.log(payload);
@@ -102,9 +102,12 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
       const response = await postOrderService(payload);
       console.log("Respuesta del servidor:", response);
 
-      if (response && response.ok) {
+      if (response) {
         console.log("Orden creada con éxito"); // Verifica que llega aquí
 
+        handleSaveOrder(response); 
+
+        
         toast.success(`Bienvenido ${response.userFound.name}!`, {
           position: "top-center",
           richColors: true,

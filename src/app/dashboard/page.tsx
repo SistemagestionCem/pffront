@@ -10,6 +10,7 @@ import PageTransition from "@/components/PageTransition";
 import { users } from "@/helpers/users";
 import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
+import { updateOrderStatus } from "@/services/orderService";
 
 export default function DashboardTecnico() {
   const { orderData, addOrder, updateOrder } = orderDataStorage();
@@ -23,8 +24,8 @@ export default function DashboardTecnico() {
     nombre: "",
     email: "",
     rol: "",
-    dni: 0,    
-    phone: "",  
+    dni: 0,
+    phone: "",
   });
 
   type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
@@ -47,20 +48,24 @@ export default function DashboardTecnico() {
     };
     date: string;
   };
-  
 
-  const estadoColores = {
-    Iniciado: "text-blue-500",
-    Pendiente: "text-orange-500",
-    Finalizado: "text-primary-500",
+
+  const estadoColores: Record<EstadoOrden, string> = {
+    PENDIENTE: "text-black",
+    REVISION: "text-blue-500",
+    CONFIRMADO: "text-orange-500",
+    CANCELADO: "text-red-600",
+    REPARACION: "text-yellow-500",
+    FINALIZADO: "text-green-500"
   };
 
   useEffect(() => {
-    
+    console.log("Nuevo estado de orderData recibido:", orderData);
+
     if (orderData) {
       const formattedOrders: DisplayOrder[] = orderData.map((order) => {
         const technician = users.find((user) => user.id === order.assignedTechnician);
-      
+
         return {
           id: order.id,
           clientEmail: order.clientEmail,
@@ -72,17 +77,18 @@ export default function DashboardTecnico() {
           status: order.status as EstadoOrden,
           payment: order.payment
             ? {
-                externalOrderId: order.payment.externalOrderId ?? null,
-                id: order.payment.id ?? "",
-                invoicePaidAt: order.payment.invoicePaidAt ?? null,
-                price: order.payment.price ?? "0",
-                status: order.payment.status ?? "Desconocido",
-              }
+              externalOrderId: order.payment.externalOrderId ?? null,
+              id: order.payment.id ?? "",
+              invoicePaidAt: order.payment.invoicePaidAt ?? null,
+              price: order.payment.price ?? "0",
+              status: order.payment.status ?? "Desconocido",
+            }
             : null,
           date: order.createdAt ? new Date(order.createdAt).toLocaleDateString("es-ES") : "Fecha desconocida",
         };
       });
       setOrders(formattedOrders);
+   
     }
   }, [orderData]); // Este efecto se ejecutará cada vez que orderData cambie
 
@@ -92,8 +98,8 @@ export default function DashboardTecnico() {
         nombre: userData.name || "",
         email: userData.email || "",
         rol: userData.role || "",
-        dni: userData.dni || 0,  
-        phone: userData.phone || "" 
+        dni: userData.dni || 0,
+        phone: userData.phone || ""
       });
     }
   }, [userData]);
@@ -101,6 +107,9 @@ export default function DashboardTecnico() {
   // Modificar el handleEstadoChange
   const handleEstadoChange = async (id: string, nuevoEstado: EstadoOrden) => {
     try {
+      const response = await updateOrderStatus(id, nuevoEstado)
+      console.log("Respuesta del servidor:", response);
+
       // Actualizar en el store
       const orderToUpdate = orderData.find((order) => order.id === id);
       if (orderToUpdate) {
@@ -163,6 +172,8 @@ export default function DashboardTecnico() {
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
+
+  
 
   return (
     <PageTransition>

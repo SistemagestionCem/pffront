@@ -80,6 +80,9 @@ export const updateOrderStatus = async (id: string, status: string) => {
       },
       body: JSON.stringify({ status }),
     });
+
+    console.log("Estado enviado:", status);
+
     console.log("Raw response:", response);
     if (!response.ok) {
       const errorText = await response.text();

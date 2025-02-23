@@ -22,7 +22,10 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
 
     try {
       await createPayment({ order_id: orderId, price });
-      toast.success("Pago generado con éxito");
+      toast.success(`"Orden de Pago generado con éxito"`, {
+        position: "top-center",
+        richColors: true,
+      });
       setMonto(""); // Resetea el input
     } catch (error) {
       console.error("Error al generar el pago:", error);
