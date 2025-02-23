@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
 import { OrderErrors, OrderType } from "@/interfaces";
 import { orderValidation } from "@/utils/orderValidation";
+import { X } from "lucide-react";
 
 // Modal para agregar una nueva orden
 interface ModalAgregarOrdenProps {
@@ -109,8 +110,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
     setOrderData((prev) => ({
@@ -124,7 +124,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
     }));
   };
 
-  const handleBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBlur = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name } = event.target
 
     setTouchInput({
@@ -149,13 +149,24 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
   };
   return isOpen ? (
     <PageTransition>
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50 ">
-        <div className="p-6 text-black bg-white rounded-[16px] w-96 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-[480px] max-h-[90vh] overflow-y-auto mx-auto">
 
-          <h2 className="mb-4 text-xl font-bold">Agregar Orden</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">Agregar Orden</h2>
+            <button
+              type="button"
+              title="Cerrar"
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
           <div className="space-y-4">
             <select
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+
               value={orderData.assignedTechnician}
               title="Tecnico"
               name="assignedTechnician"
@@ -177,7 +188,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               type="text"
               name="clientEmail"
               placeholder="Email Cliente"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.clientEmail}
               onChange={handleInputChange}
               onBlur={handleBlur}
@@ -190,7 +201,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               type="number"
               name="clientDni"
               placeholder="Dni Cliente"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.clientDni}
               onChange={handleInputChange}
               onBlur={handleBlur}
@@ -199,11 +210,10 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               {touchInput.clientDni && <p className="text-primary-500 text-sm">{errors.clientDni}</p>}
             </div>
 
-            <input
-              type="text"
+            <textarea
               name="description"
               placeholder="Descripción"
-              className="w-full p-2 border border-gray-300 rounded"
+              className=" w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[100px] placeholder-gray-400"
               value={orderData.description}
               onChange={handleInputChange}
               onBlur={handleBlur}
@@ -216,7 +226,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               type="text"
               name="equipmentType"
               placeholder="Tipo de Dispositivo"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.equipmentType}
               onChange={handleInputChange}
               onBlur={handleBlur}
@@ -229,7 +239,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               type="text"
               name="imei"
               placeholder="IMEI"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.imei}
               onChange={handleInputChange}
               onBlur={handleBlur}
@@ -239,7 +249,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
             </div>
 
             <select
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.status}
               name="status"
               title="Estado"
@@ -253,9 +263,9 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               {touchInput.status && <p className="text-primary-500 text-sm">{errors.status}</p>}
             </div>
 
-            <div className="flex justify-between mt-4">
+            <div className="flex flex-col gap-2 mt-4">
               <button
-                className="px-4 py-2 text-black bg-gray-300 rounded"
+                className="w-full px-4 py-2 text-black bg-gray-300 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-gray-400"
                 onClick={() => {
                   resetForm();
                   onClose();
@@ -267,10 +277,9 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid()}
-                className={`px-4 py-2 bg-primary-500 mt-4 rounded text-white text-bodyBold flex items-center justify-center gap-2 ${!isFormValid()
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-                  }`}
+                className={`w-full px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${
+                  !isFormValid() ? "opacity-50 cursor-not-allowed" : ""
+                }`}
 
               >
                 Guardar Orden
