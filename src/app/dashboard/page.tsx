@@ -202,6 +202,7 @@ export default function DashboardTecnico() {
                 >
                   Agregar Orden
                 </button>
+                
               )}
             </h3>
 
@@ -214,6 +215,7 @@ export default function DashboardTecnico() {
               onToggleSort={toggleSortOrder}
               onSearchChange={(e) => setSearchTerm(e.target.value)}
               estadoColores={estadoColores}
+              
             />
           </section>
 

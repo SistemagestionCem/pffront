@@ -1,7 +1,9 @@
 import { ChevronUp, ChevronDown } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DisplayOrder, EstadoOrden } from "../types";
-
+import { ImageUp } from "lucide-react";
+import { useState } from "react";
+import ModalEvidence from "./ModalEvidence"; // Ajusta la ruta si es necesario
 
 
 
@@ -25,6 +27,16 @@ export const OrdersTable = ({
   onToggleSort,
   onSearchChange,
 }: OrdersTableProps) => {
+
+  const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
+
+
+  const handleOpenModal = (order: DisplayOrder) => {
+    setSelectedOrder(order);
+    setIsEvidenceModalOpen(true);
+  };
+
   return (
     <>
       <div className="p-2 sm:p-4">
@@ -56,14 +68,19 @@ export const OrdersTable = ({
                   {userRole === "Admin" ? "Técnico" : "Dispositivo"}
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
+                <th className="text-center p-2 font-semibold text-gray-600">Evidencia</th>
               </tr>
+
             </thead>
             <tbody className="divide-y divide-gray-200">
               {orders.map((order) => (
                 <tr
                   key={order.id}
                   className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
-                  onClick={() => onOrderClick(order)}
+                  onClick={(event) => {
+                    if ((event.target as HTMLElement).closest(".ignore-row-click")) return;
+                    onOrderClick(order);
+                  }}
                 >
                   <td className="p-2 whitespace-nowrap">{order.date}</td>
                   <td className="p-2">
@@ -95,12 +112,29 @@ export const OrdersTable = ({
                       {order.status}
                     </span>
                   </td>
+
+                  <td className="p-2 flex justify-center items-center">
+                    <ImageUp
+                      size={20}
+                      className="cursor-pointer text-gray-800 hover:text-gray-600 transition"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleOpenModal(order); // Abre el modal con la orden seleccionada
+                      }}
+                    />
+                  </td>
                 </tr>
               ))}
+
             </tbody>
           </table>
         </div>
       </div>
+      <ModalEvidence
+        isOpen={isEvidenceModalOpen}
+        onClose={() => setIsEvidenceModalOpen(false)}
+        order={selectedOrder}
+      />
     </>
   );
 };
