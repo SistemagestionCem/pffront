@@ -4,7 +4,6 @@ export const orderValidation = (input: OrdeTypeValidate) => {
     const errors = { clientEmail: "", clientDni: "", equipmentType: "", imei: "", assignedTechnician: "", description: "", status: "" }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const equipmentregex = /^(CELULAR|TABLET|LAPTOP)$/;
     const imeiregex = /^\d{15}$/;
     const descriptionregex = /^(?=.{15,}).+$/;
 
@@ -23,9 +22,7 @@ export const orderValidation = (input: OrdeTypeValidate) => {
 
     if (!input.equipmentType) {
         errors.equipmentType = "Campo Requerido"
-    } else if (!equipmentregex.test(input.equipmentType)) {
-        errors.equipmentType = "Ingrese un EQUIPO valido, debe ser CELULAR, TABLET o LAPTOP (mayúsculas)."
-    }
+    } 
 
     if (!input.imei) {
         errors.imei = "Campo Requerido"

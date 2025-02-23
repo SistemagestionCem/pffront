@@ -115,7 +115,9 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
 
     setOrderData((prev) => ({
       ...prev,
-      [name]: name === "clientDni" ? Number(value) || 0 : value.trim(), // Convertir a número solo si es clientDni
+      [name]: name === "clientDni" ? Number(value) || 0 :  // Convertir a número solo si es clientDni
+      name === "description" ? value : value.trim(),  
+      
     }));
 
     setTouchInput((previus) => ({
@@ -157,7 +159,10 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
             <button
               type="button"
               title="Cerrar"
-              onClick={onClose}
+              onClick={() => {
+                resetForm();
+                onClose();
+              }}
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >
               <X size={20} />
@@ -222,15 +227,18 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               {touchInput.description && <p className="text-primary-500 text-sm">{errors.description}</p>}
             </div>
 
-            <input
-              type="text"
+            <select
               name="equipmentType"
-              placeholder="Tipo de Dispositivo"
-              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.equipmentType}
               onChange={handleInputChange}
-              onBlur={handleBlur}
-            />
+              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Seleccionar tipo de dispositivo</option>
+              <option value="EQUIPO">Equipo</option>
+              <option value="CELULAR">Celular</option>
+              <option value="TABLET">Tablet</option>
+              <option value="LAPTOP">Laptop</option>
+            </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
               {touchInput.equipmentType && <p className="text-primary-500 text-sm">{errors.equipmentType}</p>}
             </div>
@@ -277,9 +285,8 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid()}
-                className={`w-full px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${
-                  !isFormValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`w-full px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${!isFormValid() ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
 
               >
                 Guardar Orden
