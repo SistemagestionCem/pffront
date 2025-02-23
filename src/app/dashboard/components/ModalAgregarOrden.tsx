@@ -20,7 +20,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
 
   const [orderData, setOrderData] = useState({
     clientEmail: "",
-    clientDni: 0,
+    clientDni: "",
     equipmentType: "",
     imei: "",
     assignedTechnician: "",
@@ -52,7 +52,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
   const resetForm = () => {
     setOrderData({
       clientEmail: "",
-      clientDni: 0,
+      clientDni: "",
       equipmentType: "",
       imei: "",
       assignedTechnician: "",
@@ -115,8 +115,8 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
 
     setOrderData((prev) => ({
       ...prev,
-      [name]: name === "clientDni" ? Number(value) || 0 :  // Convertir a número solo si es clientDni
-      name === "description" ? value : value.trim(),  
+       
+      [name]: name === "clientDni" ? (value ? Number(value) : "") : name === "description" ? value : value.trim(), 
       
     }));
 
@@ -140,7 +140,7 @@ const ModalAgregarOrden = ({ isOpen, onClose }: ModalAgregarOrdenProps) => {
   const isFormValid = () => {
     return (
       orderData.clientEmail.trim() !== "" &&
-      orderData.clientDni !== 0 &&
+      orderData.clientDni !== "" &&
       orderData.equipmentType.trim() !== "" &&
       orderData.imei.trim() !== "" &&
       orderData.assignedTechnician.trim() !== "" &&

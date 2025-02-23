@@ -83,7 +83,7 @@ export interface OrderByMail {
 
 export interface OrdeTypeValidate {
   clientEmail: string;
-  clientDni: number;
+  clientDni: string;
   equipmentType: string;
   imei: string;
   assignedTechnician: string;

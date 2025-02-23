@@ -4,6 +4,7 @@ export const orderValidation = (input: OrdeTypeValidate) => {
     const errors = { clientEmail: "", clientDni: "", equipmentType: "", imei: "", assignedTechnician: "", description: "", status: "" }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const clientDniregex = /^\d{8}$/;
     const imeiregex = /^\d{15}$/;
     const descriptionregex = /^(?=.{15,}).+$/;
 
@@ -16,7 +17,7 @@ export const orderValidation = (input: OrdeTypeValidate) => {
 
     if (!input.clientDni) {
         errors.clientDni = "Campo Requerido"
-    } else if (input.clientDni < 10000000 || input.clientDni > 99999999) {
+    } else if (!clientDniregex.test(input.clientDni)) {
         errors.clientDni = "Ingrese un DNI valido, debe contener 8 números."
     }
 
