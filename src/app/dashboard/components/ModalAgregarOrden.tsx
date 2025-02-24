@@ -7,6 +7,7 @@ import PageTransition from "@/components/PageTransition";
 import { OrderErrors, OrderType } from "@/interfaces";
 import { orderValidation } from "@/utils/orderValidation";
 import { X } from "lucide-react";
+import { on } from "events";
 
 // Modal para agregar una nueva orden
 interface ModalAgregarOrdenProps {
@@ -104,18 +105,13 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
 
       if (response) {
         console.log("Orden creada con éxito"); // Verifica que llega aquí
-
-        handleSaveOrder(response); 
-
-        
-        toast.success(`Bienvenido ${response.userFound.name}!`, {
+        onClose();
+        resetForm();
+        handleSaveOrder(response);
+        toast.success("Orden creada con éxito", {
           position: "top-center",
           richColors: true,
-        });
-        setTimeout(() => {
-          console.log("Cerrando modal"); // Verifica si este mensaje aparece
-          onClose();
-        }, 2000);
+        })
       }
     } catch (error) {
       toast.error("Error al crear la orden", {
