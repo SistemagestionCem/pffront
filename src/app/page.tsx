@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import HubSpotChat from "@/components/Chatbot/Chatbot";
 import PageTransition from "@/components/PageTransition";
 import { getOrderByEmail } from "@/services/orderService";
 import { useState } from "react";
@@ -131,8 +132,8 @@ export default function Home() {
                 ))
               ) : (
                 <div className="space-y-3 text-center">
-                  <i className="fa-solid fa-circle-exclamation text-primary-500 text-4xl mb-4"></i>
-                  <p className="text-title2 text-white">
+                  <i className="mb-4 text-4xl fa-solid fa-circle-exclamation text-primary-500"></i>
+                  <p className="text-white text-title2">
                     No se encontraron órdenes para este correo
                   </p>
                   <p className="text-subtitle2 text-white/70">
@@ -205,6 +206,7 @@ export default function Home() {
           </div>
         </section>
       </div>
+      <HubSpotChat />
     </PageTransition>
   );
 }
