@@ -68,7 +68,10 @@ export const OrdersTable = ({
                   {userRole === "Admin" ? "Técnico" : "Dispositivo"}
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
-                <th className="text-center p-2 font-semibold text-gray-600">Evidencia</th>
+                {userRole !== "CLIENT" && (
+                  <th className="text-center p-2 font-semibold text-gray-600">Evidencia</th>
+                )}
+
               </tr>
 
             </thead>
@@ -113,16 +116,18 @@ export const OrdersTable = ({
                     </span>
                   </td>
 
-                  <td className="p-2 flex justify-center items-center">
-                    <ImageUp
-                      size={20}
-                      className="cursor-pointer text-gray-800 hover:text-gray-600 transition"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleOpenModal(order); // Abre el modal con la orden seleccionada
-                      }}
-                    />
-                  </td>
+                  {userRole !== "CLIENT" && (
+                    <td className="p-2 flex justify-center items-center">
+                      <ImageUp
+                        size={20}
+                        className="cursor-pointer text-gray-800 hover:text-gray-600 transition"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleOpenModal(order); // Abre el modal con la orden seleccionada
+                        }}
+                      />
+                    </td>
+                  )}
                 </tr>
               ))}
 

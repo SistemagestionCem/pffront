@@ -1,7 +1,9 @@
 import { X, UploadCloud } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DisplayOrder } from "../types";
+import { toast } from "sonner";
+import { postEvidenceService } from "@/services/evidenceService";
 
 interface ModalEvidenceProps {
   isOpen: boolean;
@@ -9,8 +11,39 @@ interface ModalEvidenceProps {
   order: DisplayOrder | null;
 }
 
-export default function ModalEvidence({ isOpen, onClose }: ModalEvidenceProps) {
+export default function ModalEvidence({ isOpen, onClose, order }: ModalEvidenceProps) {
   const [files, setFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFiles([]); // Resetea la lista de archivos cuando el modal se cierra
+    }
+  }, [isOpen]);
+
+  const handleUpload = async () => {
+    if (!order || files.length === 0) return;
+
+    setIsUploading(true);
+
+    try {
+      const response = await postEvidenceService(order.id, files[0]); 
+      console.log("Verificacion de Response" , response)
+      toast.success("Imagen subida correctamente!", {
+        position: "top-center",
+        richColors: true,
+      });
+      setFiles([]); // Limpiar los archivos después de la subida
+    } catch (error) {
+      console.log("Error de modal evidence" , error) 
+      toast.error("Error al subir la imagen", {
+        position: "top-center",
+        richColors: true,
+      });
+    } finally {
+      setIsUploading(false); // Desactivar estado de subida
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -49,17 +82,10 @@ export default function ModalEvidence({ isOpen, onClose }: ModalEvidenceProps) {
             </div>
 
             <div className="mb-4">
-              <label
-                className="cursor-pointer flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-4 text-gray-600 hover:bg-gray-100 transition"
-              >
+              <label className="cursor-pointer flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-4 text-gray-600 hover:bg-gray-100 transition">
                 <UploadCloud size={32} className="mb-2" />
                 <span className="text-sm">Seleccionar archivos</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  multiple
-                  onChange={handleFileChange}
-                />
+                <input type="file" className="hidden" multiple onChange={handleFileChange} />
               </label>
             </div>
 
@@ -84,9 +110,10 @@ export default function ModalEvidence({ isOpen, onClose }: ModalEvidenceProps) {
               </button>
               <button
                 className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition"
-                disabled={files.length === 0}
+                disabled={files.length === 0 || isUploading}
+                onClick={handleUpload}
               >
-                Subir
+                {isUploading ? "Subiendo..." : "Subir"}
               </button>
             </div>
           </motion.div>
