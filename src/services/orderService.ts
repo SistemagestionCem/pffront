@@ -94,3 +94,27 @@ export const updateOrderStatus = async (id: string, status: string) => {
     return null;
   }
 };
+
+export const updateOrderDescription = async (id: string, description: string) => {
+  try {
+    const response = await fetch(`${apiUrl}orders/orderUpdate/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ description: description }),
+    });
+
+    console.log("Estado enviado:", description);
+
+    console.log("Raw response:", response);    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Error al cargar el usuarios");
+    }
+    return response.json();
+  } catch (error) {
+    console.log("error al obtener los usuarios", error);
+    return null;    
+  }  
+};

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
-import { updateOrderStatus } from "@/services/orderService";
+import { updateOrderDescription, updateOrderStatus } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
 
 interface ModalProps {
@@ -55,6 +55,7 @@ export default function ModalOrden({
   const isUser = userData?.role === "CLIENT";
   const isTechn = userData?.role === "TECHN";
   const [descripcion, setDescripcion] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     setDescripcion("");
@@ -127,6 +128,26 @@ export default function ModalOrden({
       onClose();
     }
   };
+
+  const handleDescriptionSave = async () => {
+    try {
+      const response = await updateOrderDescription(order.id, descripcion);
+      if (response) {
+        // Actualizamos solo la descripción, manteniendo los demás valores
+        const order = orderDataStorage.getState().orderData.find(order => order.id === response.id);
+        if (order) {
+          orderDataStorage.getState().updateOrder({
+            ...order, // Mantenemos el resto de los valores
+            description: response.description, // Solo actualizamos la descripción
+          });
+        }
+      }
+      setIsEditing(false);
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   return (
@@ -202,15 +223,23 @@ export default function ModalOrden({
               </div>
 
               <div>
-                <label className="text-bodyBold font-bold text-gray-700">
-                  Descripción:
-                </label>
-                <textarea
-                  placeholder="Ingrese una descripción detallada aquí..."
-                  className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
-                  value={order.description}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                />
+                <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
+                {isEditing ? (
+                  <div>
+                    <textarea
+                      placeholder="Ingrese una descripción detallada aquí..."
+                      className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
+                      value={descripcion}
+                      onChange={(e) => setDescripcion(e.target.value)}
+                    />
+                    <button  onClick={handleDescriptionSave} className="mt-2 text-bodyBold font-bold text-gray-700">Guardar</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <p className="text-bodyBold font-bold text-gray-700">{order.description}</p>
+                    <button className="text-bodyBold font-bold text-gray-700" onClick={() => {setIsEditing(true); setDescripcion(order.description)}}>Editar</button>
+                  </div>
+                )}
               </div>
             </div>
 
