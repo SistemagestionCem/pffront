@@ -1,9 +1,10 @@
 import { PostOrderType } from "@/interfaces";
 import { toast } from "sonner";
-// const apiUrl = "https://pfback-osdi.onrender.com/";
-const apiUrl = "http://localhost:3000/";
+const apiUrl = "https://pfback-osdi.onrender.com/";
+//const apiUrl = "http://localhost:3000/";
 
 export const postOrderService = async (data: PostOrderType) => {
+  
   try {
     const response = await fetch(`${apiUrl}orders/create`, {
       method: "POST",
@@ -13,9 +14,6 @@ export const postOrderService = async (data: PostOrderType) => {
       },
     });
 
-    console.log("Response status:", response.status);
-    console.log("Response headers:", [...response.headers]);
-
     let responseData;
     const contentType = response.headers.get("content-type");
 
@@ -24,6 +22,7 @@ export const postOrderService = async (data: PostOrderType) => {
     } else {
       responseData = await response.text(); // Leer como texto si no es JSON
     }
+
     if (!response.ok) {
       toast.error(`Error: ${responseData}`);
       throw new Error(responseData); // Lanzar error para capturarlo en el catch
@@ -31,7 +30,6 @@ export const postOrderService = async (data: PostOrderType) => {
 
     return responseData;
   } catch (error) {
-    console.error("Error en postOrderService:", error);
     throw new Error("Error en postOrderService", { cause: error });
   }
 };
@@ -44,7 +42,7 @@ export const getOrderByEmail = async (email: string) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Raw response:", response);
+ 
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");
@@ -81,9 +79,6 @@ export const updateOrderStatus = async (id: string, status: string) => {
       body: JSON.stringify({ status }),
     });
 
-    console.log("Estado enviado:", status);
-
-    console.log("Raw response:", response);
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");
@@ -104,10 +99,7 @@ export const updateOrderDescription = async (id: string, description: string) =>
       },
       body: JSON.stringify({ description: description }),
     });
-
-    console.log("Estado enviado:", description);
-
-    console.log("Raw response:", response);    
+   
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");

@@ -56,7 +56,7 @@ export interface PostOrderType {
   clientDni: number;
   equipmentType: string;
   imei: string;
-  assignedTechnician: string;
+  technName: string;
   description: string;
 }
 

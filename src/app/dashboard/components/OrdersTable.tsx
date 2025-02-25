@@ -31,6 +31,7 @@ export const OrdersTable = ({
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
 
+  console.log("🛠️ Datos de las órdenes:", orders);
 
   const handleOpenModal = (order: DisplayOrder) => {
     setSelectedOrder(order);

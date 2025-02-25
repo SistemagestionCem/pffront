@@ -140,7 +140,7 @@ const UsersList = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {filteredUsers.map((user) => (
+          {filteredUsers.map((user) => (
               <tr
                 key={user.id}
                 className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer transition-colors"

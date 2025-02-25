@@ -7,7 +7,7 @@ import PageTransition from "@/components/PageTransition";
 import { OrderErrors, OrderType } from "@/interfaces";
 import { orderValidation } from "@/utils/orderValidation";
 import { X } from "lucide-react";
-import { on } from "events";
+
 
 // Modal para agregar una nueva orden
 interface ModalAgregarOrdenProps {
@@ -17,8 +17,8 @@ interface ModalAgregarOrdenProps {
 }
 
 const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrdenProps) => {
-  const { tecnicos, admin } = useUsers();
-
+  const { clientes, tecnicos, admin } = useUsers();
+  
   const [orderData, setOrderData] = useState({
     clientEmail: "",
     clientDni: "",
@@ -30,6 +30,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     user: "",
     createdAt: new Date(),
   });
+
 
   const [errors, setErrors] = useState<OrderErrors>({
     clientEmail: "",
@@ -85,26 +86,37 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
   };
 
   const handleSubmit = async () => {
+
     const selectAdmin = admin[0];
+    
+    const selectedClient = clientes.find(c => c.email === orderData.clientEmail);
+    const selectedTechnician = tecnicos.find(t => t.id === orderData.assignedTechnician);
+
+    if (!selectedClient) {
+      toast.error("Error: No se encontró un cliente con ese email.", {
+        position: "top-center",
+        richColors: true,
+      });
+      return;
+    }
+
     const payload = {
-      clientEmail: orderData.clientEmail.trim(),
-      clientDni: Number(orderData.clientDni), // Conversión segura a número
+      clientId: String(selectedClient.id), 
+      assignedTechnicianId: String(orderData.assignedTechnician), 
+      userId: String(selectAdmin?.id), 
+      clientEmail: selectedClient.email,
+      technName: selectedTechnician?.name ?? "Nombre no disponible",
+      clientDni: Number(orderData.clientDni), 
       equipmentType: orderData.equipmentType.trim(),
       imei: orderData.imei.trim(),
       description: orderData.description.trim(),
       status: orderData.status.trim(),
-      user: selectAdmin.id,
-      assignedTechnician: orderData.assignedTechnician,
     };
-
-    console.log(payload);
 
     try {
       const response = await postOrderService(payload);
-      console.log("Respuesta del servidor:", response);
 
       if (response) {
-        console.log("Orden creada con éxito"); // Verifica que llega aquí
         onClose();
         resetForm();
         handleSaveOrder(response);
@@ -127,9 +139,9 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
 
     setOrderData((prev) => ({
       ...prev,
-       
-      [name]: name === "clientDni" ? (value ? Number(value) : "") : name === "description" ? value : value.trim(), 
-      
+
+      [name]: name === "clientDni" ? (value ? Number(value) : "") : name === "description" ? value : value.trim(),
+
     }));
 
     setTouchInput((previus) => ({
@@ -276,7 +288,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               onChange={handleInputChange}
             >
               <option value="Pendiente">Pendiente</option>
-              
+
             </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
               {touchInput.status && <p className="text-primary-500 text-sm">{errors.status}</p>}
