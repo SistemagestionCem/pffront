@@ -56,17 +56,6 @@ export default function ModalOrden({
 
   if (!isOpen || !order) return null;
 
-  const minCaracteres = 3;
-  const isDisabled = descripcion.length < minCaracteres;
-  const isFinalizado = order.status === "Finalizado";
-
-  const handleChangeEstado = (nuevoEstado: EstadoOrden) => {
-    if (!isFinalizado && !isDisabled && order) {
-      handleEstadoChange(order.id, nuevoEstado);
-      onClose();
-    }
-  };
-
   const handlePayment = async (price: string, orderId: string) => {
     const monto = Number(price);
     if (monto <= 0) return;
@@ -98,26 +87,6 @@ export default function ModalOrden({
       console.error("Error en el pago:", error);
     } finally {
       setIsProcessing(false); // Desactiva el spinner al finalizar
-    }
-  };
-
-  const handleRepair = async (orderId: string) => {
-    try {
-      const response = await updateOrderStatus(orderId, "REPARACION");
-      if (response) {
-        // Actualizamos solo el status, manteniendo los demás valores
-        const order = orderDataStorage.getState().orderData.find(order => order.id === orderId);
-        if (order) {
-          orderDataStorage.getState().updateOrder({
-            ...order, // Mantenemos el resto de los valores
-            status: "REPARACION", // Solo actualizamos el status
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      onClose();
     }
   };
 
@@ -214,7 +183,15 @@ export default function ModalOrden({
                 </p>
               </div>
 
-              <div>
+              {isUser && (
+                <div>
+                  <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
+                  <p className="text-gray-700">{order.description}</p>
+                </div>
+              )}
+
+              {isAdmin || isTechn && (
+                <div>
                 <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
                 {isEditing ? (
                   <div>
@@ -226,22 +203,30 @@ export default function ModalOrden({
                     />
                     <button  onClick={handleDescriptionSave} className="mt-2 text-bodyBold font-bold text-gray-700">Guardar</button>
                   </div>
-                ) : (
+                ) : ( 
                   <div className="flex items-center justify-between">
                     <p className="text-bodyBold font-bold text-gray-700">{order.description}</p>
-                    <button className="text-bodyBold font-bold text-gray-700" onClick={() => {setIsEditing(true); setDescripcion(order.description)}}>Editar</button>
+                    <button className="text-gray-700" onClick={() => {setIsEditing(true); setDescripcion(order.description)}}>Editar</button>
                   </div>
                 )}
               </div>
+                  )}
+
+            {(isUser || isAdmin && order.status !== ( "REVISION" ) && order.payments?.status === "PENDING") && (
+              <div className="mb-4">
+                <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
+                <p className="text-gray-700">$ {order.payments?.price}</p>
+              </div>
+            )}
             </div>
 
-            {(isAdmin && order.status === "REVISION") && (
+            {(isAdmin && order.status === "REVISION" && order.payments === null) && (
               <div className="space-y-2 mb-4">
-                <PaymentForm orderId={order.id} />
+                <PaymentForm orderId={order.id} onClose={onClose} />
               </div>
             )}
 
-            {(isAdmin && order.payments !== null) && (
+            {(isAdmin && order.status === "REVISION" && order.payments !== null) && (
               <div className="space-y-2 mb-4">
                 <OrderPaymentUser orderId={order?.id} price={order?.payments?.price} onClose={onClose} />
               </div>
@@ -290,7 +275,7 @@ export default function ModalOrden({
               </div>
             )}
 
-            {isTechn && order.status === "PENDIENTE" && (
+            {isTechn || isAdmin && order.status === "PENDIENTE" && (
               <button
                 onClick={() => handleEstadoChange(order.id, "REVISION")}
                 className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-blue-500 hover:bg-blue-600"
@@ -299,7 +284,7 @@ export default function ModalOrden({
               </button>
             )}
 
-            {isTechn && order.status === "CONFIRMADO" && (
+            {isTechn || isAdmin && order.status === "CONFIRMADO" && (
               <button
                 onClick={() => handleEstadoChange(order.id, "REPARACION")}
                 className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-orange-500 hover:bg-orange-600"
@@ -308,12 +293,21 @@ export default function ModalOrden({
               </button>
             )}
 
-            {isTechn && order.status === "REPARACION" && (
+            {isTechn || isAdmin && order.status === "REPARACION" && (
               <button
                 onClick={() => handleEstadoChange(order.id, "FINALIZADO")}
                 className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
               >
                 Finalizar
+              </button>
+            )}
+
+            {isAdmin && order.status === "FINALIZADO" && order.payments?.status === "APPROVED" && (
+              <button
+                onClick={() => handleEstadoChange(order.id, "RETIRADO")}
+                className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
+              >
+                Retirado
               </button>
             )}
 

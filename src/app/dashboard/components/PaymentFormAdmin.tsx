@@ -1,12 +1,14 @@
 import { createPayment } from "@/services/paymentService";
+import orderDataStorage from "@/storage/orderStore";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface PaymentFormProps {
   orderId: string;
+  onClose: () => void;
 }
 
-export const PaymentForm = ({ orderId }: PaymentFormProps) => {
+export const PaymentForm = ({ orderId, onClose }: PaymentFormProps) => {
   const [monto, setMonto] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +30,21 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
           richColors: true,
         });
         setMonto(""); // Resetea el input
-        window.location.reload()
+        // Actualizamos solo el status, manteniendo los demás valores
+        const order = orderDataStorage.getState().orderData.find(order => order.id === orderId);
+        if (order) {
+          orderDataStorage.getState().updateOrder({
+            ...order, // Mantenemos el resto de los valores
+            payments: {
+              id: response.id,
+              externalOrderId: response.externalOrderId,
+              invoicePaidAt: response.invoicePaidAt,
+              price: response.price,
+              status: response.status,
+            }, // Solo actualizamos el status
+          });
+        }
+        onClose();
       }
     } catch (error) {
       console.error("Error al generar el pago:", error);
