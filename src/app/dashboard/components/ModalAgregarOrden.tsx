@@ -17,7 +17,7 @@ interface ModalAgregarOrdenProps {
 }
 
 const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrdenProps) => {
-  const { clientes, tecnicos, admin } = useUsers();
+  const { tecnicos, admin } = useUsers();
   
   const [orderData, setOrderData] = useState({
     clientEmail: "",
@@ -26,7 +26,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     imei: "",
     assignedTechnician: "",
     description: "",
-    status: "PENDIENTE" as "PENDIENTE" | "INICIADO" | "FINALIZADO",
+    status: "REVISION" as "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
     user: "",
     createdAt: new Date(),
   });
@@ -39,7 +39,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     imei: "",
     assignedTechnician: "",
     description: "",
-    status: "PENDIENTE" as "PENDIENTE" | "INICIADO" | "FINALIZADO",
+    status: "REVISION" as "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
   });
 
   const [touchInput, setTouchInput] = useState<{ clientEmail: boolean; clientDni: boolean; equipmentType: boolean; imei: boolean; assignedTechnician: boolean; description: boolean, status: boolean }>({
@@ -59,7 +59,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
       imei: "",
       assignedTechnician: "",
       description: "",
-      status: "PENDIENTE",
+      status: "REVISION",
       user: "",
       createdAt: new Date(),
     });
@@ -89,10 +89,10 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
 
     const selectAdmin = admin[0];
     
-    const selectedClient = clientes.find(c => c.email === orderData.clientEmail);
+    //const selectedClient = clientes.find(c => c.email === orderData.clientEmail);
     const selectedTechnician = tecnicos.find(t => t.id === orderData.assignedTechnician);
 
-    if (!selectedClient) {
+    if (!selectedTechnician) {
       toast.error("Error: No se encontró un cliente con ese email.", {
         position: "top-center",
         richColors: true,
@@ -101,10 +101,8 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     }
 
     const payload = {
-      clientId: String(selectedClient.id), 
-      assignedTechnicianId: String(orderData.assignedTechnician), 
-      userId: String(selectAdmin?.id), 
-      clientEmail: selectedClient.email,
+      adminName: selectAdmin?.name ?? "Admin no disponible",
+      clientEmail: orderData.clientEmail,
       technName: selectedTechnician?.name ?? "Nombre no disponible",
       clientDni: Number(orderData.clientDni), 
       equipmentType: orderData.equipmentType.trim(),
@@ -258,7 +256,6 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Seleccionar tipo de dispositivo</option>
-              <option value="EQUIPO">Equipo</option>
               <option value="CELULAR">Celular</option>
               <option value="TABLET">Tablet</option>
               <option value="LAPTOP">Laptop</option>
@@ -287,7 +284,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               title="Estado"
               onChange={handleInputChange}
             >
-              <option value="Pendiente">Pendiente</option>
+              <option value="Revision">Revision</option>
 
             </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">

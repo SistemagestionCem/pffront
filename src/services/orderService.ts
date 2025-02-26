@@ -6,6 +6,7 @@ const apiUrl = "https://pfback-osdi.onrender.com/";
 export const postOrderService = async (data: PostOrderType) => {
   
   try {
+    console.log("Datos enviados al backend:", data);
     const response = await fetch(`${apiUrl}orders/create`, {
       method: "POST",
       body: JSON.stringify(data),
@@ -13,6 +14,7 @@ export const postOrderService = async (data: PostOrderType) => {
         "Content-Type": "application/json",
       },
     });
+    console.log("Respuesta recibida de la API:", response); // Muestra toda la respuesta HTTP
 
     let responseData;
     const contentType = response.headers.get("content-type");
@@ -22,11 +24,12 @@ export const postOrderService = async (data: PostOrderType) => {
     } else {
       responseData = await response.text(); // Leer como texto si no es JSON
     }
-
+    console.log("Mensaje de error del backend:", responseData);
     if (!response.ok) {
       toast.error(`Error: ${responseData}`);
       throw new Error(responseData); // Lanzar error para capturarlo en el catch
     }
+    console.log("Orden creada:", responseData); // ← Aquí ves la respuesta en consola
 
     return responseData;
   } catch (error) {

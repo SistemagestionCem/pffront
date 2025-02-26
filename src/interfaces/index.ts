@@ -19,7 +19,7 @@ export interface OrderType {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
+  status: "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
   user: {
     id: string;
     name: string;
@@ -88,7 +88,7 @@ export interface OrdeTypeValidate {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "PENDIENTE" | "INICIADO" | "FINALIZADO";
+  status:"REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
 }
 
 export interface OrderErrors {

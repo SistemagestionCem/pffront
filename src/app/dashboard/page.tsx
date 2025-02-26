@@ -28,7 +28,7 @@ export default function DashboardTecnico() {
     phone: "",
   });
 
-  type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
+  type EstadoOrden = "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
 
   type DisplayOrder = {
     id: string;
@@ -51,12 +51,13 @@ export default function DashboardTecnico() {
 
 
   const estadoColores: Record<EstadoOrden, string> = {
-    PENDIENTE: "text-black",
     REVISION: "text-blue-500",
     CONFIRMADO: "text-orange-500",
     CANCELADO: "text-red-600",
     REPARACION: "text-yellow-500",
-    FINALIZADO: "text-green-500"
+    FINALIZADO: "text-green-500",
+    PAGO: "text-black",
+    RETIRADO: "text-black"
   };
 
   useEffect(() => {

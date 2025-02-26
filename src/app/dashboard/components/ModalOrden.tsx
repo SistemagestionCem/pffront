@@ -8,6 +8,7 @@ import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
 import { updateOrderDescription, updateOrderStatus } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
+import { EstadoOrden } from "../types";
 
 interface ModalProps {
   isOpen: boolean;
@@ -32,16 +33,7 @@ interface ModalProps {
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
-type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO";
 
-const estadoColores: Record<EstadoOrden, string> = {
-  PENDIENTE: "text-black",
-  REVISION: "text-blue-500",
-  CONFIRMADO: "text-orange-500",
-  CANCELADO: "text-red-600",
-  REPARACION: "text-yellow-500",
-  FINALIZADO: "text-green-500"
-};
 
 export default function ModalOrden({
   isOpen,

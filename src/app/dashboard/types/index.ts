@@ -1,4 +1,4 @@
-  export type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "FINALIZADO" | "REPARACION";
+  export type EstadoOrden = "REVISION" | "CONFIRMADO" | "CANCELADO" | "FINALIZADO" | "REPARACION" | "PAGO" | "RETIRADO";
 
   export type DisplayOrder = {
     id: string;
