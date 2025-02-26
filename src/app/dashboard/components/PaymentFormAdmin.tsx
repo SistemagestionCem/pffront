@@ -21,12 +21,15 @@ export const PaymentForm = ({ orderId }: PaymentFormProps) => {
     }
 
     try {
-      await createPayment({ order_id: orderId, price });
-      toast.success(`"Orden de Pago generado con éxito"`, {
-        position: "top-center",
-        richColors: true,
-      });
-      setMonto(""); // Resetea el input
+      const response = await createPayment({ order_id: orderId, price });
+      if (response) {
+        toast.success(`"Orden de Pago generado con éxito"`, {
+          position: "top-center",
+          richColors: true,
+        });
+        setMonto(""); // Resetea el input
+        window.location.reload()
+      }
     } catch (error) {
       console.error("Error al generar el pago:", error);
       toast.error("Error al generar el pago");

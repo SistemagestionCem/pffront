@@ -5,7 +5,7 @@ import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
-import { getOrderByEmail, getTechOrders } from "@/services/orderService";
+import { getAllOrders, getOrderByEmail, getTechOrders } from "@/services/orderService";
 import { OrderType } from "@/interfaces";
 
 const LoginForm = () => {
@@ -67,7 +67,7 @@ const LoginForm = () => {
     try {
       // 1. Login y obtener datos del usuario
       const response = await login(email, password);
-
+      console.log("response", response);
       if (response) {
         // 2. Guardar datos del usuario inmediatamente
         setUserData({
@@ -86,9 +86,9 @@ const LoginForm = () => {
             if (response.userFound.role === "CLIENT") {
               orders = await getOrderByEmail(response.userFound.email);
             } else if (response.userFound.role === "TECHN") {
-              orders = await getTechOrders(response.userFound.id);
+              orders = await getTechOrders(response.userFound.name);
             } else {
-              orders = response.userFound.orders;
+              orders = await getAllOrders();
             }
 
             if (orders) {
@@ -105,12 +105,12 @@ const LoginForm = () => {
                 createdAt: order.createdAt || new Date(),
                 statusHistory: order.statusHistory || [],
                 isActive: order.isActive || false,
-                payment: order.payment ? {
-                  externalOrderId: order.payment.externalOrderId || '',
-                  id: order.payment.id,
-                  invoicePaidAt: order.payment.invoicePaidAt || '',
-                  price: order.payment.price,
-                  status: order.payment.status,
+                payments: order.payments ? {
+                  externalOrderId: order.payments.externalOrderId || '',
+                  id: order.payments.id,
+                  invoicePaidAt: order.payments.invoicePaidAt || '',
+                  price: order.payments.price,
+                  status: order.payments.status,
                 } : null,
               }));
               orderDataStorage.getState().setOrderData(ordersData);

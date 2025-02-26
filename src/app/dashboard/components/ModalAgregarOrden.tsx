@@ -26,7 +26,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     imei: "",
     assignedTechnician: "",
     description: "",
-    status: "REVISION" as "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
+    status: "PENDIENTE" as "PENDIENTE" | "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
     user: "",
     createdAt: new Date(),
   });
@@ -39,7 +39,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     imei: "",
     assignedTechnician: "",
     description: "",
-    status: "REVISION" as "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
+    status: "PENDIENTE" as "PENDIENTE" | "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
   });
 
   const [touchInput, setTouchInput] = useState<{ clientEmail: boolean; clientDni: boolean; equipmentType: boolean; imei: boolean; assignedTechnician: boolean; description: boolean, status: boolean }>({
@@ -59,7 +59,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
       imei: "",
       assignedTechnician: "",
       description: "",
-      status: "REVISION",
+      status: "PENDIENTE",
       user: "",
       createdAt: new Date(),
     });
@@ -250,6 +250,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
             </div>
 
             <select
+              title="Tipo de Dispositivo"
               name="equipmentType"
               value={orderData.equipmentType}
               onChange={handleInputChange}
@@ -277,7 +278,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               {touchInput.imei && <p className="text-primary-500 text-sm">{errors.imei}</p>}
             </div>
 
-            <select
+            {/* <select
               className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={orderData.status}
               name="status"
@@ -289,7 +290,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
             </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
               {touchInput.status && <p className="text-primary-500 text-sm">{errors.status}</p>}
-            </div>
+            </div> */}
 
             <div className="flex flex-col gap-2 mt-4">
               <button

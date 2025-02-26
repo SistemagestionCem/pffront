@@ -1,4 +1,4 @@
-  export type EstadoOrden = "REVISION" | "CONFIRMADO" | "CANCELADO" | "FINALIZADO" | "REPARACION" | "PAGO" | "RETIRADO";
+  export type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "FINALIZADO" | "REPARACION" | "PAGO" | "RETIRADO";
 
   export type DisplayOrder = {
     id: string;
@@ -9,7 +9,7 @@
     assignedTechnician?: string;
     description: string;
     status: EstadoOrden;
-    payment: {
+    payments: {
       externalOrderId: string | null;
       id: string;
       invoicePaidAt: string | null;

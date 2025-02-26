@@ -22,7 +22,7 @@ interface ModalProps {
     assignedTechnician?: string;
     description: string;
     status: string;
-    payment: null | {
+    payments: null | {
       externalOrderId: string | null;
       id: string;
       invoicePaidAt: string | null;
@@ -241,16 +241,22 @@ export default function ModalOrden({
               </div>
             )}
 
-            {isUser && order.status === "REVISION" && order.payment !== null && (
+            {(isAdmin && order.payments !== null) && (
               <div className="space-y-2 mb-4">
-                <OrderPaymentUser orderId={order?.id} price={order?.payment?.price} onClose={onClose} />
+                <OrderPaymentUser orderId={order?.id} price={order?.payments?.price} onClose={onClose} />
               </div>
             )}
 
-            {(isUser && order.status === "REPARACION" && order.payment?.status === "PENDING") && (
+            {isUser && order.status === "REVISION" && order.payments !== null && (
+              <div className="space-y-2 mb-4">
+                <OrderPaymentUser orderId={order?.id} price={order?.payments?.price} onClose={onClose} />
+              </div>
+            )}
+
+            {(isUser && order.status === "CONFIRMADO" && order.payments?.status === "PENDING") && (
               <div className="space-y-3">
                 <button
-                  onClick={() => handlePayment(order.payment?.price ?? '0', order.id)}
+                  onClick={() => handlePayment(order.payments?.price ?? '0', order.id)}
                   className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${isProcessing ? "cursor-not-allowed" : ""}`}
                 >
                   {isProcessing ? (

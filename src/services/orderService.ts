@@ -1,7 +1,7 @@
 import { PostOrderType } from "@/interfaces";
 import { toast } from "sonner";
 const apiUrl = "https://pfback-osdi.onrender.com/";
-//const apiUrl = "http://localhost:3000/";
+// const apiUrl = "http://localhost:3000/";
 
 export const postOrderService = async (data: PostOrderType) => {
   
@@ -74,12 +74,12 @@ export const getTechOrders = async (id: string) => {
 
 export const updateOrderStatus = async (id: string, status: string) => {
   try {
-    const response = await fetch(`${apiUrl}orders/${id}/status/`, {
+    const response = await fetch(`${apiUrl}orders/update/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status: status }),
     });
 
     if (!response.ok) {
@@ -95,7 +95,7 @@ export const updateOrderStatus = async (id: string, status: string) => {
 
 export const updateOrderDescription = async (id: string, description: string) => {
   try {
-    const response = await fetch(`${apiUrl}orders/orderUpdate/${id}`, {
+    const response = await fetch(`${apiUrl}orders/update/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -112,4 +112,23 @@ export const updateOrderDescription = async (id: string, description: string) =>
     console.log("error al obtener los usuarios", error);
     return null;    
   }  
+};
+
+export const getAllOrders = async () => {
+  try {
+    const response = await fetch(`${apiUrl}orders`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Error al cargar el usuarios");
+    }
+    return response.json();
+  } catch (error) {
+    console.log("error al obtener los usuarios", error);
+    return null;
+  }
 };

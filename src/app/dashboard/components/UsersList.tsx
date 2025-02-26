@@ -77,6 +77,7 @@ const UsersList = () => {
       setConfirmationMessage("Rol actualizado correctamente");
       setShowConfirmation(true);
       closeModal();
+      window.location.reload();
 
       // Auto cerrar el mensaje después de 2 segundos
       setTimeout(() => {

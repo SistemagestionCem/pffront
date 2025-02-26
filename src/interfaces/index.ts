@@ -19,7 +19,7 @@ export interface OrderType {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
+  status: "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
   user: {
     id: string;
     name: string;
@@ -27,7 +27,7 @@ export interface OrderType {
     password: string;
     phone: string;
   };
-  payment: null | {
+  payments: null | {
     externalOrderId: string | null;
     id: string;
     invoicePaidAt: string | null;
@@ -69,7 +69,7 @@ export interface OrdeType {
   assignedTechnician: string;
   description: string;
   status: "PENDIENTE" | "INICIADO" | "FINALIZADO";
-  payment: number;
+  payments: number;
   user: string;
   date: string;
 }
@@ -88,7 +88,7 @@ export interface OrdeTypeValidate {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status:"REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
+  status: "PENDIENTE" | "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
 }
 
 export interface OrderErrors {

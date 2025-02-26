@@ -102,7 +102,7 @@ export const OrdersTable = ({
                   </td>
                   <td className="p-2">
                     <span
-                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "REVISION"
+                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "PENDIENTE"
                         ? "bg-yellow-100 text-yellow-800"
                         : order.status === "RETIRADO" //esto hay que cambiarlo
                           ? "bg-blue-100 text-blue-800"

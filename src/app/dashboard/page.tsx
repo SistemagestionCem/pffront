@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { UserProfile } from "./components/UserProfile";
 import { OrdersTable } from "./components/OrdersTable";
 import ModalOrden from "./components/ModalOrden";
@@ -11,6 +11,7 @@ import { users } from "@/helpers/users";
 import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
 import { updateOrderStatus } from "@/services/orderService";
+import { useRouter } from "next/navigation";
 
 export default function DashboardTecnico() {
   const { orderData, addOrder, updateOrder } = orderDataStorage();
@@ -27,8 +28,9 @@ export default function DashboardTecnico() {
     dni: 0,
     phone: "",
   });
+  const router = useRouter();
 
-  type EstadoOrden = "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
+  type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
 
   type DisplayOrder = {
     id: string;
@@ -39,7 +41,7 @@ export default function DashboardTecnico() {
     assignedTechnician?: string;
     description: string;
     status: EstadoOrden;
-    payment: null | {
+    payments: null | {
       externalOrderId: string | null;
       id: string;
       invoicePaidAt: string | null;
@@ -51,6 +53,7 @@ export default function DashboardTecnico() {
 
 
   const estadoColores: Record<EstadoOrden, string> = {
+    PENDIENTE: "text-gray-500",
     REVISION: "text-blue-500",
     CONFIRMADO: "text-orange-500",
     CANCELADO: "text-red-600",
@@ -76,13 +79,13 @@ export default function DashboardTecnico() {
           assignedTechnician: technician?.name || "No asignado",
           description: order.description,
           status: order.status as EstadoOrden,
-          payment: order.payment
+          payments: order.payments
             ? {
-              externalOrderId: order.payment.externalOrderId ?? null,
-              id: order.payment.id ?? "",
-              invoicePaidAt: order.payment.invoicePaidAt ?? null,
-              price: order.payment.price ?? "0",
-              status: order.payment.status ?? "Desconocido",
+              externalOrderId: order.payments.externalOrderId ?? null,
+              id: order.payments.id ?? "",
+              invoicePaidAt: order.payments.invoicePaidAt ?? null,
+              price: order.payments.price ?? "0",
+              status: order.payments.status ?? "Desconocido",
             }
             : null,
           date: order.createdAt ? new Date(order.createdAt).toLocaleDateString("es-ES") : "Fecha desconocida",
@@ -104,6 +107,16 @@ export default function DashboardTecnico() {
       });
     }
   }, [userData]);
+
+  useEffect(() => {
+    const storedUser = userDataStorage.getState().userData;
+    
+    if (storedUser === undefined) return; // Evita redirigir mientras carga Zustand
+  
+    if (!storedUser) {
+      router.push("/"); // Redirige solo si no hay usuario cargado
+    }
+  }, [userData, router]);
 
   // Modificar el handleEstadoChange
   const handleEstadoChange = async (id: string, nuevoEstado: EstadoOrden) => {
@@ -145,7 +158,7 @@ export default function DashboardTecnico() {
       assignedTechnician: newOrder.assignedTechnician || "No asignado",
       description: newOrder.description,
       status: newOrder.status,
-      payment: newOrder.payment,
+      payments: newOrder.payments,
       date: new Date(newOrder.createdAt).toLocaleDateString("es-ES"),
     };
 
