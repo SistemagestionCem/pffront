@@ -14,7 +14,7 @@ const RegisterForm = () => {
     email: "",
     password: "",
     phone: "",
-    dni: 0,
+    dni: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -51,6 +51,12 @@ const RegisterForm = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
+
+    // Add validation for DNI to accept only numbers
+    if (name === "dni" && !/^\d*$/.test(value)) {
+      return;
+    }
+
     const newValue = type === "number" ? Number(value) || 0 : value;
 
     setFormData((prev) => ({
@@ -94,21 +100,54 @@ const RegisterForm = () => {
 
     try {
       const response = await register(formData);
-      if (response) {
+      console.log("Response:", response);
+
+      // Handle successful registration
+      if (response.status === 201 || response.status === 200) {
         toast.success("¡Registro exitoso!", {
           duration: 3000,
           position: "top-center",
           richColors: true,
         });
         router.push("/login");
+        return;
       }
-    } catch (err) {
-      console.log(err);
-      toast.error("Error al registrar. Por favor, intente nuevamente", {
-        duration: 3000,
-        position: "top-center",
-        richColors: true,
-      });
+
+      // Handle known error responses
+      if (response.statusCode >= 400) {
+        const errorMessage = Array.isArray(response.message)
+          ? response.message[0]
+          : response.message || "Error al registrar";
+
+        toast.error(errorMessage, {
+          duration: 3000,
+          position: "top-center",
+          richColors: true,
+        });
+        return;
+      }
+    } catch (err: any) {
+      console.log("Error:", err);
+
+      if (err.response?.data) {
+        const errorData = err.response.data;
+        const errorMessage = Array.isArray(errorData.message)
+          ? errorData.message[0]
+          : errorData.message;
+
+        toast.error(errorMessage, {
+          duration: 3000,
+          position: "top-center",
+          richColors: true,
+        });
+      } else {
+        // Handle unexpected errors
+        toast.error("Error al registrar. Por favor, intente nuevamente", {
+          duration: 3000,
+          position: "top-center",
+          richColors: true,
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -191,12 +230,13 @@ const RegisterForm = () => {
         <div className="space-y-3">
           <h3 className="text-title1">DNI</h3>
           <input
-            type="number"
+            type="text"
             id="dni"
             name="dni"
             placeholder="Ingresa tu DNI"
             value={formData.dni}
             onChange={handleChange}
+            maxLength={8}
             className={`w-full py-[6px] px-[16px] text-lg rounded-[8px] text-black outline-none border ${
               formErrors.dni ? "border-primary-500" : "border-transparent"
             } focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all duration-200`}

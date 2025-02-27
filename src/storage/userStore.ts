@@ -2,13 +2,13 @@ import { create } from "zustand";
 import { persist, devtools, createJSONStorage } from "zustand/middleware";
 
 // Define el tipo de los datos del usuario
-interface UserData {
+export interface UserData {
   id: string;
   name: string;
   email: string;
   role: string;
   dni: number;
-  phone: string; 
+  phone: string;
 }
 
 // Define el tipo del store

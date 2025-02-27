@@ -8,7 +8,7 @@ export interface RegisterFormType {
   email: string;
   password: string;
   phone: string;
-  dni: number;
+  dni: string;
 }
 
 export interface OrderType {
@@ -27,7 +27,15 @@ export interface OrderType {
     createdAt: string;
   } | null; // Puede ser null si no hay técnico asignado
   description: string;
-  status: "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
+  status:
+    | "PENDIENTE"
+    | "REVISION"
+    | "CONFIRMADO"
+    | "CANCELADO"
+    | "REPARACION"
+    | "FINALIZADO"
+    | "PAGO"
+    | "RETIRADO";
   user: {
     id: string;
     name: string;
@@ -46,8 +54,6 @@ export interface OrderType {
   statusHistory: []; // Array de historial de estado
   isActive: boolean;
 }
-
-
 
 export interface UserType {
   id: string;
@@ -96,7 +102,15 @@ export interface OrdeTypeValidate {
   imei: string;
   assignedTechnician: string;
   description: string;
-  status: "PENDIENTE" | "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
+  status:
+    | "PENDIENTE"
+    | "REVISION"
+    | "CONFIRMADO"
+    | "CANCELADO"
+    | "REPARACION"
+    | "FINALIZADO"
+    | "PAGO"
+    | "RETIRADO";
 }
 
 export interface OrderErrors {
@@ -107,4 +121,11 @@ export interface OrderErrors {
   assignedTechnician: string;
   description: string;
   status: string;
+}
+export interface GoogleUserData {
+  name: string | null;
+  email: string | null;
+  role: "USER";
+  dni: string;
+  phone: string;
 }

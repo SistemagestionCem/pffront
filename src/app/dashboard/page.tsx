@@ -29,7 +29,15 @@ export default function DashboardTecnico() {
   });
   const router = useRouter();
 
-  type EstadoOrden = "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
+  type EstadoOrden =
+    | "PENDIENTE"
+    | "REVISION"
+    | "CONFIRMADO"
+    | "CANCELADO"
+    | "REPARACION"
+    | "FINALIZADO"
+    | "PAGO"
+    | "RETIRADO";
 
   type DisplayOrder = {
     id: string;
@@ -57,8 +65,6 @@ export default function DashboardTecnico() {
     };
     date: string;
   };
-  
-
 
   const estadoColores: Record<EstadoOrden, string> = {
     PENDIENTE: "text-gray-500",
@@ -68,7 +74,7 @@ export default function DashboardTecnico() {
     REPARACION: "text-yellow-500",
     FINALIZADO: "text-green-500",
     PAGO: "text-black",
-    RETIRADO: "text-black"
+    RETIRADO: "text-black",
   };
 
   useEffect(() => {
@@ -110,7 +116,6 @@ export default function DashboardTecnico() {
         };
       });
       setOrders(formattedOrders);
-   
     }
   }, [orderData]); // Este efecto se ejecutará cada vez que orderData cambie
 
@@ -121,25 +126,35 @@ export default function DashboardTecnico() {
         email: userData.email || "",
         rol: userData.role || "",
         dni: userData.dni || 0,
-        phone: userData.phone || ""
+        phone: userData.phone || "",
       });
     }
   }, [userData]);
 
   useEffect(() => {
     const storedUser = userDataStorage.getState().userData;
-    
-    if (storedUser === undefined) return; // Evita redirigir mientras carga Zustand
-  
+
+    if (storedUser === undefined) return;
+
     if (!storedUser) {
-      router.push("/"); // Redirige solo si no hay usuario cargado
+      router.push("/login");
+      return;
+    }
+
+    // Asegurarse de que el usuario tenga un rol
+    if (!storedUser.role) {
+      const updatedUser = {
+        ...storedUser,
+        role: "USER",
+      };
+      userDataStorage.setState({ userData: updatedUser });
     }
   }, [userData, router]);
 
   // Modificar el handleEstadoChange
   const handleEstadoChange = async (id: string, nuevoEstado: EstadoOrden) => {
     try {
-      const response = await updateOrderStatus(id, nuevoEstado)
+      const response = await updateOrderStatus(id, nuevoEstado);
       console.log("Respuesta del servidor:", response);
 
       // Actualizar en el store
@@ -205,8 +220,6 @@ export default function DashboardTecnico() {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  
-
   return (
     <PageTransition>
       <div className="container mt-[72px] space-y-8 min-h-screen text-white px-[5vw] py-6 mx-auto">
@@ -234,7 +247,6 @@ export default function DashboardTecnico() {
                 >
                   Agregar Orden
                 </button>
-                
               )}
             </h3>
 
@@ -247,7 +259,6 @@ export default function DashboardTecnico() {
               onToggleSort={toggleSortOrder}
               onSearchChange={(e) => setSearchTerm(e.target.value)}
               estadoColores={estadoColores}
-              
             />
           </section>
 

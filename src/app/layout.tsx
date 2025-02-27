@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mobile Cer",
+  title: "MobileCer - Tecnologias de la Información",
 };
 
 export default function RootLayout({
