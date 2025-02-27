@@ -4,9 +4,8 @@ const apiUrl = "https://pfback-osdi.onrender.com/";
 // const apiUrl = "http://localhost:3000/";
 
 export const postOrderService = async (data: PostOrderType) => {
-  
+
   try {
-    console.log("📤 Enviando datos al backend:", JSON.stringify(data, null, 2)); // Datos que se envían
 
     const response = await fetch(`${apiUrl}orders/create`, {
       method: "POST",
@@ -15,7 +14,6 @@ export const postOrderService = async (data: PostOrderType) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("📩 Respuesta HTTP recibida:", response); // Información de la respuesta HTTP
 
     let responseData;
     const contentType = response.headers.get("content-type");
@@ -25,12 +23,12 @@ export const postOrderService = async (data: PostOrderType) => {
     } else {
       responseData = await response.text(); // Leer como texto si no es JSON
     }
-    console.log("Mensaje de error del backend:", responseData);
+
     if (!response.ok) {
       toast.error(`Error: ${responseData}`);
       throw new Error(responseData); // Lanzar error para capturarlo en el catch
     }
-    console.log("Orden creada:", responseData); // ← Aquí ves la respuesta en consola
+
 
     return responseData;
   } catch (error) {
@@ -46,7 +44,7 @@ export const getOrderByEmail = async (email: string) => {
         "Content-Type": "application/json",
       },
     });
- 
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");
@@ -87,7 +85,9 @@ export const updateOrderStatus = async (id: string, status: string) => {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");
     }
-    return response.json();
+    const data = await response.json();
+    return data;
+    
   } catch (error) {
     console.log("error al obtener los usuarios", error);
     return null;
@@ -103,7 +103,7 @@ export const updateOrderDescription = async (id: string, description: string) =>
       },
       body: JSON.stringify({ description: description }),
     });
-   
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");
@@ -111,8 +111,8 @@ export const updateOrderDescription = async (id: string, description: string) =>
     return response.json();
   } catch (error) {
     console.log("error al obtener los usuarios", error);
-    return null;    
-  }  
+    return null;
+  }
 };
 
 export const getAllOrders = async () => {
@@ -127,10 +127,10 @@ export const getAllOrders = async () => {
       const errorText = await response.text();
       throw new Error(errorText || "Error al cargar el usuarios");
     }
-    //return response.json();
     const data = await response.json();
+
     return data
-    console.log("📢 Respuesta del backend (ordenes):", data)
+    
   } catch (error) {
     console.log("error al obtener los usuarios", error);
     return null;

@@ -4,6 +4,7 @@ import { DisplayOrder, EstadoOrden } from "../types";
 import { ImageUp, Eye } from "lucide-react";
 import { useState } from "react";
 import ModalEvidence from "./ModalEvidence"; // Ajusta la ruta si es necesario
+import ViewEvidenceModal from "./ModalEvidenceView";
 
 
 
@@ -29,14 +30,17 @@ export const OrdersTable = ({
 }: OrdersTableProps) => {
 
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
 
 
   const handleOpenModal = (order: DisplayOrder) => {
-    console.log("📦 Orden seleccionada:", order);
-
     setSelectedOrder(order);
     setIsEvidenceModalOpen(true);
+  };
+  const handleOpenViewModal = (order: DisplayOrder) => {
+    setSelectedOrder(order);
+    setIsViewModalOpen(true);
   };
 
   return (
@@ -140,7 +144,7 @@ export const OrdersTable = ({
                           className="inline-block cursor-pointer text-gray-800 hover:text-gray-600 transition"
                           onClick={(event) => {
                             event.stopPropagation();
-                            handleOpenModal(order);
+                            handleOpenViewModal(order);
                           }}
                         />
                       </td>
@@ -157,6 +161,11 @@ export const OrdersTable = ({
       <ModalEvidence
         isOpen={isEvidenceModalOpen}
         onClose={() => setIsEvidenceModalOpen(false)}
+        order={selectedOrder}
+      />
+      <ViewEvidenceModal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
         order={selectedOrder}
       />
     </>

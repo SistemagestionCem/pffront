@@ -24,6 +24,10 @@
       price: string;
       status: string;
     };
+    evidences?: {
+      id: string;
+      fileUrl: string;
+    }[];
     date: string;
   };
   
