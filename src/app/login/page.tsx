@@ -13,7 +13,7 @@ import userDataStorage, { UserData } from "@/storage/userStore";
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const setUserData = userDataStorage((state) => state.setUserData);
+  const setUserData = userDataStorage((state) => state.setUserData); // Add this line
 
   const handleGoogleLogin = async () => {
     try {
@@ -32,13 +32,11 @@ export default function Page() {
           name: result.user.displayName || "",
           email: result.user.email || "",
           role: "USER",
-          dni: 999999999, // Default value as required by interface
-          phone: "999999999",
+          dni: 0,
+          phone: "",
         };
 
         setUserData(userData);
-
-        // Only store the auth token in localStorage if needed
         localStorage.setItem("authToken", token);
 
         toast.success("¡Inicio de sesión exitoso!", {
@@ -46,7 +44,9 @@ export default function Page() {
           position: "top-center",
           richColors: true,
         });
-        router.push("/dashboard");
+
+        // Change this to /dashboard instead of /
+        router.replace("/dashboard");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
