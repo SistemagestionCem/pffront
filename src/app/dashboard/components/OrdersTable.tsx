@@ -69,6 +69,7 @@ export const OrdersTable = ({
                   {userRole === "ADMIN" ? "Técnico" : "Dispositivo"}
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
+                <th className="text-center p-2 font-semibold text-gray-600">Tipo de Equipo</th>
                 {userRole !== "CLIENT" && (
                   <th className="text-center p-2 font-semibold text-gray-600">Evidencia</th>
                 )}
@@ -116,6 +117,7 @@ export const OrdersTable = ({
                       {order.status}
                     </span>
                   </td>
+                  <td className="p-2">{order.equipmentType}</td>
 
                   {userRole !== "CLIENT" && (
                     <td className="p-2 flex justify-center items-center">
