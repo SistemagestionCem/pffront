@@ -7,7 +7,6 @@ import ModalAgregarOrden from "./components/ModalAgregarOrden";
 import userDataStorage from "@/storage/userStore";
 import orderDataStorage from "@/storage/orderStore";
 import PageTransition from "@/components/PageTransition";
-import { users } from "@/helpers/users";
 import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
 import { updateOrderStatus } from "@/services/orderService";
