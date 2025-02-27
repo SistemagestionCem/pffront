@@ -1,7 +1,7 @@
 import { ChevronUp, ChevronDown } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DisplayOrder, EstadoOrden } from "../types";
-import { ImageUp } from "lucide-react";
+import { ImageUp, Eye } from "lucide-react";
 import { useState } from "react";
 import ModalEvidence from "./ModalEvidence"; // Ajusta la ruta si es necesario
 
@@ -31,9 +31,10 @@ export const OrdersTable = ({
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
 
-  console.log("🛠️ Datos de las órdenes:", orders);
 
   const handleOpenModal = (order: DisplayOrder) => {
+    console.log("📦 Orden seleccionada:", order);
+
     setSelectedOrder(order);
     setIsEvidenceModalOpen(true);
   };
@@ -71,9 +72,12 @@ export const OrdersTable = ({
                 <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
                 <th className="text-center p-2 font-semibold text-gray-600">Tipo de Equipo</th>
                 {userRole !== "CLIENT" && (
-                  <th className="text-center p-2 font-semibold text-gray-600">Evidencia</th>
-                )}
+                  <>
+                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">Evidencia</th>
+                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">Ver Evidencia</th>
 
+                  </>
+                )}
               </tr>
 
             </thead>
@@ -118,19 +122,31 @@ export const OrdersTable = ({
                     </span>
                   </td>
                   <td className="p-2">{order.equipmentType}</td>
-
                   {userRole !== "CLIENT" && (
-                    <td className="p-2 flex justify-center items-center">
-                      <ImageUp
-                        size={20}
-                        className="cursor-pointer text-gray-800 hover:text-gray-600 transition"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleOpenModal(order); // Abre el modal con la orden seleccionada
-                        }}
-                      />
-                    </td>
+                    <>
+                      <td className="p-2 text-center align-middle">
+                        <ImageUp
+                          size={18}
+                          className="inline-block cursor-pointer text-gray-800 hover:text-gray-600 transition"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleOpenModal(order);
+                          }}
+                        />
+                      </td>
+                      <td className="p-2 text-center align-middle">
+                        <Eye
+                          size={18}
+                          className="inline-block cursor-pointer text-gray-800 hover:text-gray-600 transition"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleOpenModal(order);
+                          }}
+                        />
+                      </td>
+                    </>
                   )}
+
                 </tr>
               ))}
 
