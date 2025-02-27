@@ -1,7 +1,7 @@
 import { PostOrderType } from "@/interfaces";
 import { toast } from "sonner";
-// const apiUrl = "https://pfback-osdi.onrender.com/";
-const apiUrl = "http://localhost:3000/";
+const apiUrl = "https://pfback-osdi.onrender.com/";
+// const apiUrl = "http://localhost:3000/";
 
 export const postOrderService = async (data: PostOrderType) => {
   

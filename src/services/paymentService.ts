@@ -1,6 +1,6 @@
 /* eslint-disable */
-// const apiUrl = 'https://pfback-osdi.onrender.com';
-const apiUrl = 'http://localhost:3000';
+const apiUrl = 'https://pfback-osdi.onrender.com';
+// const apiUrl = 'http://localhost:3000';
 
 export const createPayment = async (data: any) => {
     try {
