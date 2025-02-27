@@ -92,28 +92,35 @@ const LoginForm = () => {
             }
 
             if (orders) {
+              console.log("orders", orders);
+              
               const ordersData = orders.map((order: OrderType) => ({
                 id: order.id,
                 clientEmail: order.clientEmail,
                 clientDni: order.clientDni,
                 equipmentType: order.equipmentType,
                 imei: order.imei,
-                assignedTechnician: order.assignedTechnician || "",
+                assignedTechn: order.assignedTechn ?? null, // Asigna el objeto o null
                 description: order.description,
                 status: order.status,
                 user: order.user,
                 createdAt: order.createdAt || new Date(),
                 statusHistory: order.statusHistory || [],
                 isActive: order.isActive || false,
-                payments: order.payments ? {
-                  externalOrderId: order.payments.externalOrderId || '',
-                  id: order.payments.id,
-                  invoicePaidAt: order.payments.invoicePaidAt || '',
-                  price: order.payments.price,
-                  status: order.payments.status,
-                } : null,
+                payments: order.payments
+                  ? {
+                      externalOrderId: order.payments.externalOrderId || '',
+                      id: order.payments.id,
+                      invoicePaidAt: order.payments.invoicePaidAt || '',
+                      price: order.payments.price,
+                      status: order.payments.status,
+                    }
+                  : null,
               }));
+              
               orderDataStorage.getState().setOrderData(ordersData);
+              console.log("Ordenes cargadas:", ordersData);
+              
             }
           } catch (error) {
             console.error("Error cargando órdenes:", error);

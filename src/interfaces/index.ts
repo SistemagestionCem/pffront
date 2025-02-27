@@ -17,7 +17,15 @@ export interface OrderType {
   clientDni: number;
   equipmentType: string;
   imei: string;
-  assignedTechnician: string;
+  assignedTechn: {
+    id: string;
+    name: string;
+    email: string;
+    dni: number;
+    phone: string;
+    role: string;
+    createdAt: string;
+  } | null; // Puede ser null si no hay técnico asignado
   description: string;
   status: "PENDIENTE" | "REVISION" | "CONFIRMADO" | "CANCELADO" | "REPARACION" | "FINALIZADO" | "PAGO" | "RETIRADO";
   user: {

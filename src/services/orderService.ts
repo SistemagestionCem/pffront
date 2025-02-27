@@ -1,7 +1,7 @@
 import { PostOrderType } from "@/interfaces";
 import { toast } from "sonner";
-const apiUrl = "https://pfback-osdi.onrender.com/";
-// const apiUrl = "http://localhost:3000/";
+// const apiUrl = "https://pfback-osdi.onrender.com/";
+const apiUrl = "http://localhost:3000/";
 
 export const postOrderService = async (data: PostOrderType) => {
   
@@ -129,6 +129,7 @@ export const getAllOrders = async () => {
     }
     //return response.json();
     const data = await response.json();
+    return data
     console.log("📢 Respuesta del backend (ordenes):", data)
   } catch (error) {
     console.log("error al obtener los usuarios", error);

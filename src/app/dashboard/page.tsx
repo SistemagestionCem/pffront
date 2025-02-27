@@ -38,7 +38,15 @@ export default function DashboardTecnico() {
     clientDni: number;
     equipmentType: string;
     imei: string;
-    assignedTechnician?: string;
+    assignedTechn?: {
+      id: string;
+      name: string;
+      email: string;
+      dni: number;
+      phone: string;
+      role: string;
+      createdAt: string;
+    } | null;
     description: string;
     status: EstadoOrden;
     payments: null | {
@@ -50,6 +58,7 @@ export default function DashboardTecnico() {
     };
     date: string;
   };
+  
 
 
   const estadoColores: Record<EstadoOrden, string> = {
@@ -68,27 +77,37 @@ export default function DashboardTecnico() {
 
     if (orderData) {
       const formattedOrders: DisplayOrder[] = orderData.map((order) => {
-        const technician = users.find((user) => user.id === order.assignedTechnician);
-
         return {
           id: order.id,
           clientEmail: order.clientEmail,
           clientDni: order.clientDni,
           equipmentType: order.equipmentType,
           imei: order.imei,
-          assignedTechnician: technician?.name || "No asignado",
+          assignedTechn: order.assignedTechn
+            ? {
+                id: order.assignedTechn.id,
+                name: order.assignedTechn.name,
+                email: order.assignedTechn.email,
+                dni: order.assignedTechn.dni,
+                phone: order.assignedTechn.phone,
+                role: order.assignedTechn.role,
+                createdAt: order.assignedTechn.createdAt,
+              }
+            : null,
           description: order.description,
           status: order.status as EstadoOrden,
           payments: order.payments
             ? {
-              externalOrderId: order.payments.externalOrderId ?? null,
-              id: order.payments.id ?? "",
-              invoicePaidAt: order.payments.invoicePaidAt ?? null,
-              price: order.payments.price ?? "0",
-              status: order.payments.status ?? "Desconocido",
-            }
+                externalOrderId: order.payments.externalOrderId ?? null,
+                id: order.payments.id ?? "",
+                invoicePaidAt: order.payments.invoicePaidAt ?? null,
+                price: order.payments.price ?? "0",
+                status: order.payments.status ?? "Desconocido",
+              }
             : null,
-          date: order.createdAt ? new Date(order.createdAt).toLocaleDateString("es-ES") : "Fecha desconocida",
+          date: order.createdAt
+            ? new Date(order.createdAt).toLocaleDateString("es-ES")
+            : "Fecha desconocida",
         };
       });
       setOrders(formattedOrders);
@@ -155,7 +174,7 @@ export default function DashboardTecnico() {
       clientDni: newOrder.clientDni,
       equipmentType: newOrder.equipmentType,
       imei: newOrder.imei,
-      assignedTechnician: newOrder.assignedTechnician || "No asignado",
+      assignedTechn: newOrder.assignedTechn ?? null,
       description: newOrder.description,
       status: newOrder.status,
       payments: newOrder.payments,

@@ -1,6 +1,6 @@
 import { RegisterFormType } from "@/interfaces";
-const apiUrl = "https://pfback-osdi.onrender.com"
-// const apiUrl = "http://localhost:3000";
+// const apiUrl = "https://pfback-osdi.onrender.com"
+const apiUrl = "http://localhost:3000";
 
 export const register = async (data: RegisterFormType) => {
     try {

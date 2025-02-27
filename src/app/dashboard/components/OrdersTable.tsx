@@ -97,7 +97,7 @@ export const OrdersTable = ({
                   </td>
                   <td className="p-2 hidden sm:table-cell">
                     {userRole === "ADMIN"
-                      ? order.assignedTechnician
+                      ? order.assignedTechn?.name
                       : order.equipmentType}
                   </td>
                   <td className="p-2">

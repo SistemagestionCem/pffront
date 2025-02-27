@@ -6,15 +6,24 @@
     clientDni: number;
     equipmentType: string;
     imei: string;
-    assignedTechnician?: string;
+    assignedTechn?: {
+      id: string;
+      name: string;
+      email: string;
+      dni: number;
+      phone: string;
+      role: string;
+      createdAt: string;
+    } | null;
     description: string;
     status: EstadoOrden;
-    payments: {
+    payments: null | {
       externalOrderId: string | null;
       id: string;
       invoicePaidAt: string | null;
       price: string;
       status: string;
-    } | null; // Permitir null
+    };
     date: string;
   };
+  

@@ -275,7 +275,7 @@ export default function ModalOrden({
               </div>
             )}
 
-            {isTechn || isAdmin && order.status === "PENDIENTE" && (
+            {(isTechn || isAdmin) && order.status === "PENDIENTE" && (
               <button
                 onClick={() => handleEstadoChange(order.id, "REVISION")}
                 className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-blue-500 hover:bg-blue-600"
@@ -284,7 +284,7 @@ export default function ModalOrden({
               </button>
             )}
 
-            {isTechn || isAdmin && order.status === "CONFIRMADO" && (
+            {(isTechn || isAdmin) && order.status === "CONFIRMADO" && (
               <button
                 onClick={() => handleEstadoChange(order.id, "REPARACION")}
                 className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-orange-500 hover:bg-orange-600"
@@ -293,7 +293,7 @@ export default function ModalOrden({
               </button>
             )}
 
-            {isTechn || isAdmin && order.status === "REPARACION" && (
+            {(isTechn || isAdmin) && order.status === "REPARACION" && (
               <button
                 onClick={() => handleEstadoChange(order.id, "FINALIZADO")}
                 className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
