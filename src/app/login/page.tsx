@@ -31,7 +31,7 @@ export default function Page() {
           id: result.user.uid,
           name: result.user.displayName || "",
           email: result.user.email || "",
-          role: "USER",
+          role: "CLIENT",
           dni: 0,
           phone: "",
         };
