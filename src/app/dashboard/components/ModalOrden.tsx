@@ -190,7 +190,7 @@ export default function ModalOrden({
                 </div>
               )}
 
-              {isAdmin || isTechn && (
+              {(isAdmin || isTechn) && (
                 <div>
                 <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
                 {isEditing ? (

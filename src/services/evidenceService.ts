@@ -8,7 +8,7 @@ export const postEvidenceService = async (orderId: string, file: File) => {
       formData.append("orderId", orderId); // Agrega el ID de la orden
       formData.append("image", file); // Agrega el archivo binario
   
-      const response = await fetch(`${apiUrl}evidence`, {
+      const response = await fetch(`${apiUrl}evidences`, {
         method: "POST",
         body: formData, // Enviar FormData en lugar de JSON
       });
@@ -21,7 +21,8 @@ export const postEvidenceService = async (orderId: string, file: File) => {
       } else {
         responseData = await response.text();
       }
-  
+      console.log("Respuesta del backend:", responseData);
+
       if (!response.ok) {
         toast.error(`Error: ${responseData}`);
         throw new Error(responseData); 
