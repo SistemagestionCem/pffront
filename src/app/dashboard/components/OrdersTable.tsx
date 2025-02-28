@@ -35,6 +35,7 @@ export const OrdersTable = ({
     setIsEvidenceModalOpen(true);
   };
   const handleOpenViewModal = (order: DisplayOrder) => {
+    console.log("Order seleccionada:", order);
     setSelectedOrder(order);
     setIsViewModalOpen(true);
   };

@@ -64,6 +64,10 @@ export default function DashboardTecnico() {
       status: string;
     };
     date: string;
+    evidences?: { 
+      id: string; 
+      fileUrl: string; 
+    }[];
   };
 
   const estadoColores: Record<EstadoOrden, string> = {
@@ -78,8 +82,7 @@ export default function DashboardTecnico() {
   };
 
   useEffect(() => {
-    console.log("Nuevo estado de orderData recibido:", orderData);
-
+  
     if (orderData) {
       const formattedOrders: DisplayOrder[] = orderData.map((order) => {
         return {
@@ -113,6 +116,7 @@ export default function DashboardTecnico() {
           date: order.createdAt
             ? new Date(order.createdAt).toLocaleDateString("es-ES")
             : "Fecha desconocida",
+            evidences: order.evidences || [] 
         };
       });
       setOrders(formattedOrders);

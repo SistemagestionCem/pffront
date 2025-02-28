@@ -53,6 +53,10 @@ export interface OrderType {
   createdAt: Date;
   statusHistory: []; // Array de historial de estado
   isActive: boolean;
+  evidences?: { 
+    id: string; 
+    fileUrl: string; 
+   }[];
 }
 
 export interface UserType {

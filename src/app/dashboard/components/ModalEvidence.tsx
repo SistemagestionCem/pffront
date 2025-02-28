@@ -10,7 +10,6 @@ interface ModalEvidenceProps {
   onClose: () => void;
   order: DisplayOrder | null;
 }
-
 export default function ModalEvidence({
   isOpen,
   onClose,
@@ -37,11 +36,13 @@ export default function ModalEvidence({
         position: "top-center",
         richColors: true,
       });
+
+      order.evidences = order.evidences ? [...order.evidences, response] : [response];
       setFiles([]); // Limpiar los archivos después de la subida
       // Close modal after successful upload
-      setTimeout(() => {
+      /*setTimeout(() => {
         onClose();
-      }, 1000); // Wait 1 second after success message before closing
+      }, 1000); // Wait 1 second after success message before closing*/
     } catch (error) {
       console.log("Error de modal evidence", error);
       toast.error("Error al subir la imagen", {
