@@ -116,6 +116,7 @@ const LoginForm = () => {
                       status: order.payments.status,
                     }
                   : null,
+                evidences: order.evidences || [],
               }));
               
               orderDataStorage.getState().setOrderData(ordersData);
