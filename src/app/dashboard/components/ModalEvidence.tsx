@@ -9,14 +9,18 @@ interface ModalEvidenceProps {
   isOpen: boolean;
   onClose: () => void;
   order: DisplayOrder | null;
+  onUpdateOrder: () => Promise<void>
 }
 export default function ModalEvidence({
   isOpen,
   onClose,
   order,
+  onUpdateOrder, 
 }: ModalEvidenceProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
 
   useEffect(() => {
     if (!isOpen) {
@@ -30,19 +34,29 @@ export default function ModalEvidence({
     setIsUploading(true);
 
     try {
-      const response = await postEvidenceService(order.id, files[0]);
-      console.log("Verificacion de Response", response);
+      const uploadedEvidences = [];
+
+      for (const file of files) {
+        const response = await postEvidenceService(order.id, file);
+        if (!response || !response.fileUrl) {
+          throw new Error("No se recibió una URL válida");
+        }
+        uploadedEvidences.push(response);
+      }
       toast.success("Imagen subida correctamente!", {
         position: "top-center",
         richColors: true,
       });
 
-      order.evidences = order.evidences ? [...order.evidences, response] : [response];
+      order.evidences = order.evidences
+      ? [...order.evidences, ...uploadedEvidences]
+      : uploadedEvidences;
+
       setFiles([]); // Limpiar los archivos después de la subida
-      // Close modal after successful upload
-      /*setTimeout(() => {
-        onClose();
-      }, 1000); // Wait 1 second after success message before closing*/
+      setShowConfirmation(true);
+  
+      await onUpdateOrder()
+
     } catch (error) {
       console.log("Error de modal evidence", error);
       toast.error("Error al subir la imagen", {
@@ -91,52 +105,80 @@ export default function ModalEvidence({
                 <X size={20} />
               </button>
             </div>
-
-            <div className="mb-4">
-              <label className="cursor-pointer flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-4 text-gray-600 hover:bg-gray-100 transition">
-                <UploadCloud size={32} className="mb-2" />
-                <span className="text-sm">Seleccionar archivos</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  multiple
-                  onChange={handleFileChange}
-                />
-              </label>
-            </div>
-
-            <div className="mb-4 max-h-32 overflow-y-auto">
-              {files.length > 0 ? (
-                files.map((file, index) => (
-                  <p key={index} className="text-sm text-gray-700 truncate">
-                    {file.name}
-                  </p>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500">
-                  No hay archivos seleccionados.
+            {showConfirmation ? (
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-lg font-semibold text-gray-900">
+                  ¿Desea subir otra imagen?
                 </p>
-              )}
-            </div>
+                <div className="flex gap-4">
+                  <button
+                    className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                    onClick={() => {
+                      setShowConfirmation(false); // Volver al formulario para subir otra imagen
+                    }}
+                  >
+                    Sí
+                  </button>
+                  <button
+                    className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition"
+                    onClick={() => {
+                      setShowConfirmation(false);
+                      onClose();
+                    }}
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="mb-4">
+                  <label className="cursor-pointer flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-4 text-gray-600 hover:bg-gray-100 transition">
+                    <UploadCloud size={32} className="mb-2" />
+                    <span className="text-sm">Seleccionar archivos</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      multiple
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                </div>
 
-            <div className="flex justify-end gap-2">
-              <button
-                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                onClick={onClose}
-              >
-                Cancelar
-              </button>
-              <button
-                className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition"
-                disabled={files.length === 0 || isUploading}
-                onClick={handleUpload}
-              >
-                {isUploading ? "Subiendo..." : "Subir"}
-              </button>
-            </div>
+                <div className="mb-4 max-h-32 overflow-y-auto">
+                  {files.length > 0 ? (
+                    files.map((file, index) => (
+                      <p key={index} className="text-sm text-gray-700 truncate">
+                        {file.name}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      No hay archivos seleccionados.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                    onClick={onClose}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition"
+                    disabled={files.length === 0 || isUploading}
+                    onClick={handleUpload}
+                  >
+                    {isUploading ? "Subiendo..." : "Subir"}
+                  </button>
+                </div>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
-  );
+  )
 }
