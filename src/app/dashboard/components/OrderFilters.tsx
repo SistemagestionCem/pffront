@@ -60,6 +60,7 @@ export default function OrderFilters({ orders, onFilterChange }: any) {
       </select>
 
       <select
+        title="Filtrar por tipo de equipo"
         className="p-2 border rounded"
         value={tipoEquipo}
         onChange={(e) => setTipoEquipo(e.target.value)}
