@@ -1,4 +1,3 @@
-import { ChevronUp, ChevronDown } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DisplayOrder, EstadoOrden } from "../types";
 import { ImageUp, Eye } from "lucide-react";
@@ -8,22 +7,18 @@ import ViewEvidenceModal from "./ModalEvidenceView";
 
 interface OrdersTableProps {
   orders: DisplayOrder[];
-  sortOrder: "asc" | "desc";
   userRole: string;
   searchTerm: string;
   onOrderClick: (order: DisplayOrder) => void;
-  onToggleSort: () => void;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   estadoColores: Record<string, string>;
 }
 
 export const OrdersTable = ({
   orders,
-  sortOrder,
   userRole,
   searchTerm,
   onOrderClick,
-  onToggleSort,
   onSearchChange,
 }: OrdersTableProps) => {
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
@@ -59,15 +54,9 @@ export const OrdersTable = ({
               <tr className="text-xs sm:text-sm bg-gray-50">
                 <th
                   className="text-center p-2 sm:p-3 font-semibold text-gray-600 cursor-pointer"
-                  onClick={onToggleSort}
                 >
                   <div className="flex items-center justify-center gap-1">
                     <span>Fecha</span>
-                    {sortOrder === "asc" ? (
-                      <ChevronUp size={14} />
-                    ) : (
-                      <ChevronDown size={14} />
-                    )}
                   </div>
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">

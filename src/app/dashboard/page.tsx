@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 import { useState, useEffect } from "react";
 import { UserProfile } from "./components/UserProfile";
@@ -11,6 +12,7 @@ import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
 import { updateOrderStatus } from "@/services/orderService";
 import { useRouter } from "next/navigation";
+import OrderFilters from "./components/OrderFilters";
 
 export default function DashboardTecnico() {
   const { orderData, addOrder, updateOrder } = orderDataStorage();
@@ -19,7 +21,6 @@ export default function DashboardTecnico() {
   const [orders, setOrders] = useState<DisplayOrder[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [usuario, setUsuario] = useState({
     nombre: "",
     email: "",
@@ -202,27 +203,8 @@ export default function DashboardTecnico() {
     setOrders((prevOrders) => [...prevOrders, formattedOrder]);
   };
 
-  const filteredOrders = orders
-    .filter((order) => {
-      if (!searchTerm) return true;
-      const searchTerms = searchTerm.toLowerCase().split(" ").filter(Boolean);
-      return searchTerms.every(
-        (term) =>
-          order.id.toLowerCase().includes(term) ||
-          order.equipmentType.toLowerCase().includes(term) ||
-          order.status.toLowerCase().includes(term) ||
-          order.date.toLowerCase().includes(term)
-      );
-    })
-    .sort((a, b) =>
-      sortOrder === "asc"
-        ? a.date.localeCompare(b.date)
-        : b.date.localeCompare(a.date)
-    );
-
-  const toggleSortOrder = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
+// Esta función debe ir en el componente que maneja las órdenes (no en el filtro).
+const [filteredOrders, setFilteredOrders] = useState(orders);
 
   return (
     <PageTransition>
@@ -239,6 +221,10 @@ export default function DashboardTecnico() {
           dni={usuario.dni}
         />
 
+        <div>
+
+        </div>
+
         <div className="flex flex-col gap-8 pb-8">
           {/* Sección de Órdenes */}
           <section className="px-[16px] mx-auto w-full max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
@@ -254,13 +240,14 @@ export default function DashboardTecnico() {
               )}
             </h3>
 
+            {/* Filtros */}
+            <OrderFilters orders={orders} onFilterChange={setFilteredOrders} />
+
             <OrdersTable
               orders={filteredOrders}
-              sortOrder={sortOrder}
               userRole={usuario.rol}
               searchTerm={searchTerm}
               onOrderClick={setSelectedOrder}
-              onToggleSort={toggleSortOrder}
               onSearchChange={(e) => setSearchTerm(e.target.value)}
               estadoColores={estadoColores}
             />
