@@ -3,7 +3,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 import { DisplayOrder, EstadoOrden } from "../types";
 import { ImageUp, Eye } from "lucide-react";
 import { useState } from "react";
-import ModalEvidence from "./ModalEvidence"; // Ajusta la ruta si es necesario
+import ModalEvidence from "./ModalEvidence";
 import ViewEvidenceModal from "./ModalEvidenceView";
 
 interface OrdersTableProps {
@@ -15,6 +15,7 @@ interface OrdersTableProps {
   onToggleSort: () => void;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   estadoColores: Record<string, string>;
+  fetchOrders: () => Promise<void>;
 }
 
 export const OrdersTable = ({
@@ -25,6 +26,7 @@ export const OrdersTable = ({
   onOrderClick,
   onToggleSort,
   onSearchChange,
+  fetchOrders,
 }: OrdersTableProps) => {
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -181,6 +183,7 @@ export const OrdersTable = ({
         isOpen={isEvidenceModalOpen}
         onClose={() => setIsEvidenceModalOpen(false)}
         order={selectedOrder}
+        onUpdateOrder={fetchOrders}
       />
       <ViewEvidenceModal
         isOpen={isViewModalOpen}

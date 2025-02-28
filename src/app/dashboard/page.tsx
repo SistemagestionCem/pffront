@@ -9,7 +9,7 @@ import orderDataStorage from "@/storage/orderStore";
 import PageTransition from "@/components/PageTransition";
 import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
-import { updateOrderStatus } from "@/services/orderService";
+import { getAllOrders, updateOrderStatus, getOrderById  } from "@/services/orderService";
 import { useRouter } from "next/navigation";
 
 export default function DashboardTecnico() {
@@ -68,6 +68,7 @@ export default function DashboardTecnico() {
       id: string; 
       fileUrl: string; 
     }[];
+    createdAt?: string; 
   };
 
   const estadoColores: Record<EstadoOrden, string> = {
@@ -118,6 +119,7 @@ export default function DashboardTecnico() {
             : "Fecha desconocida",
             evidences: order.evidences || [] 
         };
+        
       });
       setOrders(formattedOrders);
     }
@@ -155,7 +157,47 @@ export default function DashboardTecnico() {
     }
   }, [userData, router]);
 
-  // Modificar el handleEstadoChange
+  const fetchOrders = async () => {
+    try {
+      const allOrders = await getAllOrders(); // 🔹 Obtener todas las órdenes
+  
+      if (!allOrders || allOrders.length === 0) {
+        console.log("No hay órdenes disponibles.");
+        setOrders([]);
+        return;
+      }
+  
+      // 🔹 Verificar qué órdenes estamos obteniendo
+      console.log("Órdenes obtenidas de getAllOrders:", allOrders);
+  
+      // 🔹 Obtener detalles de cada orden para asegurarnos de traer las evidencias
+      const formattedOrders = await Promise.all(
+        allOrders.map(async (order: DisplayOrder) => {
+          console.log(`Llamando a getOrderById para la orden: ${order.id}`); // 🔹 Verificar si se está ejecutando
+  
+          const fullOrder = await getOrderById(order.id); // ✅ Obtener la orden con evidencias
+  
+          const updatedOrder = {
+            ...order,
+            date: order.createdAt
+              ? new Date(order.createdAt).toLocaleDateString("es-ES")
+              : "Fecha desconocida",
+            evidences: fullOrder?.evidences || [], // 🔹 Guardamos las evidencias
+          };
+  
+          console.log("Orden después de getOrderById:", updatedOrder); // 🔹 Verificar si evidences está presente
+          return updatedOrder;
+        })
+      );
+  
+      setOrders(formattedOrders); // 🔹 Guardamos las órdenes con sus evidencias en el estado
+      console.log("Órdenes guardadas en el estado:", formattedOrders);
+    } catch (error) {
+      console.log("Error al actualizar las órdenes:", error);
+    }
+  };
+  
+    
   const handleEstadoChange = async (id: string, nuevoEstado: EstadoOrden) => {
     try {
       const response = await updateOrderStatus(id, nuevoEstado);
@@ -170,8 +212,6 @@ export default function DashboardTecnico() {
         };
         updateOrder(updatedOrder);
       }
-
-      // Actualizar el estado local
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === id ? { ...order, status: nuevoEstado } : order
@@ -263,6 +303,7 @@ export default function DashboardTecnico() {
               onToggleSort={toggleSortOrder}
               onSearchChange={(e) => setSearchTerm(e.target.value)}
               estadoColores={estadoColores}
+              fetchOrders={fetchOrders}
             />
           </section>
 
