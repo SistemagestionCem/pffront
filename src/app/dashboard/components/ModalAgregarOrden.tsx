@@ -8,7 +8,6 @@ import { OrderErrors, OrderType } from "@/interfaces";
 import { orderValidation } from "@/utils/orderValidation";
 import { X } from "lucide-react";
 
-
 // Modal para agregar una nueva orden
 interface ModalAgregarOrdenProps {
   isOpen: boolean;
@@ -16,9 +15,13 @@ interface ModalAgregarOrdenProps {
   handleSaveOrder: (newOrder: OrderType) => void; // Añadido el tipo handleSaveOrder
 }
 
-const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrdenProps) => {
+const ModalAgregarOrden = ({
+  isOpen,
+  onClose,
+  handleSaveOrder,
+}: ModalAgregarOrdenProps) => {
   const { tecnicos, admin } = useUsers();
-  
+
   const [orderData, setOrderData] = useState({
     clientEmail: "",
     clientDni: "",
@@ -26,11 +29,18 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     imei: "",
     assignedTechnician: "",
     description: "",
-    status: "PENDIENTE" as "PENDIENTE" | "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
+    status: "PENDIENTE" as
+      | "PENDIENTE"
+      | "REVISION"
+      | "CONFIRMADO"
+      | "CANCELADO"
+      | "REPARACION"
+      | "FINALIZADO"
+      | "PAGO"
+      | "RETIRADO",
     user: "",
     createdAt: new Date(),
   });
-
 
   const [errors, setErrors] = useState<OrderErrors>({
     clientEmail: "",
@@ -39,10 +49,26 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     imei: "",
     assignedTechnician: "",
     description: "",
-    status: "PENDIENTE" as "PENDIENTE" | "REVISION" | "CONFIRMADO" |  "CANCELADO" | "REPARACION" |"FINALIZADO" | "PAGO" | "RETIRADO",
+    status: "PENDIENTE" as
+      | "PENDIENTE"
+      | "REVISION"
+      | "CONFIRMADO"
+      | "CANCELADO"
+      | "REPARACION"
+      | "FINALIZADO"
+      | "PAGO"
+      | "RETIRADO",
   });
 
-  const [touchInput, setTouchInput] = useState<{ clientEmail: boolean; clientDni: boolean; equipmentType: boolean; imei: boolean; assignedTechnician: boolean; description: boolean, status: boolean }>({
+  const [touchInput, setTouchInput] = useState<{
+    clientEmail: boolean;
+    clientDni: boolean;
+    equipmentType: boolean;
+    imei: boolean;
+    assignedTechnician: boolean;
+    description: boolean;
+    status: boolean;
+  }>({
     clientEmail: false,
     clientDni: false,
     equipmentType: false,
@@ -86,11 +112,12 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
   };
 
   const handleSubmit = async () => {
-
     const selectAdmin = admin[0];
-    
+
     //const selectedClient = clientes.find(c => c.email === orderData.clientEmail);
-    const selectedTechnician = tecnicos.find(t => t.id === orderData.assignedTechnician);
+    const selectedTechnician = tecnicos.find(
+      (t) => t.id === orderData.assignedTechnician
+    );
 
     if (!selectedTechnician) {
       toast.error("Error: No se encontró un cliente con ese email.", {
@@ -104,7 +131,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
       adminName: selectAdmin?.name ?? "Admin no disponible",
       clientEmail: orderData.clientEmail,
       technName: selectedTechnician?.name ?? "Nombre no disponible",
-      clientDni: Number(orderData.clientDni), 
+      clientDni: Number(orderData.clientDni),
       equipmentType: orderData.equipmentType.trim(),
       imei: orderData.imei.trim(),
       description: orderData.description.trim(),
@@ -121,7 +148,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
         toast.success("Orden creada con éxito", {
           position: "top-center",
           richColors: true,
-        })
+        });
       }
     } catch (error) {
       toast.error("Error al crear la orden", {
@@ -132,33 +159,114 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = event.target;
 
+    // Update form data
     setOrderData((prev) => ({
       ...prev,
-
-      [name]: name === "clientDni" ? (value ? Number(value) : "") : name === "description" ? value : value.trim(),
-
+      [name]:
+        name === "clientDni"
+          ? value
+            ? Number(value)
+            : ""
+          : name === "description"
+            ? value
+            : value.trim(),
     }));
 
-    setTouchInput((previus) => ({
-      ...previus,
+    // Validate fields in real-time
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case "clientEmail":
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value) {
+          newErrors.clientEmail = "El email es requerido";
+        } else if (!emailRegex.test(value)) {
+          newErrors.clientEmail = "Email inválido";
+        } else {
+          newErrors.clientEmail = "";
+        }
+        break;
+
+      case "clientDni":
+        const dniRegex = /^\d{8}$/;
+        if (!value) {
+          newErrors.clientDni = "El DNI es requerido";
+        } else if (!dniRegex.test(value)) {
+          newErrors.clientDni = "El DNI debe tener 8 dígitos";
+        } else {
+          newErrors.clientDni = "";
+        }
+        break;
+
+      case "equipmentType":
+        if (!value) {
+          newErrors.equipmentType = "El tipo de equipo es requerido";
+        } else {
+          newErrors.equipmentType = "";
+        }
+        break;
+
+      case "imei":
+        const imeiRegex = /^\d{15}$/;
+        if (!value) {
+          newErrors.imei = "El IMEI es requerido";
+        } else if (!imeiRegex.test(value)) {
+          newErrors.imei = "El IMEI debe tener 15 dígitos";
+        } else {
+          newErrors.imei = "";
+        }
+        break;
+
+      case "assignedTechnician":
+        if (!value) {
+          newErrors.assignedTechnician = "Debe seleccionar un técnico";
+        } else {
+          newErrors.assignedTechnician = "";
+        }
+        break;
+
+      case "description":
+        if (!value) {
+          newErrors.description = "La descripción es requerida";
+        } else if (value.length < 10) {
+          newErrors.description =
+            "La descripción debe tener al menos 10 caracteres";
+        } else {
+          newErrors.description = "";
+        }
+        break;
+    }
+
+    setErrors(newErrors);
+    setTouchInput((prev) => ({
+      ...prev,
       [name]: true,
     }));
   };
 
-  const handleBlur = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name } = event.target
+  // Update isFormValid to use the new validation logic
+
+  const handleBlur = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name } = event.target;
 
     setTouchInput({
       ...touchInput,
-      [name]: true
-    })
+      [name]: true,
+    });
 
-    setErrors(orderValidation(orderData))
-  }
+    setErrors(orderValidation(orderData));
+  };
 
+  // Keep only this version of isFormValid
   const isFormValid = () => {
     return (
       orderData.clientEmail.trim() !== "" &&
@@ -168,16 +276,17 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
       orderData.assignedTechnician.trim() !== "" &&
       orderData.description.trim() !== "" &&
       orderData.status.trim() !== "" &&
-      !Object.values(errors).some((error) => error !== "") // Asegura que no haya errores
+      !Object.values(errors).some((error) => error !== "")
     );
   };
   return isOpen ? (
     <PageTransition>
       <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-[480px] max-h-[90vh] overflow-y-auto mx-auto">
-
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Agregar Orden</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Agregar Orden
+            </h2>
             <button
               type="button"
               title="Cerrar"
@@ -193,12 +302,10 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
           <div className="space-y-4">
             <select
               className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-
               value={orderData.assignedTechnician}
               title="Tecnico"
               name="assignedTechnician"
               onChange={handleInputChange}
-
             >
               <option value="">Seleccionar técnico</option>
               {tecnicos.map((tecnico) => (
@@ -208,33 +315,58 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               ))}
             </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
-              {touchInput.assignedTechnician && <p className="text-primary-500 text-sm">{errors.assignedTechnician}</p>}
+              {touchInput.assignedTechnician && (
+                <p className="text-primary-500 text-sm">
+                  {errors.assignedTechnician}
+                </p>
+              )}
             </div>
-
             <input
               type="text"
               name="clientEmail"
               placeholder="Email Cliente"
-              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full p-2 text-black text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                touchInput.clientEmail && errors.clientEmail
+                  ? "border-primary-500"
+                  : "border-gray-300"
+              }`}
               value={orderData.clientEmail}
               onChange={handleInputChange}
-              onBlur={handleBlur}
+              onBlur={handleInputChange}
             />
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
-              {touchInput.clientEmail && <p className="text-primary-500 text-sm">{errors.clientEmail}</p>}
+              {touchInput.clientEmail && (
+                <p className="text-primary-500 text-sm">{errors.clientEmail}</p>
+              )}
             </div>
 
             <input
-              type="number"
+              type="text"
               name="clientDni"
               placeholder="Dni Cliente"
-              className="w-full p-2 text-black text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full p-2 text-black text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                touchInput.clientDni && errors.clientDni
+                  ? "border-primary-500"
+                  : "border-gray-300"
+              }`}
               value={orderData.clientDni}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ""); // Only allow digits
+                if (value.length <= 8) {
+                  // Limit to 8 digits
+                  e.target.value = value;
+                  handleInputChange(e);
+                }
+              }}
               onBlur={handleBlur}
+              maxLength={8}
+              pattern="\d*"
+              inputMode="numeric"
             />
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
-              {touchInput.clientDni && <p className="text-primary-500 text-sm">{errors.clientDni}</p>}
+              {touchInput.clientDni && (
+                <p className="text-primary-500 text-sm">{errors.clientDni}</p>
+              )}
             </div>
 
             <textarea
@@ -246,7 +378,9 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               onBlur={handleBlur}
             />
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
-              {touchInput.description && <p className="text-primary-500 text-sm">{errors.description}</p>}
+              {touchInput.description && (
+                <p className="text-primary-500 text-sm">{errors.description}</p>
+              )}
             </div>
 
             <select
@@ -262,7 +396,11 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               <option value="LAPTOP">Laptop</option>
             </select>
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
-              {touchInput.equipmentType && <p className="text-primary-500 text-sm">{errors.equipmentType}</p>}
+              {touchInput.equipmentType && (
+                <p className="text-primary-500 text-sm">
+                  {errors.equipmentType}
+                </p>
+              )}
             </div>
 
             <input
@@ -275,7 +413,9 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               onBlur={handleBlur}
             />
             <div className="min-h-[1px] pl-1 text-primary-500 text-sm">
-              {touchInput.imei && <p className="text-primary-500 text-sm">{errors.imei}</p>}
+              {touchInput.imei && (
+                <p className="text-primary-500 text-sm">{errors.imei}</p>
+              )}
             </div>
 
             {/* <select
@@ -306,9 +446,9 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid()}
-                className={`w-full px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${!isFormValid() ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-
+                className={`w-full px-4 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${
+                  !isFormValid() ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 Guardar Orden
               </button>
@@ -316,7 +456,7 @@ const ModalAgregarOrden = ({ isOpen, onClose, handleSaveOrder }: ModalAgregarOrd
           </div>
         </div>
       </div>
-    </PageTransition >
+    </PageTransition>
   ) : null;
 };
 

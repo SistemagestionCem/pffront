@@ -11,7 +11,11 @@ interface ModalEvidenceProps {
   order: DisplayOrder | null;
 }
 
-export default function ModalEvidence({ isOpen, onClose, order }: ModalEvidenceProps) {
+export default function ModalEvidence({
+  isOpen,
+  onClose,
+  order,
+}: ModalEvidenceProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -27,15 +31,19 @@ export default function ModalEvidence({ isOpen, onClose, order }: ModalEvidenceP
     setIsUploading(true);
 
     try {
-      const response = await postEvidenceService(order.id, files[0]); 
-      console.log("Verificacion de Response" , response)
+      const response = await postEvidenceService(order.id, files[0]);
+      console.log("Verificacion de Response", response);
       toast.success("Imagen subida correctamente!", {
         position: "top-center",
         richColors: true,
       });
       setFiles([]); // Limpiar los archivos después de la subida
+      // Close modal after successful upload
+      setTimeout(() => {
+        onClose();
+      }, 1000); // Wait 1 second after success message before closing
     } catch (error) {
-      console.log("Error de modal evidence" , error) 
+      console.log("Error de modal evidence", error);
       toast.error("Error al subir la imagen", {
         position: "top-center",
         richColors: true,
@@ -70,7 +78,9 @@ export default function ModalEvidence({ isOpen, onClose, order }: ModalEvidenceP
             className="bg-white p-6 rounded-xl shadow-lg w-full max-w-[400px] max-h-[90vh] overflow-y-auto mx-auto"
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Subir Evidencia</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Subir Evidencia
+              </h2>
               <button
                 type="button"
                 title="Cerrar"
@@ -85,7 +95,12 @@ export default function ModalEvidence({ isOpen, onClose, order }: ModalEvidenceP
               <label className="cursor-pointer flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-4 text-gray-600 hover:bg-gray-100 transition">
                 <UploadCloud size={32} className="mb-2" />
                 <span className="text-sm">Seleccionar archivos</span>
-                <input type="file" className="hidden" multiple onChange={handleFileChange} />
+                <input
+                  type="file"
+                  className="hidden"
+                  multiple
+                  onChange={handleFileChange}
+                />
               </label>
             </div>
 
@@ -97,7 +112,9 @@ export default function ModalEvidence({ isOpen, onClose, order }: ModalEvidenceP
                   </p>
                 ))
               ) : (
-                <p className="text-sm text-gray-500">No hay archivos seleccionados.</p>
+                <p className="text-sm text-gray-500">
+                  No hay archivos seleccionados.
+                </p>
               )}
             </div>
 
