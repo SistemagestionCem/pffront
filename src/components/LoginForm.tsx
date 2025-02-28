@@ -86,9 +86,8 @@ const LoginForm = () => {
             if (response.userFound.role === "CLIENT") {
               orders = await getOrderByEmail(response.userFound.email);
             } else if (response.userFound.role === "TECHN") {
-              orders = await getTechOrders(response.userFound.name);
+              orders = await getTechOrders(response.userFound.id);
               console.log("tecnico", orders);
-              
             } else if (response.userFound.role === "ADMIN") {
               orders = await getAllOrders();
             }
