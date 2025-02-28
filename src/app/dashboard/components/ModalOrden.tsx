@@ -16,7 +16,7 @@ interface ModalProps {
   order?: {
     id: string;
     clientEmail: string;
-    clientDni: number;
+    clientDni: string;
     equipmentType: string;
     imei: string;
     assignedTechnician?: string;

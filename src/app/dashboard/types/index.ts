@@ -3,14 +3,14 @@
   export type DisplayOrder = {
     id: string;
     clientEmail: string;
-    clientDni: number;
+    clientDni: string;
     equipmentType: string;
     imei: string;
     assignedTechn?: {
       id: string;
       name: string;
       email: string;
-      dni: number;
+      dni: string;
       phone: string;
       role: string;
       createdAt: string;

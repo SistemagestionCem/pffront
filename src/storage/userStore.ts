@@ -7,7 +7,7 @@ export interface UserData {
   name: string;
   email: string;
   role: string;
-  dni: number;
+  dni: string;
   phone: string;
 }
 

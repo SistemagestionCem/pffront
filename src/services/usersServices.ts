@@ -38,3 +38,24 @@ export const changeRole = async ({ role, id }: { role: string; id: string }) => 
   return response.json();
 };
 
+export const updateUser = async (id: string, data: any) => {
+  try {
+    const response = await fetch(`${apiUrl}users/updateUser/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al actualizar el usuario");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.log("error al actualizar el usuario", error);
+  }
+};
+

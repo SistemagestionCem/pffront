@@ -22,10 +22,11 @@ export default function DashboardTecnico() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [usuario, setUsuario] = useState({
+    id: "",
     nombre: "",
     email: "",
     rol: "",
-    dni: 0,
+    dni: "",
     phone: "",
   });
   const router = useRouter();
@@ -43,14 +44,14 @@ export default function DashboardTecnico() {
   type DisplayOrder = {
     id: string;
     clientEmail: string;
-    clientDni: number;
+    clientDni: string;
     equipmentType: string;
     imei: string;
     assignedTechn?: {
       id: string;
       name: string;
       email: string;
-      dni: number;
+      dni: string;
       phone: string;
       role: string;
       createdAt: string;
@@ -129,11 +130,12 @@ export default function DashboardTecnico() {
   useEffect(() => {
     if (userData) {
       setUsuario({
-        nombre: userData.name || "",
-        email: userData.email || "",
-        rol: userData.role || "",
-        dni: userData.dni || 0,
-        phone: userData.phone || "",
+        id: userData.id,
+        nombre: userData.name,
+        email: userData.email,
+        rol: userData.role,
+        dni: userData.dni,
+        phone: userData.phone,
       });
     }
   }, [userData]);
@@ -246,6 +248,8 @@ export default function DashboardTecnico() {
 // Esta función debe ir en el componente que maneja las órdenes (no en el filtro).
 const [filteredOrders, setFilteredOrders] = useState(orders);
 
+
+
   return (
     <PageTransition>
       <div className="container mt-[72px] space-y-8 min-h-screen text-white px-[5vw] py-6 mx-auto">
@@ -254,6 +258,7 @@ const [filteredOrders, setFilteredOrders] = useState(orders);
         </h1>
 
         <UserProfile
+          id={usuario.id}
           nombre={usuario.nombre}
           email={usuario.email}
           rol={usuario.rol}

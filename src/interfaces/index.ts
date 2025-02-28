@@ -14,14 +14,14 @@ export interface RegisterFormType {
 export interface OrderType {
   id: string;
   clientEmail: string;
-  clientDni: number;
+  clientDni: string;
   equipmentType: string;
   imei: string;
   assignedTechn: {
     id: string;
     name: string;
     email: string;
-    dni: number;
+    dni: string;
     phone: string;
     role: string;
     createdAt: string;
@@ -81,7 +81,7 @@ export interface PostOrderType {
 export interface OrdeType {
   id: string;
   clientEmail: string;
-  clientDni: number;
+  clientDni: string;
   equipmentType: string;
   imei: string;
   assignedTechnician: string;
