@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useEffect } from "react";
 
 const estadosOrden = [
@@ -13,14 +14,14 @@ const estadosOrden = [
 
 const tiposEquipo = ["CELULAR", "TABLET", "LAPTOP"];
 
-export default function OrderFilters({ orders, onFilterChange }) {
+export default function OrderFilters({ orders, onFilterChange }: any) {
   const [estado, setEstado] = useState("");
   const [tipoEquipo, setTipoEquipo] = useState("");
   const [ordenFecha, setOrdenFecha] = useState("");
 
   useEffect(() => {
     // Filtrar las órdenes según el estado y tipo de equipo
-    let filteredOrders = orders.filter((order) => {
+    let filteredOrders = orders.filter((order: any) => {
       const matchesEstado = estado ? order.status === estado : true;
       const matchesTipoEquipo = tipoEquipo ? order.equipmentType === tipoEquipo : true;
 
@@ -29,7 +30,7 @@ export default function OrderFilters({ orders, onFilterChange }) {
 
     // Ordenar las órdenes por fecha si es necesario
     if (ordenFecha) {
-      filteredOrders = filteredOrders.sort((a, b) => {
+      filteredOrders = filteredOrders.sort((a: any, b: any) => {
         const dateA = a.date;
         const dateB = b.date;
 

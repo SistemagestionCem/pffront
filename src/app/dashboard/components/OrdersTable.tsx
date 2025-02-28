@@ -73,7 +73,7 @@ export const OrdersTable = ({
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">ID orden</th>
                 <th className="text-center p-2 font-semibold text-gray-600 hidden sm:table-cell">
-                  {userRole === "ADMIN" ? "Técnico" : "Dispositivo"}
+                  Técnico
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
                 <th className="text-center p-2 font-semibold text-gray-600">Tipo de Equipo</th>
@@ -109,7 +109,7 @@ export const OrdersTable = ({
                     </span>
                   </td>
                   <td className="p-2 hidden sm:table-cell">
-                    {userRole === "ADMIN" ? order.assignedTechn?.name : order.equipmentType}
+                    {order.assignedTechn?.name}
                   </td>
                   <td className="p-2">
                     <span

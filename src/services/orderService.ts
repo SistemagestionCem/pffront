@@ -56,9 +56,9 @@ export const getOrderByEmail = async (email: string) => {
   }
 };
 
-export const getTechOrders = async (id: string) => {
+export const getTechOrders = async (name: string) => {
   try {
-    const response = await fetch(`${apiUrl}orders/technician/${id}`, {
+    const response = await fetch(`${apiUrl}orders/technician/${name}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
