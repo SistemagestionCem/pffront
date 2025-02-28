@@ -51,7 +51,7 @@ export default function Page() {
             name: result.user.displayName || "",
             email: result.user.email || "",
             role: "CLIENT",
-            dni: 0,
+            dni: "0",
             phone: "999999999", // Match the phone number used in registration
           };
 
