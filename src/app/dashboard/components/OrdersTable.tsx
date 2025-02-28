@@ -31,18 +31,30 @@ export const OrdersTable = ({
     setSelectedOrder(order);
     setIsEvidenceModalOpen(true);
   };
+
   const handleOpenViewModal = (order: DisplayOrder) => {
-    console.log("Order seleccionada:", order);
     setSelectedOrder(order);
     setIsViewModalOpen(true);
   };
 
+  // Filtrado de órdenes
+  const filteredOrders = orders.filter((order) => {
+    const searchTermLower = searchTerm.toLowerCase();
+    const searchTerms = searchTermLower.split(' ').filter(term => term.trim() !== ''); // Split y filtrar por palabras
+
+    return searchTerms.every(term => 
+      order.id.toLowerCase().includes(term) || // ID de orden
+      order.date.toLowerCase().includes(term) || // Fecha
+      order.equipmentType.toLowerCase().includes(term) || // Tipo de equipo
+      (userRole === "ADMIN" && order.assignedTechn?.name?.toLowerCase().includes(term)) || // Técnico (solo si es ADMIN)
+      order.status.toLowerCase().includes(term) // Estado
+    );
+  });
+
   return (
     <>
       <div className="p-2 sm:p-4">
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          Lista de órdenes
-        </h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Lista de órdenes</h2>
         <input
           type="text"
           className="w-full p-2 text-sm border border-gray-300 rounded-lg"
@@ -54,25 +66,17 @@ export const OrdersTable = ({
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead>
               <tr className="text-xs sm:text-sm bg-gray-50">
-                <th
-                  className="text-center p-2 sm:p-3 font-semibold text-gray-600 cursor-pointer"
-                >
+                <th className="text-center p-2 sm:p-3 font-semibold text-gray-600 cursor-pointer">
                   <div className="flex items-center justify-center gap-1">
                     <span>Fecha</span>
                   </div>
                 </th>
-                <th className="text-center p-2 font-semibold text-gray-600">
-                  ID orden
-                </th>
+                <th className="text-center p-2 font-semibold text-gray-600">ID orden</th>
                 <th className="text-center p-2 font-semibold text-gray-600 hidden sm:table-cell">
                   {userRole === "ADMIN" ? "Técnico" : "Dispositivo"}
                 </th>
-                <th className="text-center p-2 font-semibold text-gray-600">
-                  Estado
-                </th>
-                <th className="text-center p-2 font-semibold text-gray-600">
-                  Tipo de Equipo
-                </th>
+                <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
+                <th className="text-center p-2 font-semibold text-gray-600">Tipo de Equipo</th>
                 {userRole !== "CLIENT" && (
                   <>
                     <th className="text-center p-2 font-semibold text-gray-600 align-middle">
@@ -86,7 +90,7 @@ export const OrdersTable = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr
                   key={order.id}
                   className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
@@ -100,17 +104,12 @@ export const OrdersTable = ({
                 >
                   <td className="p-2 whitespace-nowrap">{order.date}</td>
                   <td className="p-2">
-                    <span
-                      className="block truncate max-w-[100px] sm:max-w-none"
-                      title={order.id} // Tooltip con el ID completo
-                    >
+                    <span className="block truncate max-w-[100px] sm:max-w-none" title={order.id}>
                       {order.id.slice(0, 4)}...{order.id.slice(-4)}
                     </span>
                   </td>
                   <td className="p-2 hidden sm:table-cell">
-                    {userRole === "ADMIN"
-                      ? order.assignedTechn?.name
-                      : order.equipmentType}
+                    {userRole === "ADMIN" ? order.assignedTechn?.name : order.equipmentType}
                   </td>
                   <td className="p-2">
                     <span
@@ -118,20 +117,20 @@ export const OrdersTable = ({
                         order.status === "PENDIENTE"
                           ? "bg-yellow-100 text-yellow-800"
                           : order.status === "REVISION"
-                            ? "bg-purple-100 text-purple-800"
-                            : order.status === "CONFIRMADO"
-                              ? "bg-blue-100 text-blue-800"
-                              : order.status === "CANCELADO"
-                                ? "bg-red-100 text-red-800"
-                                : order.status === "REPARACION"
-                                  ? "bg-indigo-100 text-indigo-800"
-                                  : order.status === "FINALIZADO"
-                                    ? "bg-green-100 text-green-800"
-                                    : order.status === "PAGO"
-                                      ? "bg-emerald-100 text-emerald-800"
-                                      : order.status === "RETIRADO"
-                                        ? "bg-teal-100 text-teal-800"
-                                        : "bg-gray-100 text-gray-800"
+                          ? "bg-purple-100 text-purple-800"
+                          : order.status === "CONFIRMADO"
+                          ? "bg-blue-100 text-blue-800"
+                          : order.status === "CANCELADO"
+                          ? "bg-red-100 text-red-800"
+                          : order.status === "REPARACION"
+                          ? "bg-indigo-100 text-indigo-800"
+                          : order.status === "FINALIZADO"
+                          ? "bg-green-100 text-green-800"
+                          : order.status === "PAGO"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : order.status === "RETIRADO"
+                          ? "bg-teal-100 text-teal-800"
+                          : "bg-gray-100 text-gray-800"
                       }`}
                     >
                       {order.status}
