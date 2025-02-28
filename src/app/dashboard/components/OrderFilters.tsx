@@ -73,6 +73,7 @@ export default function OrderFilters({ orders, onFilterChange }: any) {
       </select>
 
       <select
+        title="Ordenar por fecha"
         className="p-2 border rounded"
         value={ordenFecha}
         onChange={(e) => setOrdenFecha(e.target.value)}
