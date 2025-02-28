@@ -6,8 +6,6 @@ import { useState } from "react";
 import ModalEvidence from "./ModalEvidence"; // Ajusta la ruta si es necesario
 import ViewEvidenceModal from "./ModalEvidenceView";
 
-
-
 interface OrdersTableProps {
   orders: DisplayOrder[];
   sortOrder: "asc" | "desc";
@@ -28,11 +26,9 @@ export const OrdersTable = ({
   onToggleSort,
   onSearchChange,
 }: OrdersTableProps) => {
-
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
-
 
   const handleOpenModal = (order: DisplayOrder) => {
     setSelectedOrder(order);
@@ -66,24 +62,36 @@ export const OrdersTable = ({
                 >
                   <div className="flex items-center justify-center gap-1">
                     <span>Fecha</span>
-                    {sortOrder === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    {sortOrder === "asc" ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
+                    )}
                   </div>
                 </th>
-                <th className="text-center p-2 font-semibold text-gray-600">ID orden</th>
+                <th className="text-center p-2 font-semibold text-gray-600">
+                  ID orden
+                </th>
                 <th className="text-center p-2 font-semibold text-gray-600 hidden sm:table-cell">
                   {userRole === "ADMIN" ? "Técnico" : "Dispositivo"}
                 </th>
-                <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
-                <th className="text-center p-2 font-semibold text-gray-600">Tipo de Equipo</th>
+                <th className="text-center p-2 font-semibold text-gray-600">
+                  Estado
+                </th>
+                <th className="text-center p-2 font-semibold text-gray-600">
+                  Tipo de Equipo
+                </th>
                 {userRole !== "CLIENT" && (
                   <>
-                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">Evidencia</th>
-                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">Ver Evidencia</th>
-
+                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">
+                      Evidencia
+                    </th>
+                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">
+                      Ver Evidencia
+                    </th>
                   </>
                 )}
               </tr>
-
             </thead>
             <tbody className="divide-y divide-gray-200">
               {orders.map((order) => (
@@ -91,7 +99,10 @@ export const OrdersTable = ({
                   key={order.id}
                   className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
                   onClick={(event) => {
-                    if ((event.target as HTMLElement).closest(".ignore-row-click")) return;
+                    if (
+                      (event.target as HTMLElement).closest(".ignore-row-click")
+                    )
+                      return;
                     onOrderClick(order);
                   }}
                 >
@@ -111,16 +122,25 @@ export const OrdersTable = ({
                   </td>
                   <td className="p-2">
                     <span
-                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "PENDIENTE"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "RETIRADO" //esto hay que cambiarlo
-                          ? "bg-blue-100 text-blue-800"
-                          : order.status === "CONFIRMADO"
-                            ? "bg-green-100 text-green-800"
-                            : order.status === "CANCELADO"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-gray-100 text-gray-800"
-                        }`}
+                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${
+                        order.status === "PENDIENTE"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.status === "REVISION"
+                            ? "bg-purple-100 text-purple-800"
+                            : order.status === "CONFIRMADO"
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "CANCELADO"
+                                ? "bg-red-100 text-red-800"
+                                : order.status === "REPARACION"
+                                  ? "bg-indigo-100 text-indigo-800"
+                                  : order.status === "FINALIZADO"
+                                    ? "bg-green-100 text-green-800"
+                                    : order.status === "PAGO"
+                                      ? "bg-emerald-100 text-emerald-800"
+                                      : order.status === "RETIRADO"
+                                        ? "bg-teal-100 text-teal-800"
+                                        : "bg-gray-100 text-gray-800"
+                      }`}
                     >
                       {order.status}
                     </span>
@@ -150,10 +170,8 @@ export const OrdersTable = ({
                       </td>
                     </>
                   )}
-
                 </tr>
               ))}
-
             </tbody>
           </table>
         </div>
