@@ -6,10 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
-import { inactivateOrder, updateOrderDescription, updateOrderStatus } from "@/services/orderService";
+import { updateOrderDescription, updateOrderStatus } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
 import { EstadoOrden } from "../types";
 import { toast } from "sonner";
+import { ButtonCancelar } from "@/components/ButtonCancelar";
 
 interface ModalProps {
   isOpen: boolean;
@@ -154,7 +155,7 @@ export default function ModalOrden({
                     ¿Está seguro de cerrar sin guardar los cambios?
                   </p>
                   <div className="flex justify-center gap-4">
-                    
+
                     <button
                       className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition"
                       onClick={() => {
@@ -279,28 +280,16 @@ export default function ModalOrden({
                 </div>
               )}
             </div>
-            {/*} {isAdmin && order.status !== "FINALIZADO" && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
-              <button
-                className="w-full px-4 py-2 mb-4 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-red-500 hover:bg-red-600"
-                onClick={async () => {
-                  const response = await inactivateOrder(order.id);
-                  if (response) {
-                    toast.success(`"Orden cancelada correctamente"`, {
-                      position: "top-center",
-                      richColors: true,
-                    });
-                    onClose();
-                  } else {
-                    toast.error("Se produjo un error al cancelar la orden", {
-                      position: "top-center",
-                      richColors: true,
-                    });
-                  }
-                }}
-              >
-                Cancelar
-              </button>
-            )}{*/}
+            {isAdmin &&
+              order.status !== "FINALIZADO" &&
+              order.status !== "CANCELADO" &&
+              order.status !== "RETIRADO" &&
+              !(order.status === "REVISION" && order.payments !== null) && (
+                <ButtonCancelar
+                  orderId={order.id}
+                  onClose={onClose} />
+              )}
+
             {(isAdmin && order.status === "REVISION" && order.payments === null) && (
               <div className="space-y-2 mb-4">
                 <PaymentForm orderId={order.id} onClose={onClose} />
@@ -383,14 +372,16 @@ export default function ModalOrden({
               </button>
             )}
 
-            {isAdmin && order.status === "FINALIZADO" && order.payments?.status === "APPROVED" && (
-              <button
-                onClick={() => handleEstadoChange(order.id, "RETIRADO")}
-                className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
-              >
-                Retirado
-              </button>
-            )}
+            {isAdmin &&
+              ((order.status === "FINALIZADO" && order.payments?.status === "APPROVED") ||
+                order.status === "CANCELADO") && (
+                <button
+                  onClick={() => handleEstadoChange(order.id, "RETIRADO")}
+                  className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
+                >
+                  Retirado
+                </button>
+              )}
 
           </motion.div>
         </motion.div>
