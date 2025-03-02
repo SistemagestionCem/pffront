@@ -8,6 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Modal from "@/components/ModalHome";
 import { OrderByMail } from "@/interfaces";
+import { X } from "lucide-react";
 
 export default function Home() {
   const [userEmail, setUserEmail] = useState({
@@ -20,13 +21,19 @@ export default function Home() {
     event.preventDefault();
 
     if (!userEmail.email.trim()) {
-      toast.error("Por favor ingrese un correo");
+      toast.error("Por favor ingrese un correo.", {
+        position: "top-center",
+        richColors: true,
+      });
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userEmail.email)) {
-      toast.error("Por favor ingrese un correo válido");
+      toast.error("Por favor ingrese un correo válido.", {
+        position: "top-center",
+        richColors: true,
+      });
       return;
     }
 
@@ -34,7 +41,10 @@ export default function Home() {
       const response = await getOrderByEmail(userEmail.email);
 
       if (!response) {
-        toast.error("No se encontraron órdenes para este correo");
+        toast.error("No se encontraron órdenes para este correo.", {
+          position: "top-center",
+          richColors: true,
+        });
         return;
       }
 
@@ -42,7 +52,10 @@ export default function Home() {
       setModalOpen(true);
     } catch (error) {
       console.error("Error al buscar la orden:", error);
-      toast.error("Error al buscar la orden. Por favor intente nuevamente");
+      toast.error("Error al buscar la orden. Por favor intente nuevamente.", {
+        position: "top-center",
+        richColors: true,
+      });
     }
   };
 
@@ -125,11 +138,17 @@ export default function Home() {
           </form>
           <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
             <div className="bg-secondary-500 p-6 rounded-[16px] max-w-md mx-auto">
-              <h2 className="mb-6 text-xl text-center font-bold text-white border-b border-white/10 pb-3">
-                Estado de Órdenes
-              </h2>
+              <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+                <h2 className="text-xl font-bold text-white">Estado de Órdenes</h2>
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="text-white hover:text-gray-400 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
               {orderData.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-4 max-h-[300px] overflow-y-auto">
                   {orderData.map((order, index) => (
                     <div
                       key={index}
@@ -150,8 +169,7 @@ export default function Home() {
                           </span>
                           <span
                             className={`px-4 py-1.5 rounded-full text-xs font-medium inline-block text-center min-w-[100px]
-                            ${
-                              order.status === "PENDIENTE"
+                            ${order.status === "PENDIENTE"
                                 ? "bg-yellow-100 text-yellow-800"
                                 : order.status === "REVISION"
                                   ? "bg-purple-100 text-purple-800"
@@ -160,7 +178,7 @@ export default function Home() {
                                     : order.status === "FINALIZADO"
                                       ? "bg-green-100 text-green-800"
                                       : "bg-gray-100 text-gray-800"
-                            }`}
+                              }`}
                           >
                             {order.status}
                           </span>
