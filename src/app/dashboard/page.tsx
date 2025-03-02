@@ -271,7 +271,7 @@ const [filteredOrders, setFilteredOrders] = useState(orders);
         </div>
 
         <div className="flex flex-col gap-8 pb-8">
-          {/* Sección de Órdenes */}
+        
           <section className="px-[16px] mx-auto w-full max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
             <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
               Órdenes
