@@ -190,34 +190,46 @@ export default function ModalOrden({
                 </div>
               )}
 
-              {(isAdmin || isTechn) && (
-                <div>
-                <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
-                {isEditing ? (
-                  <div>
-                    <textarea
-                      placeholder="Ingrese una descripción detallada aquí..."
-                      className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
-                      value={descripcion}
-                      onChange={(e) => setDescripcion(e.target.value)}
-                    />
-                    <button  onClick={handleDescriptionSave} className="mt-2 text-bodyBold font-bold text-gray-700">Guardar</button>
-                  </div>
-                ) : ( 
-                  <div className="flex items-center justify-between">
-                    <p className="text-bodyBold font-bold text-gray-700">{order.description}</p>
-                    <button className="text-gray-700" onClick={() => {setIsEditing(true); setDescripcion(order.description)}}>Editar</button>
-                  </div>
-                )}
-              </div>
+{ (isAdmin || isTechn) && (
+                <div className="flex flex-col gap-2"> 
+                  {/* Se agregó flex-col gap-2 para que el botón siempre esté debajo del textarea o del texto */}
+                  <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
+                  {isEditing ? (
+                    <>
+                      <textarea
+                        placeholder="Ingrese una descripción detallada aquí..."
+                        className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
+                        value={descripcion}
+                        onChange={(e) => setDescripcion(e.target.value)}
+                      />
+                      <button 
+                        onClick={handleDescriptionSave} 
+                        className="px-4 py-2 text-white font-semibold bg-blue-500 rounded-lg transition-colors duration-200 hover:bg-blue-600"
+                      >
+                        Guardar
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-bodyBold font-bold text-gray-700">{order.description}</p>
+                      <button 
+                        className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
+                        onClick={() => { setIsEditing(true); setDescripcion(order.description) }}
+                      >
+                        Editar
+                      </button>
+                    </>
                   )}
+                </div>
+              )}
 
-            {(isUser || isAdmin && order.status !== ( "REVISION" ) && order.payments?.status === "PENDING") && (
-              <div className="mb-4">
-                <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
-                <p className="text-gray-700">$ {order.payments?.price}</p>
-              </div>
-            )}
+
+              {(isUser || isAdmin && order.status !== ("REVISION") && order.payments?.status === "PENDING") && (
+                <div className="mb-4">
+                  <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
+                  <p className="text-gray-700">$ {order.payments?.price}</p>
+                </div>
+              )}
             </div>
 
             {(isAdmin && order.status === "REVISION" && order.payments === null) && (
