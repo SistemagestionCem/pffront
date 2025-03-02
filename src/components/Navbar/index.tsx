@@ -8,7 +8,7 @@ export default function NavBar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { clearUserData } = userDataStorage();
+  const { userData, clearUserData } = userDataStorage();
   const { clearOrderData } = orderDataStorage();
 
   const handleLogout = () => {
@@ -16,6 +16,7 @@ export default function NavBar() {
     clearOrderData();
     router.push("/");
   };
+
 
   return (
     <nav
@@ -28,12 +29,21 @@ export default function NavBar() {
         </Link>
         <div>
           {pathname === "/" ? (
-            <button
-              onClick={() => router.push("/login")}
-              className="flex items-center justify-center px-8 py-[8px] rounded-[16px] bg-primary-500 text-title3 text-white lg:px-12 lg:py-[10px]"
-            >
-              Login
-            </button>
+            userData ? (
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="flex items-center justify-center px-8 py-[8px] rounded-[16px] bg-primary-500 text-title3 text-white lg:px-12 lg:py-[10px]"
+              >
+                Ir al Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => router.push("/login")}
+                className="flex items-center justify-center px-8 py-[8px] rounded-[16px] bg-primary-500 text-title3 text-white lg:px-12 lg:py-[10px]"
+              >
+                Login
+              </button>
+            )
           ) : pathname.includes("/dashboard") ? (
             <button
               onClick={handleLogout}
