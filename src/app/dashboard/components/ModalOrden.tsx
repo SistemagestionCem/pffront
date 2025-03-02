@@ -58,7 +58,7 @@ export default function ModalOrden({
 
   if (!isOpen || !order) return null;
 
-  const handlePayment = async (price: string, orderId: string) => {
+  const handlePayment = async (price: string, orderId: string, orderPaymetId: string) => {
     const monto = Number(price);
     if (monto <= 0) return;
     setIsProcessing(true);
@@ -70,7 +70,7 @@ export default function ModalOrden({
       quantity: 1,
       unit_price: Number(monto),
       productId: orderId,
-      external: "false",
+      external: orderPaymetId,
     };
 
     try {
@@ -270,6 +270,14 @@ export default function ModalOrden({
                   <p className="text-gray-700">$ {order.payments?.price}</p>
                 </div>
               )}
+              {((isUser || isAdmin) && order.payments?.status === "APPROVED") && (
+                <div className="mb-4">
+                  <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
+                  <p className="text-gray-700">$ {order.payments?.price}</p>
+                  <p className="text-gray-700">ID de Pago: {order.payments?.id}</p>
+                  <p className="text-gray-700">Pago Aprobado</p>
+                </div>
+              )}
             </div>
             {/*} {isAdmin && order.status !== "FINALIZADO" && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
               <button
@@ -314,7 +322,7 @@ export default function ModalOrden({
             {(isUser && order.status === "CONFIRMADO" && order.payments?.status === "PENDING") && (
               <div className="space-y-3">
                 <button
-                  onClick={() => handlePayment(order.payments?.price ?? '0', order.id)}
+                  onClick={() => handlePayment(order.payments?.price ?? '0', order.id, order.payments?.id ?? '')}
                   className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${isProcessing ? "cursor-not-allowed" : ""}`}
                 >
                   {isProcessing ? (

@@ -18,9 +18,9 @@ export async function POST(req: NextRequest) {
         metadata: { client_id: clientId, product_id: productId },
         external_reference: external,
         back_urls: {
-          success: "https://tu-app.com/payments/success",
-          failure: "https://tu-app.com/payments/failure",
-          pending: "https://tu-app.com/payments/pending"
+          success: "http://localhost:3001/payments",
+          failure: "http://localhost:3001/payments",
+          pending: "http://localhost:3001/payments"
         },
         auto_return: "approved"
       }
