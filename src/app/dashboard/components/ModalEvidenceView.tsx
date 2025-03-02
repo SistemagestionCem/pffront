@@ -47,13 +47,13 @@ export default function ViewEvidenceModal({ isOpen, onClose, order }: ViewEviden
             </div>
 
             {order?.evidences && order.evidences.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                 {order.evidences.map((evidence, index) => (
                   <img
                     key={index}
                     src={evidence.fileUrl}
                     alt={`Evidencia ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg border cursor-pointer"
+                    className="w-full h-24 object-contain rounded-lg border cursor-pointer bg-gray-100"
                     onClick={() => handleImageClick(evidence.fileUrl)}
                   />
                 ))}
@@ -69,17 +69,28 @@ export default function ViewEvidenceModal({ isOpen, onClose, order }: ViewEviden
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+
                 onClick={handleCloseImage}
               >
-                <motion.img
-                  src={selectedImage}
-                  alt="Imagen grande"
-                  className="max-w-[80%] max-h-[80vh] object-contain"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0.8 }}
-                  transition={{ type: "spring", duration: 0.3 }}
-                />
+
+                <div className="relative bg-white p-2 rounded-lg">
+                  {/* Botón de cierre (X) */}
+                  <button
+                    onClick={handleCloseImage}
+                    className="absolute top-2 right-2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700 transition"
+                  >
+                    <X size={20} />
+                  </button>
+                  <motion.img
+                    src={selectedImage}
+                    alt="Evidencia Ampliada"
+                    className="w-auto h-auto max-w-[90vw] max-h-[90vh] object-contain"
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0.8 }}
+                    transition={{ type: "spring", duration: 0.3 }}
+                  />
+                </div>
               </motion.div>
             )}
           </motion.div>
