@@ -47,6 +47,8 @@ export default function ModalOrden({
   const isTechn = userData?.role === "TECHN";
   const [descripcion, setDescripcion] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
 
   useEffect(() => {
 
@@ -89,7 +91,13 @@ export default function ModalOrden({
       setIsProcessing(false); // Desactiva el spinner al finalizar
     }
   };
-
+  const handleClose = () => {
+    if (isEditing) {
+      setShowConfirmation(true);
+    } else {
+      onClose(); // Cerrar directamente si no está editando
+    }
+  };
   const handleDescriptionSave = async () => {
     try {
       const response = await updateOrderDescription(order.id, descripcion);
@@ -133,12 +141,41 @@ export default function ModalOrden({
               <button
                 type="button"
                 title="Cerrar"
-                onClick={onClose}
+                onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
+            {showConfirmation && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+                <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm text-center">
+                  <p className="text-lg font-semibold text-gray-900 mb-4">
+                    ¿Está seguro de cerrar sin guardar los cambios?
+                  </p>
+                  <div className="flex justify-center gap-4">
+                    
+                    <button
+                      className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition"
+                      onClick={() => {
+                        setShowConfirmation(false);
+                        setIsEditing(false);
+                        onClose();
+                      }}
+                    >
+                      Sí
+                    </button>
+                    <button
+                      className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                      onClick={() => setShowConfirmation(false)} // Cancelar
+                    >
+                      No
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
 
             <div className="space-y-2 mb-6">
               <div>
@@ -234,7 +271,7 @@ export default function ModalOrden({
                 </div>
               )}
             </div>
-           {/*} {isAdmin && order.status !== "FINALIZADO" && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
+            {/*} {isAdmin && order.status !== "FINALIZADO" && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
               <button
                 className="w-full px-4 py-2 mb-4 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-red-500 hover:bg-red-600"
                 onClick={async () => {
