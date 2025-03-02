@@ -15,11 +15,12 @@ export default function ModalEvidence({
   isOpen,
   onClose,
   order,
-  onUpdateOrder, 
+  onUpdateOrder,
 }: ModalEvidenceProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
 
   useEffect(() => {
@@ -30,33 +31,39 @@ export default function ModalEvidence({
 
   const handleUpload = async () => {
     if (!order || files.length === 0) return;
-
+  
     setIsUploading(true);
-
+    setUploadProgress(0);
+  
     try {
       const uploadedEvidences = [];
-
-      for (const file of files) {
+  
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         const response = await postEvidenceService(order.id, file);
         if (!response || !response.fileUrl) {
           throw new Error("No se recibió una URL válida");
         }
         uploadedEvidences.push(response);
+  
+        setTimeout(() => {
+          setUploadProgress(((i + 1) / files.length) * 100);
+        }, 200);
       }
+  
       toast.success("Imagen subida correctamente!", {
         position: "top-center",
         richColors: true,
       });
-
+  
       order.evidences = order.evidences
-      ? [...order.evidences, ...uploadedEvidences]
-      : uploadedEvidences;
-
-      setFiles([]); // Limpiar los archivos después de la subida
+        ? [...order.evidences, ...uploadedEvidences]
+        : uploadedEvidences;
+  
+      setFiles([]); // Limpiar archivos después de la subida
       setShowConfirmation(true);
   
-      await onUpdateOrder()
-
+      await onUpdateOrder();
     } catch (error) {
       console.log("Error de modal evidence", error);
       toast.error("Error al subir la imagen", {
@@ -64,10 +71,13 @@ export default function ModalEvidence({
         richColors: true,
       });
     } finally {
-      setIsUploading(false); // Desactivar estado de subida
+      setTimeout(() => {
+        setIsUploading(false);
+        setUploadProgress(0); 
+      }, 500);
     }
   };
-
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFiles(Array.from(event.target.files));
@@ -92,6 +102,15 @@ export default function ModalEvidence({
             transition={{ type: "spring", duration: 0.5 }}
             className="bg-white p-6 rounded-xl shadow-lg w-full max-w-[400px] max-h-[90vh] overflow-y-auto mx-auto"
           >
+
+            {isUploading && (
+              <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-4">
+                <div
+                  style={{ width: `${uploadProgress}%` }}
+                  className="h-full bg-blue-500 transition-all duration-300"
+                ></div>
+              </div>
+            )}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-900">
                 Subir Evidencia

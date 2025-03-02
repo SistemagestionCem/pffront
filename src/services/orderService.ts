@@ -156,3 +156,24 @@ export const getOrderById = async (orderId: string) => {
     return null;
   }
 };
+
+export const inactivateOrder = async (id: string) => {
+  try {
+    const response = await fetch(`${apiUrl}orders/inactivate/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ isActive: false }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al inactivar la orden");
+    }
+
+    return await response.json(); 
+  } catch (error) {
+    console.error("Error en inactivateOrder:", error);
+    return null;
+  }
+};

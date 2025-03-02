@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
-import { updateOrderDescription, updateOrderStatus } from "@/services/orderService";
+import { inactivateOrder, updateOrderDescription, updateOrderStatus } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
 import { EstadoOrden } from "../types";
+import { toast } from "sonner";
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,8 +34,6 @@ interface ModalProps {
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
-
-
 export default function ModalOrden({
   isOpen,
   onClose,
@@ -50,6 +49,7 @@ export default function ModalOrden({
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
+
     setDescripcion("");
 
   }, [order]);
@@ -109,7 +109,6 @@ export default function ModalOrden({
       console.log(error);
     }
   }
-
 
   return (
     <AnimatePresence>
@@ -190,9 +189,10 @@ export default function ModalOrden({
                 </div>
               )}
 
+
               {(isAdmin || isTechn) && (
                 <div className="flex flex-col gap-2">
-                
+
                   <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
                   {isEditing ? (
                     <>
@@ -214,7 +214,10 @@ export default function ModalOrden({
                       <p className="text-bodyBold font-bold text-gray-700  border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-h-[120px] overflow-y-auto py-2 px-2">{order.description}</p>
                       <button
                         className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
-                        onClick={() => { setIsEditing(true); setDescripcion(order.description) }}
+                        onClick={() => {
+                          setIsEditing(true);
+                          setDescripcion(order.description)
+                        }}
                       >
                         Editar
                       </button>
@@ -231,7 +234,28 @@ export default function ModalOrden({
                 </div>
               )}
             </div>
-
+           {/*} {isAdmin && order.status !== "FINALIZADO" && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
+              <button
+                className="w-full px-4 py-2 mb-4 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-red-500 hover:bg-red-600"
+                onClick={async () => {
+                  const response = await inactivateOrder(order.id);
+                  if (response) {
+                    toast.success(`"Orden cancelada correctamente"`, {
+                      position: "top-center",
+                      richColors: true,
+                    });
+                    onClose();
+                  } else {
+                    toast.error("Se produjo un error al cancelar la orden", {
+                      position: "top-center",
+                      richColors: true,
+                    });
+                  }
+                }}
+              >
+                Cancelar
+              </button>
+            )}{*/}
             {(isAdmin && order.status === "REVISION" && order.payments === null) && (
               <div className="space-y-2 mb-4">
                 <PaymentForm orderId={order.id} onClose={onClose} />
