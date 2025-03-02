@@ -204,7 +204,7 @@ export default function ModalOrden({
                       />
                       <button 
                         onClick={handleDescriptionSave} 
-                        className="px-4 py-2 text-white font-semibold bg-blue-500 rounded-lg transition-colors duration-200 hover:bg-blue-600"
+                        className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
                       >
                         Guardar
                       </button>
