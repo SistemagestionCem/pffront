@@ -190,9 +190,9 @@ export default function ModalOrden({
                 </div>
               )}
 
-{ (isAdmin || isTechn) && (
-                <div className="flex flex-col gap-2"> 
-                  {/* Se agregó flex-col gap-2 para que el botón siempre esté debajo del textarea o del texto */}
+              {(isAdmin || isTechn) && (
+                <div className="flex flex-col gap-2">
+                
                   <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
                   {isEditing ? (
                     <>
@@ -202,8 +202,8 @@ export default function ModalOrden({
                         value={descripcion}
                         onChange={(e) => setDescripcion(e.target.value)}
                       />
-                      <button 
-                        onClick={handleDescriptionSave} 
+                      <button
+                        onClick={handleDescriptionSave}
                         className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
                       >
                         Guardar
@@ -211,8 +211,8 @@ export default function ModalOrden({
                     </>
                   ) : (
                     <>
-                      <p className="text-bodyBold font-bold text-gray-700">{order.description}</p>
-                      <button 
+                      <p className="text-bodyBold font-bold text-gray-700  border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-h-[120px] overflow-y-auto py-2 px-2">{order.description}</p>
+                      <button
                         className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
                         onClick={() => { setIsEditing(true); setDescripcion(order.description) }}
                       >
