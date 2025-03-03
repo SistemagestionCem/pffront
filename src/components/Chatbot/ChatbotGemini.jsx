@@ -160,6 +160,7 @@ export default function ChatBotGemini() {
               placeholder="Escribe un mensaje..."
               onSend={handleSend}
               attachButton={false}
+              git
             />
           </ChatContainer>
         </MainContainer>
