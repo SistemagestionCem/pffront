@@ -1,4 +1,3 @@
-/* eslint-disable */
 "use client";
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -6,9 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
-import { updateOrderDescription, updateOrderStatus } from "@/services/orderService";
+import { updateOrderDescription } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
 import { EstadoOrden } from "../types";
+import { ButtonCancelar } from "@/components/ButtonCancelar";
+import { RotateCwSquare } from 'lucide-react';
+import ModalCambioEstado from "./ModalCambioEstado";
+
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,7 +19,7 @@ interface ModalProps {
   order?: {
     id: string;
     clientEmail: string;
-    clientDni: number;
+    clientDni: string;
     equipmentType: string;
     imei: string;
     assignedTechnician?: string;
@@ -33,8 +36,6 @@ interface ModalProps {
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
 }
 
-
-
 export default function ModalOrden({
   isOpen,
   onClose,
@@ -48,15 +49,25 @@ export default function ModalOrden({
   const isTechn = userData?.role === "TECHN";
   const [descripcion, setDescripcion] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isModalCambioEstadoOpen, setIsModalCambioEstadoOpen] = useState(false);
 
   useEffect(() => {
+
     setDescripcion("");
 
   }, [order]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setIsModalCambioEstadoOpen(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen || !order) return null;
 
-  const handlePayment = async (price: string, orderId: string) => {
+
+  const handlePayment = async (price: string, orderId: string, orderPaymetId: string) => {
     const monto = Number(price);
     if (monto <= 0) return;
     setIsProcessing(true);
@@ -68,7 +79,7 @@ export default function ModalOrden({
       quantity: 1,
       unit_price: Number(monto),
       productId: orderId,
-      external: "false",
+      external: orderPaymetId,
     };
 
     try {
@@ -87,6 +98,13 @@ export default function ModalOrden({
       console.error("Error en el pago:", error);
     } finally {
       setIsProcessing(false); // Desactiva el spinner al finalizar
+    }
+  };
+  const handleClose = () => {
+    if (isEditing) {
+      setShowConfirmation(true);
+    } else {
+      onClose(); // Cerrar directamente si no está editando
     }
   };
 
@@ -109,7 +127,6 @@ export default function ModalOrden({
       console.log(error);
     }
   }
-
 
   return (
     <AnimatePresence>
@@ -134,18 +151,60 @@ export default function ModalOrden({
               <button
                 type="button"
                 title="Cerrar"
-                onClick={onClose}
+                onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
+            {showConfirmation && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+                <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm text-center">
+                  <p className="text-lg font-semibold text-gray-900 mb-4">
+                    ¿Está seguro de cerrar sin guardar los cambios?
+                  </p>
+                  <div className="flex justify-center gap-4">
+
+                    <button
+                      className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition"
+                      onClick={() => {
+                        setShowConfirmation(false);
+                        setIsEditing(false);
+                        onClose();
+                      }}
+                    >
+                      Sí
+                    </button>
+                    <button
+                      className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                      onClick={() => setShowConfirmation(false)} // Cancelar
+                    >
+                      No
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
 
             <div className="space-y-2 mb-6">
               <div>
-                <label className="text-bodyBold font-bold text-gray-700">
-                  Estado:
-                </label>
+                <div className="flex">
+                  <label className="text-bodyBold font-bold text-gray-700">
+                    Estado:
+                  </label>
+                  {isAdmin && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
+                    <span title="Cambiar Estado">
+                      <RotateCwSquare
+                        size={18}
+                        className="inline-block cursor-pointer text-gray-800 hover:text-gray-600 transition ml-4"
+                        onClick={() => setIsModalCambioEstadoOpen(true)}
+                      />
+                    </span>
+                  )}
+                </div>
+
+
                 <p
                   className={`mt-1 font-medium text-gray-700`}
                 >
@@ -185,40 +244,77 @@ export default function ModalOrden({
 
               {isUser && (
                 <div>
-                  <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
-                  <p className="text-gray-700">{order.description}</p>
+                  <label className="text-bodyBold font-bold text-gray-700">
+                    Descripción:
+                  </label>
+                  <p className="text-gray-700 border border-gray-300 rounded-lg px-2 py-2 max-h-[120px] overflow-y-auto">
+                    {order.description}
+                  </p>
                 </div>
               )}
 
-              {(isAdmin || isTechn) && (
-                <div>
-                <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
-                {isEditing ? (
-                  <div>
-                    <textarea
-                      placeholder="Ingrese una descripción detallada aquí..."
-                      className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
-                      value={descripcion}
-                      onChange={(e) => setDescripcion(e.target.value)}
-                    />
-                    <button  onClick={handleDescriptionSave} className="mt-2 text-bodyBold font-bold text-gray-700">Guardar</button>
-                  </div>
-                ) : ( 
-                  <div className="flex items-center justify-between">
-                    <p className="text-bodyBold font-bold text-gray-700">{order.description}</p>
-                    <button className="text-gray-700" onClick={() => {setIsEditing(true); setDescripcion(order.description)}}>Editar</button>
-                  </div>
-                )}
-              </div>
-                  )}
 
-            {(isUser || isAdmin && order.status !== ( "REVISION" ) && order.payments?.status === "PENDING") && (
-              <div className="mb-4">
-                <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
-                <p className="text-gray-700">$ {order.payments?.price}</p>
-              </div>
-            )}
+              {(isAdmin || isTechn) && (
+                <div className="flex flex-col gap-2">
+
+                  <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
+
+                  {isEditing ? (
+                    <>
+                      <textarea
+                        placeholder="Ingrese una descripción detallada aquí..."
+                        className="mt-1 w-full text-black p-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-[120px] resize-none"
+                        value={descripcion}
+                        onChange={(e) => setDescripcion(e.target.value)}
+                      />
+                      <button
+                        onClick={handleDescriptionSave}
+                        className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
+                      >
+                        Guardar
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-bodyBold font-bold text-gray-700  border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-h-[120px] overflow-y-auto py-2 px-2">{order.description}</p>
+                      <button
+                        className="px-4 py-2 text-white font-semibold bg-slate-500 rounded-lg transition-colors duration-200 hover:bg-slate-600"
+                        onClick={() => {
+                          setIsEditing(true);
+                          setDescripcion(order.description)
+                        }}
+                      >
+                        Editar
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {(isUser || isAdmin && order.status !== ("REVISION") && order.payments?.status === "PENDING") && (
+                <div className="mb-4">
+                  <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
+                  <p className="text-gray-700">$ {order.payments?.price}</p>
+                </div>
+              )}
+              {((isUser || isAdmin) && order.payments?.status === "APPROVED") && (
+                <div className="mb-4">
+                  <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
+                  <p className="text-gray-700">$ {order.payments?.price}</p>
+                  <p className="text-gray-700">ID de Pago: {order.payments?.id}</p>
+                  <p className="text-gray-700">Pago Aprobado</p>
+                </div>
+              )}
             </div>
+            {isAdmin &&
+              order.status !== "FINALIZADO" &&
+              order.status !== "CANCELADO" &&
+              order.status !== "RETIRADO" &&
+              !(order.status === "REVISION" && order.payments !== null) && (
+                <ButtonCancelar
+                  orderId={order.id}
+                  onClose={onClose} />
+              )}
 
             {(isAdmin && order.status === "REVISION" && order.payments === null) && (
               <div className="space-y-2 mb-4">
@@ -241,7 +337,7 @@ export default function ModalOrden({
             {(isUser && order.status === "CONFIRMADO" && order.payments?.status === "PENDING") && (
               <div className="space-y-3">
                 <button
-                  onClick={() => handlePayment(order.payments?.price ?? '0', order.id)}
+                  onClick={() => handlePayment(order.payments?.price ?? '0', order.id, order.payments?.id ?? '')}
                   className={`w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-primary-500 hover:bg-primary-600 ${isProcessing ? "cursor-not-allowed" : ""}`}
                 >
                   {isProcessing ? (
@@ -302,15 +398,24 @@ export default function ModalOrden({
               </button>
             )}
 
-            {isAdmin && order.status === "FINALIZADO" && order.payments?.status === "APPROVED" && (
-              <button
-                onClick={() => handleEstadoChange(order.id, "RETIRADO")}
-                className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
-              >
-                Retirado
-              </button>
-            )}
-
+            {isAdmin &&
+              ((order.status === "FINALIZADO" && order.payments?.status === "APPROVED") ||
+                order.status === "CANCELADO") && (
+                <button
+                  onClick={() => handleEstadoChange(order.id, "RETIRADO")}
+                  className="w-full px-4 py-2 text-bodyBold text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 bg-green-500 hover:bg-green-600"
+                >
+                  Retirado
+                </button>
+              )}
+            <ModalCambioEstado
+              isOpen={isModalCambioEstadoOpen}
+              onClose={() => setIsModalCambioEstadoOpen(false)}
+              currentStatus={order.status}
+              onChangeStatus={(newStatus) =>
+                Promise.resolve(handleEstadoChange(order.id, newStatus as EstadoOrden))
+              }
+            />
           </motion.div>
         </motion.div>
       )}

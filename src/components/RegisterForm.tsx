@@ -104,16 +104,16 @@ const RegisterForm = () => {
       console.log("Response:", response);
 
       // Handle successful registration
-      if (response.status === 201 || response.status === 200) {
+      if (response.success) {
         toast.success("¡Registro exitoso!", {
-          duration: 3000,
+          duration: 2000,
           position: "top-center",
           richColors: true,
         });
         router.push("/login");
         return;
       }
-
+      console.log(response);
       // Handle known error responses
       if (response.statusCode >= 400) {
         const errorMessage = Array.isArray(response.message)

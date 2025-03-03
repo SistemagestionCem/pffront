@@ -1,54 +1,59 @@
-import { ChevronUp, ChevronDown } from "lucide-react";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DisplayOrder, EstadoOrden } from "../types";
+import { DisplayOrder } from "../types";
 import { ImageUp, Eye } from "lucide-react";
 import { useState } from "react";
-import ModalEvidence from "./ModalEvidence"; // Ajusta la ruta si es necesario
+import ModalEvidence from "./ModalEvidence";
 import ViewEvidenceModal from "./ModalEvidenceView";
-
-
 
 interface OrdersTableProps {
   orders: DisplayOrder[];
-  sortOrder: "asc" | "desc";
   userRole: string;
   searchTerm: string;
   onOrderClick: (order: DisplayOrder) => void;
-  onToggleSort: () => void;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   estadoColores: Record<string, string>;
+  fetchOrders: () => Promise<void>;
 }
 
 export const OrdersTable = ({
   orders,
-  sortOrder,
   userRole,
   searchTerm,
   onOrderClick,
-  onToggleSort,
   onSearchChange,
+  fetchOrders,
 }: OrdersTableProps) => {
-
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<DisplayOrder | null>(null);
-
 
   const handleOpenModal = (order: DisplayOrder) => {
     setSelectedOrder(order);
     setIsEvidenceModalOpen(true);
   };
+
   const handleOpenViewModal = (order: DisplayOrder) => {
     setSelectedOrder(order);
     setIsViewModalOpen(true);
   };
 
+  // Filtrado de órdenes
+  const filteredOrders = orders.filter((order) => {
+    const searchTermLower = searchTerm.toLowerCase();
+    const searchTerms = searchTermLower.split(' ').filter(term => term.trim() !== ''); // Split y filtrar por palabras
+
+    return searchTerms.every(term => 
+      order.id.toLowerCase().includes(term) || // ID de orden
+      order.date.toLowerCase().includes(term) || // Fecha
+      order.equipmentType.toLowerCase().includes(term) || // Tipo de equipo
+      (userRole === "ADMIN" && order.assignedTechn?.name?.toLowerCase().includes(term)) || // Técnico (solo si es ADMIN)
+      order.status.toLowerCase().includes(term) // Estado
+    );
+  });
+
   return (
     <>
       <div className="p-2 sm:p-4">
-        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-          Lista de órdenes
-        </h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Lista de órdenes</h2>
         <input
           type="text"
           className="w-full p-2 text-sm border border-gray-300 rounded-lg"
@@ -60,67 +65,72 @@ export const OrdersTable = ({
           <table className="min-w-full divide-y divide-gray-200 ">
             <thead>
               <tr className="text-xs sm:text-sm bg-gray-50">
-                <th
-                  className="text-center p-2 sm:p-3 font-semibold text-gray-600 cursor-pointer"
-                  onClick={onToggleSort}
-                >
+                <th className="text-center p-2 sm:p-3 font-semibold text-gray-600 cursor-pointer">
                   <div className="flex items-center justify-center gap-1">
                     <span>Fecha</span>
-                    {sortOrder === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </div>
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">ID orden</th>
                 <th className="text-center p-2 font-semibold text-gray-600 hidden sm:table-cell">
-                  {userRole === "ADMIN" ? "Técnico" : "Dispositivo"}
+                  Técnico
                 </th>
                 <th className="text-center p-2 font-semibold text-gray-600">Estado</th>
                 <th className="text-center p-2 font-semibold text-gray-600">Tipo de Equipo</th>
                 {userRole !== "CLIENT" && (
                   <>
-                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">Evidencia</th>
-                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">Ver Evidencia</th>
-
+                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">
+                      Evidencia
+                    </th>
+                    <th className="text-center p-2 font-semibold text-gray-600 align-middle">
+                      Ver Evidencia
+                    </th>
                   </>
                 )}
               </tr>
-
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr
                   key={order.id}
                   className="text-center text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
                   onClick={(event) => {
-                    if ((event.target as HTMLElement).closest(".ignore-row-click")) return;
+                    if (
+                      (event.target as HTMLElement).closest(".ignore-row-click")
+                    )
+                      return;
                     onOrderClick(order);
                   }}
                 >
                   <td className="p-2 whitespace-nowrap">{order.date}</td>
                   <td className="p-2">
-                    <span
-                      className="block truncate max-w-[100px] sm:max-w-none"
-                      title={order.id} // Tooltip con el ID completo
-                    >
+                    <span className="block truncate max-w-[100px] sm:max-w-none" title={order.id}>
                       {order.id.slice(0, 4)}...{order.id.slice(-4)}
                     </span>
                   </td>
                   <td className="p-2 hidden sm:table-cell">
-                    {userRole === "ADMIN"
-                      ? order.assignedTechn?.name
-                      : order.equipmentType}
+                    {order.assignedTechn?.name}
                   </td>
                   <td className="p-2">
                     <span
-                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${order.status === "PENDIENTE"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "RETIRADO" //esto hay que cambiarlo
-                          ? "bg-blue-100 text-blue-800"
+                      className={`inline-block text-center w-24 px-2 py-1 text-xs font-semibold rounded-full ${
+                        order.status === "PENDIENTE"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.status === "REVISION"
+                          ? "bg-purple-100 text-purple-800"
                           : order.status === "CONFIRMADO"
-                            ? "bg-green-100 text-green-800"
-                            : order.status === "CANCELADO"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-gray-100 text-gray-800"
-                        }`}
+                          ? "bg-blue-100 text-blue-800"
+                          : order.status === "CANCELADO"
+                          ? "bg-red-100 text-red-800"
+                          : order.status === "REPARACION"
+                          ? "bg-indigo-100 text-indigo-800"
+                          : order.status === "FINALIZADO"
+                          ? "bg-green-100 text-green-800"
+                          : order.status === "PAGO"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : order.status === "RETIRADO"
+                          ? "bg-teal-100 text-teal-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
                     >
                       {order.status}
                     </span>
@@ -150,10 +160,8 @@ export const OrdersTable = ({
                       </td>
                     </>
                   )}
-
                 </tr>
               ))}
-
             </tbody>
           </table>
         </div>
@@ -162,6 +170,7 @@ export const OrdersTable = ({
         isOpen={isEvidenceModalOpen}
         onClose={() => setIsEvidenceModalOpen(false)}
         order={selectedOrder}
+        onUpdateOrder={fetchOrders}
       />
       <ViewEvidenceModal
         isOpen={isViewModalOpen}

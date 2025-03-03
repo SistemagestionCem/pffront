@@ -9,8 +9,9 @@ import orderDataStorage from "@/storage/orderStore";
 import PageTransition from "@/components/PageTransition";
 import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
-import { updateOrderStatus } from "@/services/orderService";
+import { getAllOrders, updateOrderStatus, getOrderById  } from "@/services/orderService";
 import { useRouter } from "next/navigation";
+import OrderFilters from "./components/OrderFilters";
 
 export default function DashboardTecnico() {
   const { orderData, addOrder, updateOrder } = orderDataStorage();
@@ -19,12 +20,12 @@ export default function DashboardTecnico() {
   const [orders, setOrders] = useState<DisplayOrder[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [usuario, setUsuario] = useState({
+    id: "",
     nombre: "",
     email: "",
     rol: "",
-    dni: 0,
+    dni: "",
     phone: "",
   });
   const router = useRouter();
@@ -42,14 +43,14 @@ export default function DashboardTecnico() {
   type DisplayOrder = {
     id: string;
     clientEmail: string;
-    clientDni: number;
+    clientDni: string;
     equipmentType: string;
     imei: string;
     assignedTechn?: {
       id: string;
       name: string;
       email: string;
-      dni: number;
+      dni: string;
       phone: string;
       role: string;
       createdAt: string;
@@ -64,6 +65,11 @@ export default function DashboardTecnico() {
       status: string;
     };
     date: string;
+    evidences?: { 
+      id: string; 
+      fileUrl: string; 
+    }[];
+    createdAt?: string; 
   };
 
   const estadoColores: Record<EstadoOrden, string> = {
@@ -78,8 +84,7 @@ export default function DashboardTecnico() {
   };
 
   useEffect(() => {
-    console.log("Nuevo estado de orderData recibido:", orderData);
-
+  
     if (orderData) {
       const formattedOrders: DisplayOrder[] = orderData.map((order) => {
         return {
@@ -113,7 +118,9 @@ export default function DashboardTecnico() {
           date: order.createdAt
             ? new Date(order.createdAt).toLocaleDateString("es-ES")
             : "Fecha desconocida",
+            evidences: order.evidences || [] 
         };
+        
       });
       setOrders(formattedOrders);
     }
@@ -122,11 +129,12 @@ export default function DashboardTecnico() {
   useEffect(() => {
     if (userData) {
       setUsuario({
-        nombre: userData.name || "",
-        email: userData.email || "",
-        rol: userData.role || "",
-        dni: userData.dni || 0,
-        phone: userData.phone || "",
+        id: userData.id,
+        nombre: userData.name,
+        email: userData.email,
+        rol: userData.role,
+        dni: userData.dni,
+        phone: userData.phone,
       });
     }
   }, [userData]);
@@ -151,7 +159,47 @@ export default function DashboardTecnico() {
     }
   }, [userData, router]);
 
-  // Modificar el handleEstadoChange
+  const fetchOrders = async () => {
+    try {
+      const allOrders = await getAllOrders(); // 🔹 Obtener todas las órdenes
+  
+      if (!allOrders || allOrders.length === 0) {
+        console.log("No hay órdenes disponibles.");
+        setOrders([]);
+        return;
+      }
+  
+      // 🔹 Verificar qué órdenes estamos obteniendo
+      console.log("Órdenes obtenidas de getAllOrders:", allOrders);
+  
+      // 🔹 Obtener detalles de cada orden para asegurarnos de traer las evidencias
+      const formattedOrders = await Promise.all(
+        allOrders.map(async (order: DisplayOrder) => {
+          console.log(`Llamando a getOrderById para la orden: ${order.id}`); // 🔹 Verificar si se está ejecutando
+  
+          const fullOrder = await getOrderById(order.id); // ✅ Obtener la orden con evidencias
+  
+          const updatedOrder = {
+            ...order,
+            date: order.createdAt
+              ? new Date(order.createdAt).toLocaleDateString("es-ES")
+              : "Fecha desconocida",
+            evidences: fullOrder?.evidences || [], // 🔹 Guardamos las evidencias
+          };
+  
+          console.log("Orden después de getOrderById:", updatedOrder); // 🔹 Verificar si evidences está presente
+          return updatedOrder;
+        })
+      );
+  
+      setOrders(formattedOrders); // 🔹 Guardamos las órdenes con sus evidencias en el estado
+      console.log("Órdenes guardadas en el estado:", formattedOrders);
+    } catch (error) {
+      console.log("Error al actualizar las órdenes:", error);
+    }
+  };
+  
+    
   const handleEstadoChange = async (id: string, nuevoEstado: EstadoOrden) => {
     try {
       const response = await updateOrderStatus(id, nuevoEstado);
@@ -166,8 +214,6 @@ export default function DashboardTecnico() {
         };
         updateOrder(updatedOrder);
       }
-
-      // Actualizar el estado local
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === id ? { ...order, status: nuevoEstado } : order
@@ -198,27 +244,10 @@ export default function DashboardTecnico() {
     setOrders((prevOrders) => [...prevOrders, formattedOrder]);
   };
 
-  const filteredOrders = orders
-    .filter((order) => {
-      if (!searchTerm) return true;
-      const searchTerms = searchTerm.toLowerCase().split(" ").filter(Boolean);
-      return searchTerms.every(
-        (term) =>
-          order.id.toLowerCase().includes(term) ||
-          order.equipmentType.toLowerCase().includes(term) ||
-          order.status.toLowerCase().includes(term) ||
-          order.date.toLowerCase().includes(term)
-      );
-    })
-    .sort((a, b) =>
-      sortOrder === "asc"
-        ? a.date.localeCompare(b.date)
-        : b.date.localeCompare(a.date)
-    );
+// Esta función debe ir en el componente que maneja las órdenes (no en el filtro).
+const [filteredOrders, setFilteredOrders] = useState(orders);
 
-  const toggleSortOrder = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
+
 
   return (
     <PageTransition>
@@ -228,6 +257,7 @@ export default function DashboardTecnico() {
         </h1>
 
         <UserProfile
+          id={usuario.id}
           nombre={usuario.nombre}
           email={usuario.email}
           rol={usuario.rol}
@@ -235,8 +265,12 @@ export default function DashboardTecnico() {
           dni={usuario.dni}
         />
 
+        <div>
+
+        </div>
+
         <div className="flex flex-col gap-8 pb-8">
-          {/* Sección de Órdenes */}
+        
           <section className="px-[16px] mx-auto w-full max-w-3xl py-[16px] text-black bg-white rounded-[16px]">
             <h3 className="flex items-center justify-between pb-2 border-b title1 text-primary-500 border-primary-900">
               Órdenes
@@ -250,15 +284,17 @@ export default function DashboardTecnico() {
               )}
             </h3>
 
+            {/* Filtros */}
+            <OrderFilters orders={orders} onFilterChange={setFilteredOrders} />
+
             <OrdersTable
               orders={filteredOrders}
-              sortOrder={sortOrder}
               userRole={usuario.rol}
               searchTerm={searchTerm}
               onOrderClick={setSelectedOrder}
-              onToggleSort={toggleSortOrder}
               onSearchChange={(e) => setSearchTerm(e.target.value)}
               estadoColores={estadoColores}
+              fetchOrders={fetchOrders}
             />
           </section>
 

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Modal from "@/components/ModalHome";
 import { OrderByMail } from "@/interfaces";
+import { X } from "lucide-react";
 
 export default function Home() {
   const [userEmail, setUserEmail] = useState({
@@ -18,16 +19,43 @@ export default function Home() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (!userEmail.email.trim()) {
+      toast.error("Por favor ingrese un correo.", {
+        position: "top-center",
+        richColors: true,
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userEmail.email)) {
+      toast.error("Por favor ingrese un correo válido.", {
+        position: "top-center",
+        richColors: true,
+      });
+      return;
+    }
+
     try {
       const response = await getOrderByEmail(userEmail.email);
-      console.log("respuesta del server", response);
-      if (response) {
-        setOrderData(response);
-        setModalOpen(true);
+
+      if (!response) {
+        toast.error("No se encontraron órdenes para este correo.", {
+          position: "top-center",
+          richColors: true,
+        });
+        return;
       }
+
+      setOrderData(Array.isArray(response) ? response : [response]);
+      setModalOpen(true);
     } catch (error) {
-      toast.error("Error al crear la orden");
-      console.log(error);
+      console.error("Error al buscar la orden:", error);
+      toast.error("Error al buscar la orden. Por favor intente nuevamente.", {
+        position: "top-center",
+        richColors: true,
+      });
     }
   };
 
@@ -99,7 +127,7 @@ export default function Home() {
               onChange={(e) =>
                 setUserEmail({
                   ...userEmail,
-                  email: e.target.value,
+                  email: e.target.value.toLowerCase(),
                 })
               }
             />
@@ -109,36 +137,59 @@ export default function Home() {
             </button>
           </form>
           <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-            <div className="bg-secondary-500 p-4 rounded-[16px]">
-              <h2 className="mb-4 text-xl font-bold text-white">
-                Detalles de la Orden
-              </h2>
+            <div className="bg-secondary-500 p-6 rounded-[16px] max-w-md mx-auto">
+              <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+                <h2 className="text-xl font-bold text-white">Estado de Órdenes</h2>
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="text-white hover:text-gray-400 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
               {orderData.length > 0 ? (
-                orderData.map((order, index) => (
-                  <div key={index} className="pb-2 space-y-3 text-white">
-                    <p>
-                      <strong>ID:</strong> {order.id}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {order.clientEmail}
-                    </p>
-                    <p>
-                      <strong>Historial:</strong> {order.statusHistory}
-                    </p>
-                    <p>
-                      <strong>Estado:</strong> {order.status}
-                    </p>
-                  </div>
-                ))
+                <div className="space-y-4 max-h-[300px] overflow-y-auto">
+                  {orderData.map((order, index) => (
+                    <div
+                      key={index}
+                      className="p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-all"
+                    >
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white text-bodyBold font-bold">
+                            ID:
+                          </span>
+                          <span className="text-white font-body text-sm">
+                            {order.id}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-white text-bodyBold font-bold">
+                            Estado:
+                          </span>
+                          <span
+                            className={`px-4 py-1.5 rounded-full text-xs font-medium inline-block text-center min-w-[100px]
+                            ${order.status === "PENDIENTE"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : order.status === "REVISION"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : order.status === "CONFIRMADO"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : order.status === "FINALIZADO"
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-gray-100 text-gray-800"
+                              }`}
+                          >
+                            {order.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <div className="space-y-3 text-center">
-                  <i className="mb-4 text-4xl fa-solid fa-circle-exclamation text-primary-500"></i>
-                  <p className="text-white text-title2">
-                    No se encontraron órdenes para este correo
-                  </p>
-                  <p className="text-subtitle2 text-white/70">
-                    Por favor, verifica el correo ingresado
-                  </p>
+                <div className="text-center py-4">
+                  <p className="text-white/80">No se encontraron órdenes</p>
                 </div>
               )}
             </div>

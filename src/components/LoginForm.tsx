@@ -86,8 +86,9 @@ const LoginForm = () => {
             if (response.userFound.role === "CLIENT") {
               orders = await getOrderByEmail(response.userFound.email);
             } else if (response.userFound.role === "TECHN") {
-              orders = await getTechOrders(response.userFound.name);
-            } else {
+              orders = await getTechOrders(response.userFound.id);
+              console.log("tecnico", orders);
+            } else if (response.userFound.role === "ADMIN") {
               orders = await getAllOrders();
             }
 
@@ -116,6 +117,7 @@ const LoginForm = () => {
                       status: order.payments.status,
                     }
                   : null,
+                evidences: order.evidences || [],
               }));
               
               orderDataStorage.getState().setOrderData(ordersData);

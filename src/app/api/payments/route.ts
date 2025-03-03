@@ -18,9 +18,9 @@ export async function POST(req: NextRequest) {
         metadata: { client_id: clientId, product_id: productId },
         external_reference: external,
         back_urls: {
-          success: "https://tu-app.com/payments/success",
-          failure: "https://tu-app.com/payments/failure",
-          pending: "https://tu-app.com/payments/pending"
+          success: "https://pffront-fawn.vercel.app/payments",
+          failure: "https://pffront-fawn.vercel.app/payments",
+          pending: "https://pffront-fawn.vercel.app/payments"
         },
         auto_return: "approved"
       }

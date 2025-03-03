@@ -14,14 +14,14 @@ export interface RegisterFormType {
 export interface OrderType {
   id: string;
   clientEmail: string;
-  clientDni: number;
+  clientDni: string;
   equipmentType: string;
   imei: string;
   assignedTechn: {
     id: string;
     name: string;
     email: string;
-    dni: number;
+    dni: string;
     phone: string;
     role: string;
     createdAt: string;
@@ -53,6 +53,10 @@ export interface OrderType {
   createdAt: Date;
   statusHistory: []; // Array de historial de estado
   isActive: boolean;
+  evidences?: { 
+    id: string; 
+    fileUrl: string; 
+   }[];
 }
 
 export interface UserType {
@@ -77,7 +81,7 @@ export interface PostOrderType {
 export interface OrdeType {
   id: string;
   clientEmail: string;
-  clientDni: number;
+  clientDni: string;
   equipmentType: string;
   imei: string;
   assignedTechnician: string;
@@ -129,3 +133,4 @@ export interface GoogleUserData {
   dni: string;
   phone: string;
 }
+

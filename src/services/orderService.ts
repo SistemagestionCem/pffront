@@ -56,9 +56,9 @@ export const getOrderByEmail = async (email: string) => {
   }
 };
 
-export const getTechOrders = async (id: string) => {
+export const getTechOrders = async (name: string) => {
   try {
-    const response = await fetch(`${apiUrl}orders/technician/${id}`, {
+    const response = await fetch(`${apiUrl}orders/technician/${name}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -136,3 +136,24 @@ export const getAllOrders = async () => {
     return null;
   }
 };
+
+export const getOrderById = async (orderId: string) => {
+  try {
+    const response = await fetch(`${apiUrl}orders/${orderId}` ,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener la orden");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getOrderById:", error);
+    return null;
+  }
+};
+

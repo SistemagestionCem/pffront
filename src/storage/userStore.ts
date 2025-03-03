@@ -7,7 +7,7 @@ export interface UserData {
   name: string;
   email: string;
   role: string;
-  dni: number;
+  dni: string;
   phone: string;
 }
 
@@ -28,7 +28,7 @@ const userDataStorage = create<UserDataStorageType>()(
       }),
       {
         name: "user-data", // Nombre de la clave en localStorage
-        storage: createJSONStorage(() => localStorage), // Especifica localStorage como almacenamiento
+        storage: createJSONStorage(() => sessionStorage), // Especifica localStorage como almacenamiento
       }
     )
   )

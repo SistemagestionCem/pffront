@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import userDataStorage, { UserData } from "@/storage/userStore";
+import { register } from "@/services/auth";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,26 +28,44 @@ export default function Page() {
 
       if (result.user) {
         const token = await result.user.getIdToken();
-        const userData: UserData = {
-          id: result.user.uid,
+
+        // Generate a secure password for Google users (first 10 chars of uid + random string)
+        const securePassword = result.user.uid.slice(0, 10) + "GoogleAuth2024!";
+
+        // Register user in database with required fields
+        const registerData = {
           name: result.user.displayName || "",
           email: result.user.email || "",
+          password: securePassword,
+          phone: "999999999", // Default phone number
+          dni: "0",
           role: "CLIENT",
-          dni: 0,
-          phone: "",
         };
 
-        setUserData(userData);
-        localStorage.setItem("authToken", token);
+        // Register in your backend
+        const registerResponse = await register(registerData);
 
-        toast.success("¡Inicio de sesión exitoso!", {
-          duration: 3000,
-          position: "top-center",
-          richColors: true,
-        });
+        if (registerResponse) {
+          const userData: UserData = {
+            id: result.user.uid,
+            name: result.user.displayName || "",
+            email: result.user.email || "",
+            role: "CLIENT",
+            dni: "0",
+            phone: "999999999", // Match the phone number used in registration
+          };
 
-        // Change this to /dashboard instead of /
-        router.replace("/dashboard");
+          setUserData(userData);
+          localStorage.setItem("authToken", token);
+
+          toast.success("¡Inicio de sesión exitoso!", {
+            duration: 3000,
+            position: "top-center",
+            richColors: true,
+          });
+
+          router.replace("/dashboard");
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
