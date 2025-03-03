@@ -1,6 +1,7 @@
 import { Link } from "lucide-react";
 import React from "react";
 import PageTransition from "@/components/PageTransition";
+import ChatBotGemini from "@/components/Chatbot/ChatbotGemini";
 
 function Page() {
   const sections = [
@@ -47,7 +48,7 @@ function Page() {
 
           <Link
             href="/"
-            className="inline-flex items-center px-6 py-3 mb-8 text-white rounded-lg transition-all duration-300 bg-primary hover:bg-opacity-80"
+            className="inline-flex items-center px-6 py-3 mb-8 text-white transition-all duration-300 rounded-lg bg-primary hover:bg-opacity-80"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -68,14 +69,14 @@ function Page() {
             {sections.map((section, index) => (
               <div
                 key={index}
-                className="p-6 border border-white rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-colors duration-300"
+                className="p-6 transition-colors duration-300 bg-white border border-white rounded-lg bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20"
               >
-                <h2 className="text-2xl font-semibold text-white mb-4">
+                <h2 className="mb-4 text-2xl font-semibold text-white">
                   {section.title}
                 </h2>
                 <p className="text-white">{section.content}</p>
                 {section.list && (
-                  <ul className="list-disc list-inside mt-4 text-white">
+                  <ul className="mt-4 text-white list-disc list-inside">
                     {section.list.map((item, itemIndex) => (
                       <li key={itemIndex}>{item}</li>
                     ))}

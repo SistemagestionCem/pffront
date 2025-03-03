@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import ChatBotGemini from "@/components/Chatbot/ChatbotGemini";
 
-import HubSpotChat from "@/components/Chatbot/Chatbot";
 import PageTransition from "@/components/PageTransition";
 import { getOrderByEmail } from "@/services/orderService";
 import { useState } from "react";
@@ -206,7 +206,7 @@ export default function Home() {
           </div>
         </section>
       </div>
-      <HubSpotChat />
+      <ChatBotGemini />
     </PageTransition>
   );
 }
