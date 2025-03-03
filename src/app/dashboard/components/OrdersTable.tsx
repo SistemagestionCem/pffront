@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DisplayOrder, EstadoOrden } from "../types";
+import { DisplayOrder } from "../types";
 import { ImageUp, Eye } from "lucide-react";
 import { useState } from "react";
 import ModalEvidence from "./ModalEvidence";

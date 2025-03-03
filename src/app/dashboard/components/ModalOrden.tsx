@@ -1,4 +1,3 @@
-/* eslint-disable */
 "use client";
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -6,11 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
 import { OrderPaymentUser } from "@/app/dashboard/components/OrderPaymentUser";
 import userDataStorage from "@/storage/userStore";
-import { updateOrderDescription, updateOrderStatus } from "@/services/orderService";
+import { updateOrderDescription } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
 import { EstadoOrden } from "../types";
-import { toast } from "sonner";
 import { ButtonCancelar } from "@/components/ButtonCancelar";
+import { RotateCwSquare } from 'lucide-react';
+import ModalCambioEstado from "./ModalCambioEstado";
+
 
 interface ModalProps {
   isOpen: boolean;
@@ -49,7 +50,7 @@ export default function ModalOrden({
   const [descripcion, setDescripcion] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-
+  const [isModalCambioEstadoOpen, setIsModalCambioEstadoOpen] = useState(false);
 
   useEffect(() => {
 
@@ -57,7 +58,14 @@ export default function ModalOrden({
 
   }, [order]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setIsModalCambioEstadoOpen(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen || !order) return null;
+
 
   const handlePayment = async (price: string, orderId: string, orderPaymetId: string) => {
     const monto = Number(price);
@@ -99,6 +107,7 @@ export default function ModalOrden({
       onClose(); // Cerrar directamente si no está editando
     }
   };
+
   const handleDescriptionSave = async () => {
     try {
       const response = await updateOrderDescription(order.id, descripcion);
@@ -180,9 +189,22 @@ export default function ModalOrden({
 
             <div className="space-y-2 mb-6">
               <div>
-                <label className="text-bodyBold font-bold text-gray-700">
-                  Estado:
-                </label>
+                <div className="flex">
+                  <label className="text-bodyBold font-bold text-gray-700">
+                    Estado:
+                  </label>
+                  {isAdmin && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
+                    <span title="Cambiar Estado">
+                      <RotateCwSquare
+                        size={18}
+                        className="inline-block cursor-pointer text-gray-800 hover:text-gray-600 transition ml-4"
+                        onClick={() => setIsModalCambioEstadoOpen(true)}
+                      />
+                    </span>
+                  )}
+                </div>
+
+
                 <p
                   className={`mt-1 font-medium text-gray-700`}
                 >
@@ -222,8 +244,12 @@ export default function ModalOrden({
 
               {isUser && (
                 <div>
-                  <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
-                  <p className="text-gray-700">{order.description}</p>
+                  <label className="text-bodyBold font-bold text-gray-700">
+                    Descripción:
+                  </label>
+                  <p className="text-gray-700 border border-gray-300 rounded-lg px-2 py-2 max-h-[120px] overflow-y-auto">
+                    {order.description}
+                  </p>
                 </div>
               )}
 
@@ -232,6 +258,7 @@ export default function ModalOrden({
                 <div className="flex flex-col gap-2">
 
                   <label className="text-bodyBold font-bold text-gray-700">Descripción:</label>
+
                   {isEditing ? (
                     <>
                       <textarea
@@ -263,7 +290,6 @@ export default function ModalOrden({
                   )}
                 </div>
               )}
-
 
               {(isUser || isAdmin && order.status !== ("REVISION") && order.payments?.status === "PENDING") && (
                 <div className="mb-4">
@@ -382,7 +408,14 @@ export default function ModalOrden({
                   Retirado
                 </button>
               )}
-
+            <ModalCambioEstado
+              isOpen={isModalCambioEstadoOpen}
+              onClose={() => setIsModalCambioEstadoOpen(false)}
+              currentStatus={order.status}
+              onChangeStatus={(newStatus) =>
+                Promise.resolve(handleEstadoChange(order.id, newStatus as EstadoOrden))
+              }
+            />
           </motion.div>
         </motion.div>
       )}
