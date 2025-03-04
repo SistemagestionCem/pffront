@@ -28,14 +28,14 @@ export interface OrderType {
   } | null; // Puede ser null si no hay técnico asignado
   description: string;
   status:
-    | "PENDIENTE"
-    | "REVISION"
-    | "CONFIRMADO"
-    | "CANCELADO"
-    | "REPARACION"
-    | "FINALIZADO"
-    | "PAGO"
-    | "RETIRADO";
+  | "PENDIENTE"
+  | "REVISION"
+  | "CONFIRMADO"
+  | "CANCELADO"
+  | "REPARACION"
+  | "FINALIZADO"
+  | "PAGO"
+  | "RETIRADO";
   user: {
     id: string;
     name: string;
@@ -53,10 +53,11 @@ export interface OrderType {
   createdAt: Date;
   statusHistory: []; // Array de historial de estado
   isActive: boolean;
-  evidences?: { 
-    id: string; 
-    fileUrl: string; 
-   }[];
+  evidences?: {
+    id: string;
+    fileUrl: string;
+  }[];
+  wasCompleted: boolean
 }
 
 export interface UserType {
@@ -107,14 +108,14 @@ export interface OrdeTypeValidate {
   assignedTechnician: string;
   description: string;
   status:
-    | "PENDIENTE"
-    | "REVISION"
-    | "CONFIRMADO"
-    | "CANCELADO"
-    | "REPARACION"
-    | "FINALIZADO"
-    | "PAGO"
-    | "RETIRADO";
+  | "PENDIENTE"
+  | "REVISION"
+  | "CONFIRMADO"
+  | "CANCELADO"
+  | "REPARACION"
+  | "FINALIZADO"
+  | "PAGO"
+  | "RETIRADO";
 }
 
 export interface OrderErrors {

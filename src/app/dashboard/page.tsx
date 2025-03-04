@@ -313,6 +313,7 @@ const [filteredOrders, setFilteredOrders] = useState(orders);
             onClose={() => setSelectedOrder(null)}
             order={selectedOrder!}
             handleEstadoChange={handleEstadoChange}
+            fetchOrders={fetchOrders}
           />
           <ModalAgregarOrden
             isOpen={isModalOpen}

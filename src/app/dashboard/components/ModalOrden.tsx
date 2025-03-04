@@ -1,5 +1,5 @@
 "use client";
-import { X } from "lucide-react";
+import { X, RotateCwSquare } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PaymentForm } from "@/app/dashboard/components/PaymentFormAdmin";
@@ -9,9 +9,7 @@ import { updateOrderDescription } from "@/services/orderService";
 import orderDataStorage from "@/storage/orderStore";
 import { EstadoOrden } from "../types";
 import { ButtonCancelar } from "@/components/ButtonCancelar";
-import { RotateCwSquare } from 'lucide-react';
 import ModalCambioEstado from "./ModalCambioEstado";
-
 
 interface ModalProps {
   isOpen: boolean;
@@ -34,6 +32,8 @@ interface ModalProps {
     };
   };
   handleEstadoChange: (id: string, nuevoEstado: EstadoOrden) => void;
+  fetchOrders: () => Promise<void>;
+
 }
 
 export default function ModalOrden({
@@ -41,6 +41,7 @@ export default function ModalOrden({
   onClose,
   order,
   handleEstadoChange,
+  fetchOrders
 }: ModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { userData } = userDataStorage();
@@ -50,7 +51,7 @@ export default function ModalOrden({
   const [descripcion, setDescripcion] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isModalCambioEstadoOpen, setIsModalCambioEstadoOpen] = useState(false);
+  const [isModalCambioEstadoOpen, setIsModalCambioEstadoOpen] = useState(false); // Estado para el modal de cambio de estado
 
   useEffect(() => {
 
@@ -58,14 +59,7 @@ export default function ModalOrden({
 
   }, [order]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      setIsModalCambioEstadoOpen(false);
-    }
-  }, [isOpen]);
-
   if (!isOpen || !order) return null;
-
 
   const handlePayment = async (price: string, orderId: string, orderPaymetId: string) => {
     const monto = Number(price);
@@ -97,7 +91,7 @@ export default function ModalOrden({
     } catch (error) {
       console.error("Error en el pago:", error);
     } finally {
-      setIsProcessing(false); // Desactiva el spinner al finalizar
+      setIsProcessing(false);
     }
   };
   const handleClose = () => {
@@ -186,25 +180,23 @@ export default function ModalOrden({
               </div>
             )}
 
-
             <div className="space-y-2 mb-6">
               <div>
                 <div className="flex">
-                  <label className="text-bodyBold font-bold text-gray-700">
+                  <label className="text-bodyBold font-bold text-gray-700 pr-2">
                     Estado:
                   </label>
                   {isAdmin && order.status !== "CANCELADO" && order.status !== "RETIRADO" && (
+
                     <span title="Cambiar Estado">
                       <RotateCwSquare
                         size={18}
-                        className="inline-block cursor-pointer text-gray-800 hover:text-gray-600 transition ml-4"
-                        onClick={() => setIsModalCambioEstadoOpen(true)}
+                        className="ml-2 cursor-pointer text-gray-800 hover:text-gray-600 transition"
+                        onClick={() => setIsModalCambioEstadoOpen(true)} // Abre el modal
                       />
                     </span>
                   )}
                 </div>
-
-
                 <p
                   className={`mt-1 font-medium text-gray-700`}
                 >
@@ -253,7 +245,6 @@ export default function ModalOrden({
                 </div>
               )}
 
-
               {(isAdmin || isTechn) && (
                 <div className="flex flex-col gap-2">
 
@@ -291,6 +282,7 @@ export default function ModalOrden({
                 </div>
               )}
 
+
               {(isUser || isAdmin && order.status !== ("REVISION") && order.payments?.status === "PENDING") && (
                 <div className="mb-4">
                   <label className="text-bodyBold font-bold text-gray-700">Monto a pagar:</label>
@@ -322,19 +314,14 @@ export default function ModalOrden({
               </div>
             )}
 
-            {(isAdmin && order.status === "REVISION" && order.payments !== null) && (
-              <div className="space-y-2 mb-4">
-                <OrderPaymentUser orderId={order?.id} price={order?.payments?.price} onClose={onClose} />
-              </div>
-            )}
-
             {isUser && order.status === "REVISION" && order.payments !== null && (
               <div className="space-y-2 mb-4">
                 <OrderPaymentUser orderId={order?.id} price={order?.payments?.price} onClose={onClose} />
               </div>
             )}
 
-            {(isUser && order.status === "CONFIRMADO" && order.payments?.status === "PENDING") && (
+            {(isUser && ["CONFIRMADO", "FINALIZADO", "REPARACION"].includes(order.status) && order.payments?.status === "PENDING") && (
+
               <div className="space-y-3">
                 <button
                   onClick={() => handlePayment(order.payments?.price ?? '0', order.id, order.payments?.id ?? '')}
@@ -408,13 +395,13 @@ export default function ModalOrden({
                   Retirado
                 </button>
               )}
+
             <ModalCambioEstado
               isOpen={isModalCambioEstadoOpen}
               onClose={() => setIsModalCambioEstadoOpen(false)}
               currentStatus={order.status}
-              onChangeStatus={(newStatus) =>
-                Promise.resolve(handleEstadoChange(order.id, newStatus as EstadoOrden))
-              }
+              onChangeStatus={(newStatus) => Promise.resolve(handleEstadoChange(order.id, newStatus as EstadoOrden))} // 🔹 Asegura que devuelva un `Promise<void>`
+              fetchOrders={fetchOrders}
             />
           </motion.div>
         </motion.div>

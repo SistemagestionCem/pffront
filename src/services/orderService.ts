@@ -72,6 +72,7 @@ export const getTechOrders = async (name: string) => {
 }
 
 export const updateOrderStatus = async (id: string, status: string) => {
+  
   try {
     const response = await fetch(`${apiUrl}orders/update/${id}`, {
       method: "PATCH",
@@ -128,8 +129,9 @@ export const getAllOrders = async () => {
       throw new Error(errorText || "Error al cargar el usuarios");
     }
     const data = await response.json();
-
+    console.log("Órdenes obtenidas del backend:", data);
     return data
+    
     
   } catch (error) {
     console.log("error al obtener los usuarios", error);

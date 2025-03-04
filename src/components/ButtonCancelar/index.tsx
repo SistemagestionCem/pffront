@@ -34,7 +34,7 @@ export function ButtonCancelar({ orderId, onClose }: ButtonCancelarProps) {
             <button
                 className="w-full my-4 px-4 py-2 text-white font-semibold bg-primary-500 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-primary-600"
                 onClick={() => setShowConfirmationCancel(true)}
-                >
+            >
                 Cancelar
             </button>
 
@@ -46,12 +46,6 @@ export function ButtonCancelar({ orderId, onClose }: ButtonCancelarProps) {
                         </p>
                         <div className="flex gap-4 justify-center">
                             <button
-                                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                                onClick={() => setShowConfirmationCancel(false)} // Cierra el modal sin cancelar
-                            >
-                                No
-                            </button>
-                            <button
                                 className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition"
                                 onClick={() => {
                                     setShowConfirmationCancel(false);
@@ -60,11 +54,17 @@ export function ButtonCancelar({ orderId, onClose }: ButtonCancelarProps) {
                             >
                                 Sí, Cancelar
                             </button>
+                            <button
+                                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                                onClick={() => setShowConfirmationCancel(false)} // Cierra el modal sin cancelar
+                            >
+                                No
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
-            
+
         </>
 
     )
