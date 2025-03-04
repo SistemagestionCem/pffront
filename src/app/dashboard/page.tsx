@@ -246,14 +246,18 @@ export default function DashboardTecnico() {
 
 // Esta función debe ir en el componente que maneja las órdenes (no en el filtro).
 const [filteredOrders, setFilteredOrders] = useState(orders);
-
+const rolesMap: Record<string, string> = {
+  ADMIN: "ADMINISTRADOR",
+  TECHN: "TÉCNICO",
+  CLIENT: "CLIENTE"
+};
 
 
   return (
     <PageTransition>
       <div className="container mt-[72px] space-y-8 min-h-screen text-white px-[5vw] py-6 mx-auto">
         <h1 className="text-center text-white text-display3">
-          Dashboard de {usuario.rol}
+          Dashboard de {rolesMap[usuario.rol] || usuario.rol}
         </h1>
 
         <UserProfile
