@@ -96,7 +96,7 @@ export default function ChatBotGemini() {
       style={{
         position: "fixed",
         bottom: "20px",
-        right: "20px",
+        right: "5vw",
         zIndex: 1000,
       }}
     >
@@ -104,7 +104,7 @@ export default function ChatBotGemini() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{
-          backgroundColor: "#007bff",
+          backgroundColor: "#e10600",
           color: "#fff",
           border: "none",
           borderRadius: "50%",
@@ -118,51 +118,74 @@ export default function ChatBotGemini() {
         onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.9)")} // Efecto de escala al hacer clic
         onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")} // Restablecer escala
       >
-        <i className="fas fa-comment"></i> {/* Icono de chat */}
+        <i className="fas fa-comment-dots fa-lg"></i>
       </button>
 
       {/* Chat desplegable */}
       <div
         style={{
           position: "absolute",
-          bottom: isOpen ? "70px" : "-500px", // Desplazamiento suave
+          bottom: isOpen ? "70px" : "-500px",
           right: "0",
           width: "350px",
           height: "400px",
           backgroundColor: "#fff",
           borderRadius: "10px",
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-          transition: "bottom 0.3s ease-in-out", // Transición suave
-          opacity: isOpen ? 1 : 0, // Fade-in
+          transition: "bottom 0.3s ease-in-out",
+          opacity: isOpen ? 1 : 0,
+          overflow: "hidden",
+          border: "1px solid var(--secondary-200)",
         }}
       >
-        <MainContainer>
-          <ChatContainer>
-            <MessageList
-              scrollBehavior="smooth"
-              typingIndicator={
-                typing ? <TypingIndicator content="Escribiendo..." /> : null
-              }
-            >
-              {messages.map((message, i) => (
-                <Message
-                  key={i}
-                  model={{
-                    message: message.message,
-                    sender: message.sender,
-                    direction:
-                      message.sender === "user" ? "outgoing" : "incoming",
-                  }}
-                />
-              ))}
-            </MessageList>
-            <MessageInput
-              placeholder="Escribe un mensaje..."
-              onSend={handleSend}
-              attachButton={false}
-            />
-          </ChatContainer>
-        </MainContainer>
+        <div className="bg-primary-500 text-white py-2 px-4 font-rajdhani text-title3 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
+              <span className="text-primary-500 text-bodyBold">MC</span>
+            </div>
+            <span>Asistente MobileCer</span>
+          </div>
+          <button
+            onClick={() => setIsOpen(false)}
+            className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-white/20"
+          >
+            <i className="fas fa-times text-sm"></i>
+          </button>
+        </div>
+        <div style={{ height: "calc(100% - 48px)" }}>
+          {" "}
+          {/* Adjust height to account for header */}
+          <MainContainer>
+            <ChatContainer>
+              <MessageList
+                scrollBehavior="smooth"
+                typingIndicator={
+                  typing ? <TypingIndicator content="Escribiendo..." /> : null
+                }
+                style={{
+                  backgroundColor: "#f8f9fa",
+                }}
+              >
+                {messages.map((message, i) => (
+                  <Message
+                    key={i}
+                    model={{
+                      message: message.message,
+                      sender: message.sender,
+                      direction:
+                        message.sender === "user" ? "outgoing" : "incoming",
+                    }}
+                  />
+                ))}
+              </MessageList>
+              <MessageInput
+                placeholder="Escribe un mensaje..."
+                onSend={handleSend}
+                attachButton={false}
+              />
+            </ChatContainer>
+          </MainContainer>
+        </div>
       </div>
     </div>
   );
