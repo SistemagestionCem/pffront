@@ -1,7 +1,6 @@
 import { Link } from "lucide-react";
 import React from "react";
 import PageTransition from "@/components/PageTransition";
-import ChatBotGemini from "@/components/Chatbot/ChatbotGemini";
 
 function Page() {
   const sections = [
