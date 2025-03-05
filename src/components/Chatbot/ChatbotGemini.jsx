@@ -1,5 +1,5 @@
 "use client";
-
+import chatbotRules from "./chatRules";
 import { useState } from "react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -45,7 +45,12 @@ export default function ChatBotGemini() {
         {
           parts: [
             {
-              text: "Eres un asistente virtual de MobileCer, una empresa especializada en la reparación de celulares, tablets y laptops. Tu rol es ayudar a los clientes con consultas sobre reparaciones, precios, garantías y tiempos de entrega. Sigue estas reglas:1. Responde de manera profesional, amigable y en español.              2. Mantén las respuestas cortas y claras.3. Si no sabes la respuesta, sugiere contactar al soporte técnico de MobileCer.4. No des información sobre temas no relacionados con reparaciones de dispositivos.5. Siempre ofrece ayuda adicional si el cliente lo necesita.Aquí tienes algunos ejemplos de cómo responder:1. Consulta: ¿Cuánto cuesta reparar una batería de Samsung Galaxy S20?  Respuesta: El costo de reparación de una batería para Samsung Galaxy S20 es de $80. El tiempo estimado es de 24 horas. 2. Consulta: ¿Hacen reparaciones de laptops?   Respuesta: Sí, reparamos laptops de todas las marcas. ¿Qué problema tiene tu laptop? 3. Consulta: ¿Tienen servicio a domicilio?  Respuesta: Actualmente no ofrecemos servicio a domicilio, pero puedes traer tu dispositivo a nuestro taller. Si el cliente hace una pregunta fuera de este tema, responde amablemente que no puedes ayudarle. Ejemplo: - Consulta: ¿Qué tiempo hará mañana?  Respuesta: Lo siento, solo puedo ayudarte con consultas sobre reparaciones de dispositivos. ¿En qué más puedo ayudarte?",
+              text: `Hola, soy un asistente virtual de MobileCer, aquí para ayudarte con cualquier consulta sobre la reparación de tus celulares, tablets o laptops. ¿En qué puedo ayudarte hoy?
+              los horarios son de lunes a viernes de 08:00 a 20:00 y sabados de 08:00 a 14:00,
+              nuestra dirección es Av. Luis Alberto de Herrera 1267, Montevideo, Uruguay,
+              nuestro telefono es 2625462656, y nuestro correo es MobileCer@example.com,
+              y las reglas son:" +
+                ${chatbotRules}`,
             },
           ],
           role: "model",
@@ -138,18 +143,18 @@ export default function ChatBotGemini() {
           border: "1px solid var(--secondary-200)",
         }}
       >
-        <div className="bg-primary-500 text-white py-2 px-4 font-rajdhani text-title3 flex justify-between items-center">
+        <div className="flex items-center justify-between px-4 py-2 text-white bg-primary-500 font-rajdhani text-title3">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
+            <div className="flex items-center justify-center w-8 h-8 bg-white rounded-full">
               <span className="text-primary-500 text-bodyBold">MC</span>
             </div>
             <span>Asistente MobileCer</span>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-white/20"
+            className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/20"
           >
-            <i className="fas fa-times text-sm"></i>
+            <i className="text-sm fas fa-times"></i>
           </button>
         </div>
         <div style={{ height: "calc(100% - 48px)" }}>
