@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import userDataStorage from "@/storage/userStore";
-import orderDataStorage from "@/storage/orderStore";
+// import orderDataStorage from "@/storage/orderStore";
 import { toast } from "sonner";
 import { login } from "@/services/auth";
-import { getAllOrders, getOrderByEmail, getTechOrders } from "@/services/orderService";
-import { OrderType } from "@/interfaces";
+// import { getAllOrders, getOrderByEmail, getTechOrders } from "@/services/orderService";
+// import { OrderType } from "@/interfaces";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -79,55 +79,55 @@ const LoginForm = () => {
           phone: response.userFound.phone,
         });
 
-        // 3. Iniciar carga de órdenes
-        const loadOrders = async () => {
-          try {
-            let orders;
-            if (response.userFound.role === "CLIENT") {
-              orders = await getOrderByEmail(response.userFound.email);
-            } else if (response.userFound.role === "TECHN") {
-              orders = await getTechOrders(response.userFound.id);
-              console.log("tecnico", orders);
-            } else if (response.userFound.role === "ADMIN") {
-              orders = await getAllOrders();
-            }
+        // // 3. Iniciar carga de órdenes
+        // const loadOrders = async () => {
+        //   try {
+        //     let orders;
+        //     if (response.userFound.role === "CLIENT") {
+        //       orders = await getOrderByEmail(response.userFound.email);
+        //     } else if (response.userFound.role === "TECHN") {
+        //       orders = await getTechOrders(response.userFound.id);
+        //       console.log("tecnico", orders);
+        //     } else if (response.userFound.role === "ADMIN") {
+        //       orders = await getAllOrders();
+        //     }
 
-            if (orders) {
-              console.log("orders", orders);
+        //     if (orders) {
+        //       console.log("orders", orders);
               
-              const ordersData = orders.map((order: OrderType) => ({
-                id: order.id,
-                clientEmail: order.clientEmail,
-                clientDni: order.clientDni,
-                equipmentType: order.equipmentType,
-                imei: order.imei,
-                assignedTechn: order.assignedTechn ?? null, // Asigna el objeto o null
-                description: order.description,
-                status: order.status,
-                user: order.user,
-                createdAt: order.createdAt || new Date(),
-                statusHistory: order.statusHistory || [],
-                isActive: order.isActive || false,
-                payments: order.payments
-                  ? {
-                      externalOrderId: order.payments.externalOrderId || '',
-                      id: order.payments.id,
-                      invoicePaidAt: order.payments.invoicePaidAt || '',
-                      price: order.payments.price,
-                      status: order.payments.status,
-                    }
-                  : null,
-                evidences: order.evidences || [],
-              }));
+        //       const ordersData = orders.map((order: OrderType) => ({
+        //         id: order.id,
+        //         clientEmail: order.clientEmail,
+        //         clientDni: order.clientDni,
+        //         equipmentType: order.equipmentType,
+        //         imei: order.imei,
+        //         assignedTechn: order.assignedTechn ?? null, // Asigna el objeto o null
+        //         description: order.description,
+        //         status: order.status,
+        //         user: order.user,
+        //         createdAt: order.createdAt || new Date(),
+        //         statusHistory: order.statusHistory || [],
+        //         isActive: order.isActive || false,
+        //         payments: order.payments
+        //           ? {
+        //               externalOrderId: order.payments.externalOrderId || '',
+        //               id: order.payments.id,
+        //               invoicePaidAt: order.payments.invoicePaidAt || '',
+        //               price: order.payments.price,
+        //               status: order.payments.status,
+        //             }
+        //           : null,
+        //         evidences: order.evidences || [],
+        //       }));
               
-              orderDataStorage.getState().setOrderData(ordersData);
-              console.log("Ordenes cargadas:", ordersData);
+        //       orderDataStorage.getState().setOrderData(ordersData);
+        //       console.log("Ordenes cargadas:", ordersData);
               
-            }
-          } catch (error) {
-            console.error("Error cargando órdenes:", error);
-          }
-        };
+        //     }
+        //   } catch (error) {
+        //     console.error("Error cargando órdenes:", error);
+        //   }
+        // };
 
         // 4. Mostrar mensaje de éxito y redirigir
         toast.success(`Bienvenido ${response.userFound.name}!`, {
@@ -135,11 +135,14 @@ const LoginForm = () => {
           richColors: true,
         });
 
-        // 5. Cargar órdenes en segundo plano y redirigir
-        loadOrders().finally(() => {
-          router.push("/dashboard");
-          setIsLoggingIn(false);
-        });
+        router.push("/dashboard");
+        setIsLoggingIn(false);
+
+        // // 5. Cargar órdenes en segundo plano y redirigir
+        // loadOrders().finally(() => {
+        //   router.push("/dashboard");
+        //   setIsLoggingIn(false);
+        // });
       }
     } catch (err) {
       console.error(err);

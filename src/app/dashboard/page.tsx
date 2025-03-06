@@ -9,7 +9,7 @@ import orderDataStorage from "@/storage/orderStore";
 import PageTransition from "@/components/PageTransition";
 import { OrderType } from "@/interfaces";
 import UsersList from "./components/UsersList";
-import { getAllOrders, updateOrderStatus, getOrderById  } from "@/services/orderService";
+import { getAllOrders, updateOrderStatus, getOrderById, getOrderByEmail, getTechOrders  } from "@/services/orderService";
 import { useRouter } from "next/navigation";
 import OrderFilters from "./components/OrderFilters";
 
@@ -84,6 +84,71 @@ export default function DashboardTecnico() {
   };
 
   useEffect(() => {
+    if (userData) {
+      setUsuario({
+        id: userData.id,
+        nombre: userData.name,
+        email: userData.email,
+        rol: userData.role,
+        dni: userData.dni,
+        phone: userData.phone,
+      });
+    }
+  }, [userData]);
+
+  useEffect(() => {
+
+    // 3. Iniciar carga de órdenes
+    const loadOrders = async () => {
+      try {
+        let orders;
+        if (usuario.rol === "CLIENT") {
+          orders = await getOrderByEmail(usuario.email);
+        } else if (usuario.rol === "TECHN") {
+          orders = await getTechOrders(usuario.id);
+          console.log("tecnico", orders);
+        } else if (usuario.rol === "ADMIN") {
+          orders = await getAllOrders();
+        }
+        
+        if (orders) {
+          console.log("orders", orders);
+          
+          const ordersData = orders.map((order: OrderType) => ({
+            id: order.id,
+            clientEmail: order.clientEmail,
+            clientDni: order.clientDni,
+            equipmentType: order.equipmentType,
+            imei: order.imei,
+            assignedTechn: order.assignedTechn ?? null, // Asigna el objeto o null
+            description: order.description,
+            status: order.status,
+            user: order.user,
+            createdAt: order.createdAt || new Date(),
+            statusHistory: order.statusHistory || [],
+            isActive: order.isActive || false,
+            payments: order.payments
+              ? {
+                  externalOrderId: order.payments.externalOrderId || '',
+                  id: order.payments.id,
+                  invoicePaidAt: order.payments.invoicePaidAt || '',
+                  price: order.payments.price,
+                  status: order.payments.status,
+                }
+              : null,
+            evidences: order.evidences || [],
+          }));
+          
+          orderDataStorage.getState().setOrderData(ordersData);
+          console.log("Ordenes cargadas:", ordersData);
+          
+        }
+      } catch (error) {
+        console.error("Error cargando órdenes:", error);
+      }
+    };
+
+    loadOrders();
   
     if (orderData) {
       const formattedOrders: DisplayOrder[] = orderData.map((order) => {
@@ -124,20 +189,8 @@ export default function DashboardTecnico() {
       });
       setOrders(formattedOrders);
     }
-  }, [orderData]); // Este efecto se ejecutará cada vez que orderData cambie
+  }, [orderData, usuario.email, usuario.rol, usuario.id]); // Este efecto se ejecutará cada vez que orderData cambie
 
-  useEffect(() => {
-    if (userData) {
-      setUsuario({
-        id: userData.id,
-        nombre: userData.name,
-        email: userData.email,
-        rol: userData.role,
-        dni: userData.dni,
-        phone: userData.phone,
-      });
-    }
-  }, [userData]);
 
   useEffect(() => {
     const storedUser = userDataStorage.getState().userData;
