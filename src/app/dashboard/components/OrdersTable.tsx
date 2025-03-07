@@ -20,7 +20,7 @@ export const OrdersTable = ({
   searchTerm,
   onOrderClick,
   onSearchChange,
-  fetchOrders,
+  // fetchOrders,
 }: OrdersTableProps) => {
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
