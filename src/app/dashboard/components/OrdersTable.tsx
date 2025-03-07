@@ -170,7 +170,7 @@ export const OrdersTable = ({
         isOpen={isEvidenceModalOpen}
         onClose={() => setIsEvidenceModalOpen(false)}
         order={selectedOrder}
-        onUpdateOrder={fetchOrders}
+        // onUpdateOrder={fetchOrders}
       />
       <ViewEvidenceModal
         isOpen={isViewModalOpen}

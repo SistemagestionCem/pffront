@@ -9,13 +9,13 @@ interface ModalEvidenceProps {
   isOpen: boolean;
   onClose: () => void;
   order: DisplayOrder | null;
-  onUpdateOrder: () => Promise<void>
+  // onUpdateOrder: () => Promise<void>
 }
 export default function ModalEvidence({
   isOpen,
   onClose,
   order,
-  onUpdateOrder,
+  // onUpdateOrder,
 }: ModalEvidenceProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -63,7 +63,7 @@ export default function ModalEvidence({
       setFiles([]); // Limpiar archivos después de la subida
       setShowConfirmation(true);
   
-      await onUpdateOrder();
+      // await onUpdateOrder();
     } catch (error) {
       console.log("Error de modal evidence", error);
       toast.error("Error al subir la imagen", {
