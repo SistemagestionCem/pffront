@@ -97,6 +97,7 @@ export default function DashboardTecnico() {
   }, [userData]);
 
   useEffect(() => {
+
     const loadOrders = async () => {
       try {
         let orders;
@@ -136,7 +137,7 @@ export default function DashboardTecnico() {
             evidences: order.evidences || [],
           }));
   
-          orderDataStorage.getState().setOrderData(ordersData);
+          await orderDataStorage.getState().setOrderData(ordersData);
           console.log("Ordenes cargadas:", ordersData);
         }
       } catch (error) {
@@ -144,17 +145,19 @@ export default function DashboardTecnico() {
       }
     };
   
-    if (!orderData || orderData.length === 0) {
-      loadOrders();
-    }
-  
-    const formattedOrders: DisplayOrder[] = (orderData || []).map((order) => ({
-      id: order.id,
-      clientEmail: order.clientEmail,
-      clientDni: order.clientDni,
-      equipmentType: order.equipmentType,
-      imei: order.imei,
-      assignedTechn: order.assignedTechn
+    loadOrders();
+
+  }, [usuario.email, usuario.rol, usuario.id]); 
+
+  useEffect(() => {
+    if (orderData.length > 0) {
+      const formattedOrders: DisplayOrder[] = (orderData || []).map((order) => ({
+        id: order.id,
+        clientEmail: order.clientEmail,
+        clientDni: order.clientDni,
+        equipmentType: order.equipmentType,
+        imei: order.imei,
+        assignedTechn: order.assignedTechn
         ? {
             id: order.assignedTechn.id,
             name: order.assignedTechn.name,
@@ -165,9 +168,9 @@ export default function DashboardTecnico() {
             createdAt: order.assignedTechn.createdAt,
           }
         : null,
-      description: order.description,
-      status: order.status as EstadoOrden,
-      payments: order.payments
+        description: order.description,
+        status: order.status as EstadoOrden,
+        payments: order.payments
         ? {
             externalOrderId: order.payments.externalOrderId ?? null,
             id: order.payments.id ?? '',
@@ -175,15 +178,16 @@ export default function DashboardTecnico() {
             price: order.payments.price ?? '0',
             status: order.payments.status ?? 'Desconocido',
           }
-        : null,
-      date: order.createdAt
-        ? new Date(order.createdAt).toLocaleDateString('es-ES')
-        : 'Fecha desconocida',
-      evidences: order.evidences || [],
-    }));
-  
-    setOrders(formattedOrders);
-  }, [usuario.email, usuario.rol, usuario.id, orderData]); 
+          : null,
+          date: order.createdAt
+          ? new Date(order.createdAt).toLocaleDateString('es-ES')
+          : 'Fecha desconocida',
+          evidences: order.evidences || [],
+        }));
+        
+        setOrders(formattedOrders);
+    }
+  }, [orderData]); // Se ejecuta solo cuando `orderData` cambia
   
 
 
