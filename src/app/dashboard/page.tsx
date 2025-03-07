@@ -97,8 +97,6 @@ export default function DashboardTecnico() {
   }, [userData]);
 
   useEffect(() => {
-
-    // 3. Iniciar carga de órdenes
     const loadOrders = async () => {
       try {
         let orders;
@@ -106,21 +104,20 @@ export default function DashboardTecnico() {
           orders = await getOrderByEmail(usuario.email);
         } else if (usuario.rol === "TECHN") {
           orders = await getTechOrders(usuario.id);
-          console.log("tecnico", orders);
         } else if (usuario.rol === "ADMIN") {
           orders = await getAllOrders();
         }
-        
+  
         if (orders) {
           console.log("orders", orders);
-          
+  
           const ordersData = orders.map((order: OrderType) => ({
             id: order.id,
             clientEmail: order.clientEmail,
             clientDni: order.clientDni,
             equipmentType: order.equipmentType,
             imei: order.imei,
-            assignedTechn: order.assignedTechn ?? null, // Asigna el objeto o null
+            assignedTechn: order.assignedTechn ?? null,
             description: order.description,
             status: order.status,
             user: order.user,
@@ -138,58 +135,56 @@ export default function DashboardTecnico() {
               : null,
             evidences: order.evidences || [],
           }));
-          
+  
           orderDataStorage.getState().setOrderData(ordersData);
           console.log("Ordenes cargadas:", ordersData);
-          
         }
       } catch (error) {
         console.error("Error cargando órdenes:", error);
       }
     };
-
-    loadOrders();
   
-    if (orderData) {
-      const formattedOrders: DisplayOrder[] = orderData.map((order) => {
-        return {
-          id: order.id,
-          clientEmail: order.clientEmail,
-          clientDni: order.clientDni,
-          equipmentType: order.equipmentType,
-          imei: order.imei,
-          assignedTechn: order.assignedTechn
-            ? {
-                id: order.assignedTechn.id,
-                name: order.assignedTechn.name,
-                email: order.assignedTechn.email,
-                dni: order.assignedTechn.dni,
-                phone: order.assignedTechn.phone,
-                role: order.assignedTechn.role,
-                createdAt: order.assignedTechn.createdAt,
-              }
-            : null,
-          description: order.description,
-          status: order.status as EstadoOrden,
-          payments: order.payments
-            ? {
-                externalOrderId: order.payments.externalOrderId ?? null,
-                id: order.payments.id ?? "",
-                invoicePaidAt: order.payments.invoicePaidAt ?? null,
-                price: order.payments.price ?? "0",
-                status: order.payments.status ?? "Desconocido",
-              }
-            : null,
-          date: order.createdAt
-            ? new Date(order.createdAt).toLocaleDateString("es-ES")
-            : "Fecha desconocida",
-            evidences: order.evidences || [] 
-        };
-        
-      });
-      setOrders(formattedOrders);
+    if (!orderData || orderData.length === 0) {
+      loadOrders();
     }
-  }, [orderData, usuario.email, usuario.rol, usuario.id]); // Este efecto se ejecutará cada vez que orderData cambie
+  
+    const formattedOrders: DisplayOrder[] = (orderData || []).map((order) => ({
+      id: order.id,
+      clientEmail: order.clientEmail,
+      clientDni: order.clientDni,
+      equipmentType: order.equipmentType,
+      imei: order.imei,
+      assignedTechn: order.assignedTechn
+        ? {
+            id: order.assignedTechn.id,
+            name: order.assignedTechn.name,
+            email: order.assignedTechn.email,
+            dni: order.assignedTechn.dni,
+            phone: order.assignedTechn.phone,
+            role: order.assignedTechn.role,
+            createdAt: order.assignedTechn.createdAt,
+          }
+        : null,
+      description: order.description,
+      status: order.status as EstadoOrden,
+      payments: order.payments
+        ? {
+            externalOrderId: order.payments.externalOrderId ?? null,
+            id: order.payments.id ?? '',
+            invoicePaidAt: order.payments.invoicePaidAt ?? null,
+            price: order.payments.price ?? '0',
+            status: order.payments.status ?? 'Desconocido',
+          }
+        : null,
+      date: order.createdAt
+        ? new Date(order.createdAt).toLocaleDateString('es-ES')
+        : 'Fecha desconocida',
+      evidences: order.evidences || [],
+    }));
+  
+    setOrders(formattedOrders);
+  }, [usuario.email, usuario.rol, usuario.id, orderData]); 
+  
 
 
   useEffect(() => {
